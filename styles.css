@@ -1,0 +1,5 @@
+/* Sets all the text color to red! */
+.highlight {
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 0, 0, 1);
+}
