@@ -1,35 +1,39 @@
-/* Sets all the text color to red! */
 .obsidian-orthography-highlight {
-    color: #fff;
-    border-bottom: 1px solid rgba(255, 0, 0, 1);
-    cursor: pointer;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 0, 0, 1);
+  cursor: pointer;
 }
 
 .obsidian-orthography-tooltip {
-    position: absolute;
-    background: #ffffcc;
-    border: 1px solid black;
-    padding: 5px;
-    z-index: 1000;
-    color: black;
-    display: none;
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  border-radius: 3px;
+  background-color: transparent;
+  color: #fff;
+  box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
 }
 
 .obsidian-orthography-tooltip--visible {
-    display: flex;
+  display: flex;
+  flex-direction: column;
+}
+
+.obsidian-orthography-tooltip--visible button {
+  margin: 2px 0;
 }
 
 .obsidian-orthography-runner {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    bottom: 40px;
-    right: 30px;
-    font-size: 22px;
-    border-radius: 100%;
-    box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
-    z-index: 999;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 40px;
+  right: 30px;
+  font-size: 22px;
+  border-radius: 100%;
+  box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
+  z-index: 999;
 }

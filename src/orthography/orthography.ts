@@ -21,18 +21,16 @@ export class Orthography implements IOrthography {
   }
 
   private async validateText() {
-    const text = this.getEditortext();
+    const text = this.getEditorText();
     const formData = new FormData();
     formData.append('text', text);
-    const validatedData = await this.postData(API_URL, formData);
-
-    if (!validatedData.length) return false;
-
-    const regex = this.createSearchQuery(validatedData);
+    const hintsData = await this.postData(API_URL, formData);
+    localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
+    const regex = this.createSearchQuery(hintsData);
     this.highlightWords(regex);
   }
 
-  private getEditortext() {
+  private getEditorText() {
     const activeLeaf: any = this.app.workspace.activeLeaf;
     const editor = activeLeaf.view.sourceMode.cmEditor;
     return editor.getValue();
@@ -51,6 +49,8 @@ export class Orthography implements IOrthography {
   }
 
   private createSearchQuery(list: []) {
+    if (!list.length) return new RegExp(/^/gi);
+
     const words = list.map(function (item: any) {
       return item['word'];
     });

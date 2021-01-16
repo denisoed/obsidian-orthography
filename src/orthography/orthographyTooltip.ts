@@ -1,4 +1,3 @@
-import { Orthography } from './orthography';
 import {
   TOOLTIP_CSS_CLASS,
   TOOLTIP_VISIBLE_CSS_CLASS,
@@ -10,10 +9,8 @@ interface IOrthographyTooltip {
 }
 
 export class OrthographyTooltip
-  extends Orthography
   implements IOrthographyTooltip {
   private tooltip: any;
-  private hints: [];
 
   public init(): void {
     this.createTooltip();
@@ -27,9 +24,18 @@ export class OrthographyTooltip
     document.onmouseover = document.onmouseout = this.toggleTooltip.bind(this);
   }
 
+  private setDataToTooltip(word: string): void {
+    const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
+    const hints = data.find((d: any) => word === d.word ? d : null);
+    if (hints.hasOwnProperty('s')) {
+      this.createHintButton(hints.s);
+    }
+  }
+
   private toggleTooltip(event: any): void {
     if (event.type === 'mouseover') {
       if (event.target.className.trim() === HIGHLIGHT_CSS_CLASS) {
+        this.setDataToTooltip(event.target.innerText);
         this.tooltip.classList.add(TOOLTIP_VISIBLE_CSS_CLASS);
         this.tooltip.style.left = this.getLeftPos(event);
         this.tooltip.style.top = this.getTopPos(event);
@@ -37,6 +43,7 @@ export class OrthographyTooltip
     }
     if (event.type === 'mouseout') {
       this.tooltip.classList.remove(TOOLTIP_VISIBLE_CSS_CLASS);
+      this.tooltip.innerHTML = '';
     }
   }
 
@@ -58,5 +65,13 @@ export class OrthographyTooltip
       return event.pageY + 10 + 'px';
     }
     return document.body.clientHeight + 5 - this.tooltip.clientHeight + 'px';
+  }
+
+  private createHintButton(hints: []) {
+    hints.forEach((h: string) => {
+      const hint = document.createElement('button');
+      hint.innerText = h;
+      this.tooltip.appendChild(hint);
+    });
   }
 }

@@ -17,11 +17,11 @@ export default class OrthographyPlugin extends Plugin {
 
     this.addSettingTab(new OrthographySettingTab(this.app, this, settings));
 
-    this.initOrthographyRunner();
-
-    this.initOrthographyChecker();
+    this.initOrthography();
 
     this.initOrthographyTooltip();
+
+    this.initOrthographyRunner();
 
     this.addCommand({
       id: 'check-orthography',
@@ -36,19 +36,7 @@ export default class OrthographyPlugin extends Plugin {
     });
   }
 
-  private initOrthographyRunner() {
-    const { app, settings } = this;
-    const runner = new OrthographyRunner(app, settings);
-    runner.init();
-  }
-
-  private initOrthographyTooltip() {
-    const { app, settings } = this;
-    const tooltip = new OrthographyTooltip(app, settings);
-    tooltip.init();
-  }
-
-  private initOrthographyChecker() {
+  private initOrthography() {
     let { orthography } = this;
     const { app, settings } = this;
 
@@ -59,5 +47,16 @@ export default class OrthographyPlugin extends Plugin {
     orthography = new Orthography(app, settings);
     this.orthography = orthography;
     return orthography;
+  }
+
+  private initOrthographyTooltip(): void {
+    const tooltip = new OrthographyTooltip();
+    tooltip.init();
+  }
+
+  private initOrthographyRunner(): void {
+    const { app, settings } = this;
+    const runner = new OrthographyRunner(app, settings);
+    runner.init();
   }
 }

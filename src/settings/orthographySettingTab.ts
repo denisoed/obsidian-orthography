@@ -50,7 +50,6 @@ export class OrthographySettingTab extends PluginSettingTab {
           .addOption('uk', 'Ukraine')
           .addOption('en, ru, uk', 'All')
           .onChange(async (value) => {
-            console.log(value);
             settings.language = value;
             await settings.saveSettings();
           })
