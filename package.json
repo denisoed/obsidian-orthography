@@ -1,21 +1,38 @@
 {
-  "name": "obsidian-sample-plugin",
-  "version": "0.9.7",
-  "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+  "name": "obsidian-orthography",
+  "version": "0.0.1",
+  "description": "Check orthography plugin for Obsidian (https://obsidian.md)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/denisoed/obsidian-orthography"
+  },
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
-    "build": "rollup --config rollup.config.js"
+    "build": "npm run lint && rollup --config rollup.config.js",
+    "lint": "eslint '*/**/*.{js,ts}'",
+    "format": "prettier --write \"src/**/*.ts\""
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "obsidian",
+    "obsidian-md",
+    "obsidian-md-plugin"
+  ],
+  "author": "Denisoed",
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-typescript": "^6.0.0",
     "@types/node": "^14.14.2",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
+    "eslint": "^7.18.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
     "obsidian": "https://github.com/obsidianmd/obsidian-api/tarball/master",
+    "prettier": "^2.2.1",
     "rollup": "^2.32.1",
     "tslib": "^2.0.3",
     "typescript": "^4.0.3"

@@ -1,5 +1,16 @@
 /* Sets all the text color to red! */
-.highlight {
+.obsidian-orthography-highlight {
     color: #fff;
     border-bottom: 1px solid rgba(255, 0, 0, 1);
+    cursor: pointer;
+}
+
+.tooltip {
+    position: absolute;
+    white-space: nowrap;
+    background: #ffffcc;
+    border: 1px solid black;
+    padding: 5px;
+    z-index: 1000;
+    color: black;
 }
