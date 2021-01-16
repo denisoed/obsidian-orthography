@@ -6,6 +6,14 @@ interface IOrthography {
   check(): void;
 }
 
+interface IOrthographyRunner {
+  init(): void;
+}
+
+interface IOrthographyTooltip {
+  init(): void;
+}
+
 export class Orthography implements IOrthography {
   private app: App;
   private settings: OrthographySettings;
@@ -23,9 +31,11 @@ export class Orthography implements IOrthography {
     const text = this.getEditortext();
     const formData = new FormData();
     formData.append('text', text);
-    formData.append('lang', 'en');
     const validatedData = await this.postData(API_URL, formData);
-    const regex = this.createSearchQuery(validatedData[0]);
+
+    if (!validatedData.length) return false;
+
+    const regex = this.createSearchQuery(validatedData);
     this.highlightWords(regex);
   }
 
@@ -61,5 +71,55 @@ export class Orthography implements IOrthography {
       body: formData
     });
     return await response.json();
+  }
+}
+
+export class OrthographyTooltip implements IOrthographyTooltip {
+  public init(): void {
+    this.createTooltip();
+  }
+
+  private createTooltip() {
+    const tooltips = document.querySelectorAll(
+      '.obsidian-orthography-highlight'
+    );
+    for (let i = 0; i < tooltips.length; i++) {
+      tooltips[i].addEventListener('mouseover', this.showTooltip);
+    }
+
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('tooltip');
+    document.body.appendChild(tooltip);
+  }
+
+  private showTooltip(e: any) {
+    const tooltip: any = document.querySelector('.tooltip');
+    tooltip.style.left =
+      e.pageX + tooltip.clientWidth + 10 < document.body.clientWidth
+        ? e.pageX + 10 + 'px'
+        : document.body.clientWidth + 5 - tooltip.clientWidth + 'px';
+    tooltip.style.top =
+      e.pageY + tooltip.clientHeight + 10 < document.body.clientHeight
+        ? e.pageY + 10 + 'px'
+        : document.body.clientHeight + 5 - tooltip.clientHeight + 'px';
+  }
+}
+
+export class OrthographyRunner extends Orthography implements IOrthographyRunner {
+  public init(): void {
+    this.createRunner();
+  }
+
+  private createRunner() {
+    const runner = document.createElement('button');
+    runner.classList.add('obsidian-orthography-runner');
+    runner.innerText = '⌘';
+    document.body.appendChild(runner);
+
+    runner.addEventListener('click', this.runCheck.bind(this));
+  }
+
+  private runCheck() {
+    this.check();
   }
 }

@@ -17,15 +17,13 @@ export const DefaultConfig: Config = {
 
 interface SettingsData {
   alwaysNewPaneForSymbols: boolean;
-  symbolsInLineOrder: boolean;
-  inputSetting: string;
+  language: string;
 }
 
 function getDefaultData(): SettingsData {
   return {
     alwaysNewPaneForSymbols: false,
-    symbolsInLineOrder: true,
-    inputSetting: ''
+    language: ''
   };
 }
 
@@ -42,24 +40,14 @@ export class OrthographySettings {
     data.alwaysNewPaneForSymbols = value;
   }
 
-  get symbolsInlineOrder(): boolean {
+  get language(): string {
     const { data } = this;
-    return data.symbolsInLineOrder;
+    return data.language;
   }
 
-  set symbolsInlineOrder(value: boolean) {
+  set language(value: string) {
     const { data } = this;
-    data.symbolsInLineOrder = value;
-  }
-
-  get inputSetting(): string {
-    const { data } = this;
-    return data.inputSetting;
-  }
-
-  set inputSetting(value: string) {
-    const { data } = this;
-    data.inputSetting = value;
+    data.language = value;
   }
 
   constructor(private plugin: OrthographyPlugin) {

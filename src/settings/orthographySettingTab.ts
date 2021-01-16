@@ -16,8 +16,7 @@ export class OrthographySettingTab extends PluginSettingTab {
 
     containerEl.empty();
     OrthographySettingTab.setAlwaysNewPaneForSymbols(containerEl, settings);
-    OrthographySettingTab.setSymbolsInLineOrder(containerEl, settings);
-    OrthographySettingTab.setInputSetting(containerEl, settings);
+    // OrthographySettingTab.setLanguage(containerEl, settings);
   }
 
   static setAlwaysNewPaneForSymbols(
@@ -37,37 +36,22 @@ export class OrthographySettingTab extends PluginSettingTab {
       );
   }
 
-  static setSymbolsInLineOrder(
-    containerEl: HTMLElement,
-    settings: OrthographySettings
-  ): void {
-    new Setting(containerEl)
-      .setName('List symbols in order they appear')
-      .setDesc(
-        'Enabled, symbols will be displayed in the (line) order they appear in the source text, indented under any preceding heading. Disabled, symbols will be grouped by type: Headings, Tags, Links, Embeds.'
-      )
-      .addToggle((toggle) =>
-        toggle.setValue(settings.symbolsInlineOrder).onChange((value) => {
-          settings.symbolsInlineOrder = value;
-          settings.saveSettings();
-        })
-      );
-  }
-
-  static setInputSetting(
+  static setLanguage(
     containerEl: HTMLElement,
     settings: OrthographySettings
   ): void {
     new Setting(containerEl)
       .setName('Setting #1')
       .setDesc("It's a secret")
-      .addText((text) =>
-        text
-          .setPlaceholder('Enter your secret')
-          .setValue('')
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption('en', 'English')
+          .addOption('ru', 'Russian')
+          .addOption('uk', 'Ukraine')
+          .addOption('en, ru, uk', 'All')
           .onChange(async (value) => {
-            console.log('Secret: ' + value);
-            settings.inputSetting = value;
+            console.log(value);
+            settings.language = value;
             await settings.saveSettings();
           })
       );
