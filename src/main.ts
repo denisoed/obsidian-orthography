@@ -1,6 +1,10 @@
 import { Plugin } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
-import { Orthography, OrthographyRunner } from 'src/orthography';
+import {
+  Orthography,
+  OrthographyRunner,
+  OrthographyTooltip
+} from 'src/orthography';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
@@ -13,9 +17,11 @@ export default class OrthographyPlugin extends Plugin {
 
     this.addSettingTab(new OrthographySettingTab(this.app, this, settings));
 
-    this.setOrthographyChecker();
-
     this.initOrthographyRunner();
+
+    this.initOrthographyChecker();
+
+    this.initOrthographyTooltip();
 
     this.addCommand({
       id: 'check-orthography',
@@ -30,7 +36,19 @@ export default class OrthographyPlugin extends Plugin {
     });
   }
 
-  private setOrthographyChecker() {
+  private initOrthographyRunner() {
+    const { app, settings } = this;
+    const runner = new OrthographyRunner(app, settings);
+    runner.init();
+  }
+
+  private initOrthographyTooltip() {
+    const { app, settings } = this;
+    const tooltip = new OrthographyTooltip(app, settings);
+    tooltip.init();
+  }
+
+  private initOrthographyChecker() {
     let { orthography } = this;
     const { app, settings } = this;
 
@@ -41,11 +59,5 @@ export default class OrthographyPlugin extends Plugin {
     orthography = new Orthography(app, settings);
     this.orthography = orthography;
     return orthography;
-  }
-
-  private initOrthographyRunner() {
-    const { app, settings } = this;
-    const runner = new OrthographyRunner(app, settings);
-    runner.init();
   }
 }

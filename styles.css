@@ -5,14 +5,18 @@
     cursor: pointer;
 }
 
-.tooltip {
+.obsidian-orthography-tooltip {
     position: absolute;
-    white-space: nowrap;
     background: #ffffcc;
     border: 1px solid black;
     padding: 5px;
     z-index: 1000;
     color: black;
+    display: none;
+}
+
+.obsidian-orthography-tooltip--visible {
+    display: flex;
 }
 
 .obsidian-orthography-runner {
@@ -27,4 +31,5 @@
     font-size: 22px;
     border-radius: 100%;
     box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
+    z-index: 999;
 }
