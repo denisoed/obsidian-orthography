@@ -1,1 +1,1 @@
-export * from './orthographyChecker';
+export * from './orthography';

@@ -62,4 +62,4 @@ export class Orthography implements IOrthography {
     });
     return await response.json();
   }
-};
+}
