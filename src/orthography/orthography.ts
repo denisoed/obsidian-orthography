@@ -1,23 +1,10 @@
 import { OrthographySettings } from 'src/settings';
 import type { App } from 'obsidian';
 import { API_URL } from '../config';
-import {
-  TOOLTIP_CSS_CLASS,
-  TOOLTIP_VISIBLE_CSS_CLASS,
-  HIGHLIGHT_CSS_CLASS,
-  RUNNER_CSS_CLASS
-} from './constants';
+import { HIGHLIGHT_CSS_CLASS } from './constants';
 
 interface IOrthography {
   check(): void;
-}
-
-interface IOrthographyRunner {
-  init(): void;
-}
-
-interface IOrthographyTooltip {
-  init(): void;
 }
 
 export class Orthography implements IOrthography {
@@ -77,77 +64,5 @@ export class Orthography implements IOrthography {
       body: formData
     });
     return await response.json();
-  }
-}
-
-export class OrthographyTooltip
-  extends Orthography
-  implements IOrthographyTooltip {
-  private tooltip: any;
-
-  public init(): void {
-    this.createTooltip();
-  }
-
-  private createTooltip() {
-    const tooltip = document.createElement('div');
-    tooltip.classList.add(TOOLTIP_CSS_CLASS);
-    document.body.appendChild(tooltip);
-    this.tooltip = document.querySelector('.' + TOOLTIP_CSS_CLASS);
-    document.onmouseover = document.onmouseout = this.toggleTooltip.bind(this);
-  }
-
-  private toggleTooltip(event: any): void {
-    if (event.type === 'mouseover') {
-      if (event.target.className.trim() === HIGHLIGHT_CSS_CLASS) {
-        this.tooltip.classList.add(TOOLTIP_VISIBLE_CSS_CLASS);
-        this.tooltip.style.left = this.getLeftPos(event);
-        this.tooltip.style.top = this.getTopPos(event);
-      }
-    }
-    if (event.type === 'mouseout') {
-      this.tooltip.classList.remove(TOOLTIP_VISIBLE_CSS_CLASS);
-    }
-  }
-
-  private getLeftPos(event: any) {
-    if (
-      event.pageX + this.tooltip.clientWidth + 10 <
-      document.body.clientWidth
-    ) {
-      return event.pageX + 10 + 'px';
-    }
-    return document.body.clientWidth + 5 - this.tooltip.clientWidth + 'px';
-  }
-
-  private getTopPos(event: any) {
-    if (
-      event.pageY + this.tooltip.clientHeight + 10 <
-      document.body.clientHeight
-    ) {
-      return event.pageY + 10 + 'px';
-    }
-    return document.body.clientHeight + 5 - this.tooltip.clientHeight + 'px';
-  }
-}
-
-export class OrthographyRunner
-  extends Orthography
-  implements IOrthographyRunner {
-  public init(): void {
-    this.createRunner();
-  }
-
-  private createRunner() {
-    const runner = document.createElement('button');
-    runner.classList.add(RUNNER_CSS_CLASS);
-    runner.innerText = '⌘';
-    document.body.appendChild(runner);
-
-    runner.addEventListener('click', this.runCheck.bind(this));
-  }
-
-  private runCheck() {
-    this.check();
   }
 }

@@ -4,7 +4,7 @@ import {
   Orthography,
   OrthographyRunner,
   OrthographyTooltip
-} from 'src/orthography';
+} from './orthography';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
