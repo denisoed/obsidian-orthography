@@ -1,10 +1,10 @@
 {
 	"id": "obsidian-orthography",
-	"name": "Sample Plugin",
+	"name": "Obsidian Orthography",
 	"version": "0.0.1",
 	"minAppVersion": "0.10.7",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md/about",
+	"description": "Obsidian plugin to check orthography errors",
+	"author": "Denisoed",
+	"authorUrl": "https://github.com/denisoed",
 	"isDesktopOnly": false
 }

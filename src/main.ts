@@ -1,6 +1,6 @@
 import { Plugin } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
-import { createOrthographyChecker } from 'src/orthography';
+import { Orthography } from 'src/orthography';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
@@ -36,7 +36,7 @@ export default class OrthographyPlugin extends Plugin {
       return orthography;
     }
 
-    orthography = createOrthographyChecker(app, settings);
+    orthography = new Orthography(app, settings);
     this.orthography = orthography;
     return orthography;
   }
