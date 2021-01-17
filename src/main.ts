@@ -50,7 +50,8 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private initOrthographyTooltip(): void {
-    const tooltip = new OrthographyTooltip();
+    const { app, settings } = this;
+    const tooltip = new OrthographyTooltip(app, settings);
     tooltip.init();
   }
 

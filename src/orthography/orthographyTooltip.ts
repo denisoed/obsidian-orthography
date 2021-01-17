@@ -1,3 +1,5 @@
+import type { App } from 'obsidian';
+import { OrthographySettings } from 'src/settings';
 import {
   TOOLTIP_CSS_CLASS,
   TOOLTIP_VISIBLE_CSS_CLASS,
@@ -12,6 +14,14 @@ interface IOrthographyTooltip {
 export class OrthographyTooltip implements IOrthographyTooltip {
   private tooltip: any;
 
+  private app: App;
+  private settings: OrthographySettings;
+
+  constructor(app: App, settings: OrthographySettings) {
+    this.app = app;
+    this.settings = settings;
+  }
+
   public init(): void {
     this.createTooltip();
   }
@@ -20,31 +30,34 @@ export class OrthographyTooltip implements IOrthographyTooltip {
     const tooltip = document.createElement('div');
     tooltip.classList.add(TOOLTIP_CSS_CLASS);
     document.body.appendChild(tooltip);
+    document.addEventListener('mouseover', this.toggleTooltip.bind(this));
     this.tooltip = document.querySelector('.' + TOOLTIP_CSS_CLASS);
-    document.onmouseover = document.onmouseout = this.toggleTooltip.bind(this);
+    this.tooltip.addEventListener('click', this.replaceWord.bind(this));
   }
 
-  private setDataToTooltip(word: string): void {
+  private setDataToTooltip(element: any): void {
     const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
-    const hints = data.find((d: any) => (word === d.word ? d : null));
-    if (hints.hasOwnProperty('s')) {
-      this.appendHintButton(hints.s);
+    const hint = data.find((d: any) =>
+      element.className.includes(d.col) ? d : null
+    );
+    if (hint && hint.hasOwnProperty('s')) {
+      this.appendHintButton(hint);
     }
   }
 
   private toggleTooltip(event: any): void {
     if (event.type === 'mouseover') {
-      if (event.target.className.trim() === HIGHLIGHT_CSS_CLASS) {
+      if (event.target.className.includes(HIGHLIGHT_CSS_CLASS)) {
         this.tooltip.innerHTML = '';
-        this.setDataToTooltip(event.target.innerText);
+        this.setDataToTooltip(event.target);
         this.tooltip.classList.add(TOOLTIP_VISIBLE_CSS_CLASS);
         this.tooltip.style.left = this.getLeftPos(event);
         this.tooltip.style.top = this.getTopPos(event);
       }
     }
     if (
-      !event.target.className.trim().includes(TOOLTIP_CSS_CLASS) &&
-      event.target.className.trim() !== HIGHLIGHT_CSS_CLASS
+      !event.target.className.includes(TOOLTIP_CSS_CLASS) &&
+      !event.target.className.includes(HIGHLIGHT_CSS_CLASS)
     ) {
       this.tooltip.classList.remove(TOOLTIP_VISIBLE_CSS_CLASS);
       this.tooltip.innerHTML = '';
@@ -70,12 +83,39 @@ export class OrthographyTooltip implements IOrthographyTooltip {
     return document.body.clientHeight + 10 - this.tooltip.clientHeight + 'px';
   }
 
-  private appendHintButton(hints: []) {
-    hints.forEach((h: string) => {
-      const hint = document.createElement('button');
-      hint.classList.add(TOOLTIP_HINT_CSS_CLASS);
-      hint.innerText = h;
-      this.tooltip.appendChild(hint);
-    });
+  private appendHintButton(hint: any) {
+    if (hint && hint.s && hint.s.length) {
+      hint.s.forEach((h: string) => {
+        const button = document.createElement('button');
+        button.classList.add(TOOLTIP_HINT_CSS_CLASS);
+        button.classList.add(hint.word + '-' + hint.col);
+        button.innerText = h;
+        this.tooltip.appendChild(button);
+      });
+    }
+  }
+
+  private replaceWord(event: any) {
+    if (event.target.className.includes(TOOLTIP_HINT_CSS_CLASS)) {
+      const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
+      const hint = data.find((d: any) =>
+        event.target.className.includes(d.col) ? d : null
+      );
+
+      const activeLeaf: any = this.app.workspace.activeLeaf;
+      const editor = activeLeaf.view.sourceMode.cmEditor;
+      const doc = editor.getDoc();
+
+      const from = {
+        line: hint.row,
+        ch: hint.col
+      };
+      const to = {
+        line: hint.row,
+        ch: hint.col + hint.len
+      };
+
+      doc.replaceRange(event.target.innerText, from, to);
+    }
   }
 }

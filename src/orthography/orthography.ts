@@ -1,5 +1,5 @@
-import { OrthographySettings } from 'src/settings';
 import type { App } from 'obsidian';
+import { OrthographySettings } from 'src/settings';
 import { API_URL } from '../config';
 import { HIGHLIGHT_CSS_CLASS } from './constants';
 
@@ -42,8 +42,10 @@ export class Orthography implements IOrthography {
     const searchQuery = new RegExp(regex);
     const cursor = editor.getSearchCursor(searchQuery);
     while (cursor.findNext()) {
-      editor.markText(cursor.from(), cursor.to(), {
-        className: HIGHLIGHT_CSS_CLASS
+      const from = cursor.from();
+      const to = cursor.to();
+      editor.markText(from, to, {
+        className: HIGHLIGHT_CSS_CLASS + ' ' + 'col-' + from.ch
       });
     }
   }
