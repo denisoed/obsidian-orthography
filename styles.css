@@ -43,6 +43,10 @@
   transition: all 0.1s ease;
 }
 
+.obsidian-orthography-runner--clear {
+  font-size: 25px;
+}
+
 .obsidian-orthography-runner:active {
   box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.4);
   transform: translateY(1px);

@@ -20,6 +20,10 @@ export class Orthography implements IOrthography {
     return this.validateText();
   }
 
+  public clear() {
+    this.clearHighlightWords();
+  }
+
   private validateText() {
     return new Promise<any>(async (resolve, reject) => {
       const text = this.getEditorText();
@@ -55,6 +59,13 @@ export class Orthography implements IOrthography {
         className: HIGHLIGHT_CSS_CLASS + ' ' + 'col-' + from.ch
       });
     }
+  }
+
+  private clearHighlightWords() {
+    const highlightWords = document.querySelectorAll('.' + HIGHLIGHT_CSS_CLASS);
+    highlightWords.forEach(span => {
+      span.className = '';
+    });
   }
 
   private createSearchQuery(list: []) {
