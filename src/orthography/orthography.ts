@@ -25,21 +25,28 @@ export class Orthography implements IOrthography {
     this.clearHighlightWords();
   }
 
-  private validateText() {
+  public async getHintsFromServer() {
     return new Promise<any>(async (resolve, reject) => {
       const text = this.getEditorText();
       const formData = new FormData();
       formData.append('text', text);
       const hintsData = await this.postData(API_URL, formData);
-      if (hintsData && hintsData.length) {
-        localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
-        const regex = this.createSearchQuery(hintsData);
+      localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
+      resolve(hintsData);
+    });
+  }
+
+  private validateText() {
+    return new Promise<any>(async (resolve, reject) => {
+      const hints = await this.getHintsFromServer();
+      if (hints && hints.length) {
+        const regex = this.createSearchQuery(hints);
         this.highlightWords(regex);
       }
 
       // Delay for button animation
       setTimeout(() => {
-        resolve(hintsData);
+        resolve(hints);
       }, 100);
     });
   }
@@ -69,7 +76,7 @@ export class Orthography implements IOrthography {
   private clearHighlightWords() {
     const highlightWords = document.querySelectorAll('.' + HIGHLIGHT_CSS_CLASS);
     highlightWords.forEach((span) => {
-      span.className = '';
+      span.removeAttribute('class');
     });
     this.markers.forEach((marker: any) => marker.clear());
   }

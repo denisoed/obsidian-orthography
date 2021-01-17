@@ -111,7 +111,7 @@ export class OrthographyTooltip
       doc.replaceRange(event.target.innerText, from, to);
 
       // Updating the list of orthography errors
-      this.check();
+      this.getHintsFromServer();
     }
   }
 }
