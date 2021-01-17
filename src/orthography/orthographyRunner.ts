@@ -1,6 +1,10 @@
 import { Notice, MarkdownPreviewView } from 'obsidian';
 import { Orthography } from './orthography';
-import { RUNNER_CSS_CLASS, RUNNER_ACTIVE_CSS_CLASS, RUNNER_CLEAR_CSS_CLASS } from './constants';
+import {
+  RUNNER_CSS_CLASS,
+  RUNNER_ACTIVE_CSS_CLASS,
+  RUNNER_CLEAR_CSS_CLASS
+} from './constants';
 
 interface IOrthographyRunner {
   init(): void;
@@ -40,7 +44,7 @@ export class OrthographyRunner
     const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
     runner.classList.add(RUNNER_ACTIVE_CSS_CLASS);
 
-    this.check().then(hints => {
+    this.check().then((hints) => {
       this.isActive = false;
       runner.classList.remove(RUNNER_ACTIVE_CSS_CLASS);
       if (hints && hints.length) {
@@ -56,7 +60,7 @@ export class OrthographyRunner
   private returnButtonCheck() {
     this.isActive = true;
     this.isCompleted = false;
-    
+
     const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
     const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
     runnerIcon.classList.remove(RUNNER_CLEAR_CSS_CLASS);

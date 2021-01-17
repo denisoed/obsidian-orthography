@@ -8,8 +8,8 @@ interface IOrthography {
 }
 
 export class Orthography implements IOrthography {
-  private app: App;
-  private settings: OrthographySettings;
+  public app: App;
+  public settings: OrthographySettings;
   private markers: any = [];
 
   constructor(app: App, settings: OrthographySettings) {
@@ -37,7 +37,7 @@ export class Orthography implements IOrthography {
         this.highlightWords(regex);
       }
 
-      // Delay for button animation 
+      // Delay for button animation
       setTimeout(() => {
         resolve(hintsData);
       }, 100);
@@ -58,15 +58,17 @@ export class Orthography implements IOrthography {
     while (cursor.findNext()) {
       const from = cursor.from();
       const to = cursor.to();
-      this.markers.push(editor.markText(from, to, {
-        className: HIGHLIGHT_CSS_CLASS + ' ' + 'col-' + from.ch
-      }));
+      this.markers.push(
+        editor.markText(from, to, {
+          className: HIGHLIGHT_CSS_CLASS + ' ' + 'col-' + from.ch
+        })
+      );
     }
   }
 
   private clearHighlightWords() {
     const highlightWords = document.querySelectorAll('.' + HIGHLIGHT_CSS_CLASS);
-    highlightWords.forEach(span => {
+    highlightWords.forEach((span) => {
       span.className = '';
     });
     this.markers.forEach((marker: any) => marker.clear());

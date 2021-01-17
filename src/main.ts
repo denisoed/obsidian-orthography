@@ -1,9 +1,6 @@
 import { Plugin } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
-import {
-  OrthographyRunner,
-  OrthographyTooltip
-} from './orthography';
+import { OrthographyRunner, OrthographyTooltip } from './orthography';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;

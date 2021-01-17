@@ -10,7 +10,9 @@ interface IOrthographyTooltip {
   init(): void;
 }
 
-export class OrthographyTooltip extends Orthography implements IOrthographyTooltip {
+export class OrthographyTooltip
+  extends Orthography
+  implements IOrthographyTooltip {
   private tooltip: any;
 
   public init(): void {
