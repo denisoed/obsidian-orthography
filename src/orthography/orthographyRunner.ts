@@ -1,4 +1,4 @@
-import { Notice, MarkdownPreviewView } from 'obsidian';
+import { Notice } from 'obsidian';
 import { Orthography } from './orthography';
 import {
   RUNNER_CSS_CLASS,
@@ -13,14 +13,14 @@ interface IOrthographyRunner {
 export class OrthographyRunner
   extends Orthography
   implements IOrthographyRunner {
-  private isActive: boolean = false;
-  private isCompleted: boolean = false;
+  private isActive = false;
+  private isCompleted = false;
 
   public init(): void {
     this.createRunner();
   }
 
-  public run() {
+  public run(): void {
     if (!this.isCompleted) {
       if (!this.isActive) {
         this.setButtonClear();

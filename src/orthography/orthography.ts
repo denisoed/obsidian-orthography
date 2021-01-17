@@ -17,37 +17,45 @@ export class Orthography implements IOrthography {
     this.settings = settings;
   }
 
-  public check() {
+  public check(): Promise<any> {
     return this.validateText();
   }
 
-  public clear() {
+  public clear(): void {
     this.clearHighlightWords();
   }
 
-  public async getHintsFromServer() {
+  public getHintsFromServer(): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
-      const text = this.getEditorText();
-      const formData = new FormData();
-      formData.append('text', text);
-      const hintsData = await this.postData(API_URL, formData);
-      localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
-      resolve(hintsData);
+      try {
+        const text = this.getEditorText();
+        const formData = new FormData();
+        formData.append('text', text);
+        const hintsData = await this.postData(API_URL, formData);
+        localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
+        resolve(hintsData);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
   private validateText() {
     return new Promise<any>(async (resolve, reject) => {
-      const hints = await this.getHintsFromServer();
-      if (hints && hints.length) {
-        const regex = this.createSearchQuery(hints);
-        this.highlightWords(regex);
-      }
+      try {
+        const hints = await this.getHintsFromServer();
+        if (hints && hints.length) {
+          const regex = this.createSearchQuery(hints);
+          this.highlightWords(regex);
+        }
 
-      // Delay for button animation
-      setTimeout(() => {
-        resolve(hints);
-      }, 100);
+        // Delay for button animation
+        setTimeout(() => {
+          resolve(hints);
+        }, 100);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
