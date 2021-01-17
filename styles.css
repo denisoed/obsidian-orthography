@@ -40,6 +40,27 @@
   border-radius: 100%;
   box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
   z-index: 999;
+  transition: all 0.1s ease;
+}
+
+.obsidian-orthography-runner:active {
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.4);
+  transform: translateY(1px);
+}
+
+.obsidian-orthography-runner--active {
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.4);
+  transform: translateY(1px);
+}
+
+.obsidian-orthography-runner--active span {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes bounce {

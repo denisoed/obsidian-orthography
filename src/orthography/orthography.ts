@@ -16,18 +16,25 @@ export class Orthography implements IOrthography {
     this.settings = settings;
   }
 
-  public check(): void {
-    this.validateText();
+  public check() {
+    return this.validateText();
   }
 
-  private async validateText() {
-    const text = this.getEditorText();
-    const formData = new FormData();
-    formData.append('text', text);
-    const hintsData = await this.postData(API_URL, formData);
-    localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
-    const regex = this.createSearchQuery(hintsData);
-    this.highlightWords(regex);
+  private validateText() {
+    return new Promise<any>(async (resolve, reject) => {
+      const text = this.getEditorText();
+      const formData = new FormData();
+      formData.append('text', text);
+      const hintsData = await this.postData(API_URL, formData);
+      localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
+      const regex = this.createSearchQuery(hintsData);
+      this.highlightWords(regex);
+
+      // Delay for button animation 
+      setTimeout(() => {
+        resolve(hintsData);
+      }, 100);
+    });
   }
 
   private getEditorText() {
