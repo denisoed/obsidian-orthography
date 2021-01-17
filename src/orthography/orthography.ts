@@ -10,6 +10,7 @@ interface IOrthography {
 export class Orthography implements IOrthography {
   private app: App;
   private settings: OrthographySettings;
+  private markers: any = [];
 
   constructor(app: App, settings: OrthographySettings) {
     this.app = app;
@@ -30,9 +31,11 @@ export class Orthography implements IOrthography {
       const formData = new FormData();
       formData.append('text', text);
       const hintsData = await this.postData(API_URL, formData);
-      localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
-      const regex = this.createSearchQuery(hintsData);
-      this.highlightWords(regex);
+      if (hintsData && hintsData.length) {
+        localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
+        const regex = this.createSearchQuery(hintsData);
+        this.highlightWords(regex);
+      }
 
       // Delay for button animation 
       setTimeout(() => {
@@ -55,9 +58,9 @@ export class Orthography implements IOrthography {
     while (cursor.findNext()) {
       const from = cursor.from();
       const to = cursor.to();
-      editor.markText(from, to, {
+      this.markers.push(editor.markText(from, to, {
         className: HIGHLIGHT_CSS_CLASS + ' ' + 'col-' + from.ch
-      });
+      }));
     }
   }
 
@@ -66,6 +69,7 @@ export class Orthography implements IOrthography {
     highlightWords.forEach(span => {
       span.className = '';
     });
+    this.markers.forEach((marker: any) => marker.clear());
   }
 
   private createSearchQuery(list: []) {
