@@ -1,4 +1,4 @@
-import { Notice } from 'obsidian';
+import { Notice, MarkdownPreviewView } from 'obsidian';
 import { Orthography } from './orthography';
 import { RUNNER_CSS_CLASS, RUNNER_ACTIVE_CSS_CLASS, RUNNER_CLEAR_CSS_CLASS } from './constants';
 
@@ -16,12 +16,7 @@ export class OrthographyRunner
     this.createRunner();
   }
 
-  private createRunner() {
-    const runner = this.createButton('⌘');
-    document.body.appendChild(runner);
-  }
-  
-  private run() {
+  public run() {
     if (!this.isCompleted) {
       if (!this.isActive) {
         this.setButtonClear();
@@ -31,6 +26,11 @@ export class OrthographyRunner
         this.returnButtonCheck();
       }
     }
+  }
+
+  private createRunner() {
+    const runner = this.createButton('⌘');
+    document.body.appendChild(runner);
   }
 
   private setButtonClear() {
@@ -48,7 +48,7 @@ export class OrthographyRunner
         runnerIcon.textContent = '✕';
         runnerIcon.classList.add(RUNNER_CLEAR_CSS_CLASS);
       } else {
-        new Notice('Spelling errors not found!');
+        new Notice('orthography errors not found!');
       }
     });
   }

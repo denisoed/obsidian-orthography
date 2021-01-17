@@ -1,5 +1,4 @@
-import type { App } from 'obsidian';
-import { OrthographySettings } from 'src/settings';
+import { Orthography } from './orthography';
 import {
   TOOLTIP_CSS_CLASS,
   TOOLTIP_VISIBLE_CSS_CLASS,
@@ -11,16 +10,8 @@ interface IOrthographyTooltip {
   init(): void;
 }
 
-export class OrthographyTooltip implements IOrthographyTooltip {
+export class OrthographyTooltip extends Orthography implements IOrthographyTooltip {
   private tooltip: any;
-
-  private app: App;
-  private settings: OrthographySettings;
-
-  constructor(app: App, settings: OrthographySettings) {
-    this.app = app;
-    this.settings = settings;
-  }
 
   public init(): void {
     this.createTooltip();
@@ -88,7 +79,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
       hint.s.forEach((h: string) => {
         const button = document.createElement('button');
         button.classList.add(TOOLTIP_HINT_CSS_CLASS);
-        button.classList.add(hint.word + '-' + hint.col);
+        button.classList.add('col-' + hint.col);
         button.innerText = h;
         this.tooltip.appendChild(button);
       });
@@ -116,6 +107,9 @@ export class OrthographyTooltip implements IOrthographyTooltip {
       };
 
       doc.replaceRange(event.target.innerText, from, to);
+
+      // Updating the list of orthography errors
+      this.check();
     }
   }
 }
