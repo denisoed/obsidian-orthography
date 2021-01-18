@@ -95,6 +95,8 @@ export class OrthographyTooltip
         event.target.className.includes(d.col) ? d : null
       );
 
+      if (!hint) return;
+
       const activeLeaf: any = this.app.workspace.activeLeaf;
       const editor = activeLeaf.view.sourceMode.cmEditor;
       const doc = editor.getDoc();
