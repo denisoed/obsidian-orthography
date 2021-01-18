@@ -7,7 +7,7 @@ export default class OrthographyPlugin extends Plugin {
   private runner: any;
 
   async onload(): Promise<void> {
-    const settings = new OrthographySettings(this);
+    const settings = new OrthographySettings(this, this.onUpdateSettings.bind(this));
     await settings.loadSettings();
     this.settings = settings;
 
@@ -15,7 +15,7 @@ export default class OrthographyPlugin extends Plugin {
 
     this.initOrthographyTooltip();
 
-    this.initOrthographyRunner();
+    if (settings.displayRunner) this.initOrthographyRunner();
 
     this.addCommand({
       id: 'check-orthography',
@@ -28,6 +28,18 @@ export default class OrthographyPlugin extends Plugin {
         }
       ]
     });
+  }
+  
+  private onUpdateSettings(data: any) {
+    if (data.displayRunner) {
+      if (!this.runner) {
+        this.initOrthographyRunner();
+      } else {
+        this.runner.show();
+      }
+    } else {
+      this.runner.hide();
+    }
   }
 
   private initOrthographyTooltip(): void {

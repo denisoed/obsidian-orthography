@@ -3,7 +3,8 @@ import { Orthography } from './orthography';
 import {
   RUNNER_CSS_CLASS,
   RUNNER_ACTIVE_CSS_CLASS,
-  RUNNER_CLEAR_CSS_CLASS
+  RUNNER_CLEAR_CSS_CLASS,
+  RUNNER_HIDDEN_CSS_CLASS
 } from './constants';
 
 interface IOrthographyRunner {
@@ -32,6 +33,16 @@ export class OrthographyRunner
     }
   }
 
+  public show() {
+    const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
+    runner.classList.remove(RUNNER_HIDDEN_CSS_CLASS);
+  }
+
+  public hide() {
+    const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
+    runner.classList.add(RUNNER_HIDDEN_CSS_CLASS);
+  }
+
   private createRunner() {
     const runner = this.createButton('⌘');
     document.body.appendChild(runner);
@@ -52,7 +63,7 @@ export class OrthographyRunner
         runnerIcon.textContent = '✕';
         runnerIcon.classList.add(RUNNER_CLEAR_CSS_CLASS);
       } else {
-        new Notice('orthography errors not found!');
+        new Notice('Orthography errors not found!');
       }
     });
   }

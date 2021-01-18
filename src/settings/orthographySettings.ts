@@ -14,6 +14,7 @@ function getDefaultData(): SettingsData {
 
 export class OrthographySettings {
   private data: SettingsData;
+  private callback: Function;
 
   get displayRunner(): boolean {
     const { data } = this;
@@ -23,6 +24,7 @@ export class OrthographySettings {
   set displayRunner(value: boolean) {
     const { data } = this;
     data.displayRunner = value;
+    this.callback(this.data);
   }
 
   get language(): string {
@@ -33,10 +35,15 @@ export class OrthographySettings {
   set language(value: string) {
     const { data } = this;
     data.language = value;
+    this.callback(this.data);
   }
 
-  constructor(private plugin: OrthographyPlugin) {
+  constructor(
+    private plugin: OrthographyPlugin,
+    callback: Function = () => {}
+  ) {
     this.data = getDefaultData();
+    this.callback = callback;
   }
 
   async loadSettings(): Promise<void> {
