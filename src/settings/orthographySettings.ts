@@ -1,43 +1,28 @@
 import type OrthographyPlugin from '../main';
 
-interface Config {
-  // command to enable filtering of open editors
-  editorListCommand: string;
-  // command to enable filtering of file symbols
-  symbolListCommand: string;
-  // types of open views to hide from the suggestion list
-  excludeViewTypes: string[];
-}
-
-export const DefaultConfig: Config = {
-  editorListCommand: 'edt ',
-  symbolListCommand: '@',
-  excludeViewTypes: ['empty']
-};
-
 interface SettingsData {
-  alwaysNewPaneForSymbols: boolean;
+  displayRunner: boolean;
   language: string;
 }
 
 function getDefaultData(): SettingsData {
   return {
-    alwaysNewPaneForSymbols: false,
-    language: ''
+    displayRunner: true,
+    language: 'en, ru, uk'
   };
 }
 
 export class OrthographySettings {
   private data: SettingsData;
 
-  get alwaysNewPaneForSymbols(): boolean {
+  get displayRunner(): boolean {
     const { data } = this;
-    return data.alwaysNewPaneForSymbols;
+    return data.displayRunner;
   }
 
-  set alwaysNewPaneForSymbols(value: boolean) {
+  set displayRunner(value: boolean) {
     const { data } = this;
-    data.alwaysNewPaneForSymbols = value;
+    data.displayRunner = value;
   }
 
   get language(): string {

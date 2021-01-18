@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from 'obsidian';
+import { App, PluginSettingTab, Setting, ExtraButtonComponent } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import type OrthographyPlugin from '../main';
 
@@ -15,22 +15,20 @@ export class OrthographySettingTab extends PluginSettingTab {
     const { containerEl, settings } = this;
 
     containerEl.empty();
-    OrthographySettingTab.setAlwaysNewPaneForSymbols(containerEl, settings);
+    OrthographySettingTab.setDisplayRunner(containerEl, settings);
     // OrthographySettingTab.setLanguage(containerEl, settings);
   }
 
-  static setAlwaysNewPaneForSymbols(
+  static setDisplayRunner(
     containerEl: HTMLElement,
     settings: OrthographySettings
   ): void {
     new Setting(containerEl)
-      .setName('Open Symbols in new pane')
-      .setDesc(
-        'Enabled, always open a new pane when navigating to Symbols. Disabled, navigate in an already open pane (if one exists)'
-      )
+      .setName('Show button')
+      .setDesc('Button for orthography checking')
       .addToggle((toggle) =>
-        toggle.setValue(settings.alwaysNewPaneForSymbols).onChange((value) => {
-          settings.alwaysNewPaneForSymbols = value;
+        toggle.setValue(settings.displayRunner).onChange((value) => {
+          settings.displayRunner = value;
           settings.saveSettings();
         })
       );
@@ -41,8 +39,8 @@ export class OrthographySettingTab extends PluginSettingTab {
     settings: OrthographySettings
   ): void {
     new Setting(containerEl)
-      .setName('Setting #1')
-      .setDesc("It's a secret")
+      .setName('Language setting')
+      .setDesc('Select language')
       .addDropdown((dropdown) =>
         dropdown
           .addOption('en', 'English')
