@@ -33,12 +33,12 @@ export class OrthographyRunner
     }
   }
 
-  public show() {
+  public show(): void {
     const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
     runner.classList.remove(RUNNER_HIDDEN_CSS_CLASS);
   }
 
-  public hide() {
+  public hide(): void {
     const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
     runner.classList.add(RUNNER_HIDDEN_CSS_CLASS);
   }

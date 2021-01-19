@@ -2,7 +2,6 @@ import { Plugin } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
 import { OrthographyRunner, OrthographyTooltip } from './orthography';
 
-
 // Обновлять классы для слов, после правки любого слова
 
 export default class OrthographyPlugin extends Plugin {
@@ -10,7 +9,10 @@ export default class OrthographyPlugin extends Plugin {
   private runner: any;
 
   async onload(): Promise<void> {
-    const settings = new OrthographySettings(this, this.onUpdateSettings.bind(this));
+    const settings = new OrthographySettings(
+      this,
+      this.onUpdateSettings.bind(this)
+    );
     await settings.loadSettings();
     this.settings = settings;
 
@@ -32,7 +34,7 @@ export default class OrthographyPlugin extends Plugin {
       ]
     });
   }
-  
+
   private onUpdateSettings(data: any) {
     if (data.displayRunner) {
       if (!this.runner) {

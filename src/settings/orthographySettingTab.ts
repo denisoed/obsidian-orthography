@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, ExtraButtonComponent } from 'obsidian';
+import { App, PluginSettingTab, Setting } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import type OrthographyPlugin from '../main';
 

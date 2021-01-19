@@ -31,9 +31,13 @@ export class OrthographyTooltip
   private setDataToTooltip(element: any): void {
     const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
     const hint = data.find((d: any) =>
-      new RegExp('\\b' + (d.row + '-' + d.col) + '\\b').test(element.getAttribute('data-pos')) ? d : null
+      new RegExp('\\b' + (d.row + '-' + d.col) + '\\b').test(
+        element.getAttribute('data-pos')
+      )
+        ? d
+        : null
     );
-    if (hint && hint.hasOwnProperty('s')) {
+    if (hint && Object.prototype.hasOwnProperty.call(hint, 's')) {
       this.appendHintButton(hint);
     }
   }
@@ -92,7 +96,11 @@ export class OrthographyTooltip
     if (event.target.className.includes(TOOLTIP_HINT_CSS_CLASS)) {
       const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
       const hint = data.find((d: any) =>
-        new RegExp('\\b' + (d.row + '-' + d.col) + '\\b').test(event.target.getAttribute('data-pos')) ? d : null
+        new RegExp('\\b' + (d.row + '-' + d.col) + '\\b').test(
+          event.target.getAttribute('data-pos')
+        )
+          ? d
+          : null
       );
 
       if (!hint) return;

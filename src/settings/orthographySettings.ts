@@ -14,7 +14,7 @@ function getDefaultData(): SettingsData {
 
 export class OrthographySettings {
   private data: SettingsData;
-  private callback: Function;
+  private callback: any;
 
   get displayRunner(): boolean {
     const { data } = this;
@@ -38,10 +38,7 @@ export class OrthographySettings {
     this.callback(this.data);
   }
 
-  constructor(
-    private plugin: OrthographyPlugin,
-    callback: Function = () => {}
-  ) {
+  constructor(private plugin: OrthographyPlugin, callback: () => void) {
     this.data = getDefaultData();
     this.callback = callback;
   }

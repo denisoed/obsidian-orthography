@@ -26,36 +26,41 @@ export class Orthography implements IOrthography {
   }
 
   public getHintsFromServer(): Promise<any> {
-    return new Promise<any>(async (resolve, reject) => {
-      try {
-        const text = this.getEditorText();
-        const formData = new FormData();
-        formData.append('text', text);
-        const hintsData = await this.postData(API_URL, formData);
-        localStorage.setItem('obsidian-orthography', JSON.stringify(hintsData));
-        resolve(hintsData);
-      } catch (error) {
-        reject(error);
-      }
+    return new Promise<any>((resolve, reject) => {
+      const text = this.getEditorText();
+      const formData = new FormData();
+      formData.append('text', text);
+      this.postData(API_URL, formData)
+        .then((hintsData) => {
+          localStorage.setItem(
+            'obsidian-orthography',
+            JSON.stringify(hintsData)
+          );
+          resolve(hintsData);
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
   }
 
   private validateText() {
-    return new Promise<any>(async (resolve, reject) => {
-      try {
-        const hints = await this.getHintsFromServer();
-        if (hints && hints.length) {
-          const regex = this.createSearchQuery(hints);
-          this.highlightWords(regex);
-        }
+    return new Promise<any>((resolve, reject) => {
+      this.getHintsFromServer()
+        .then((hints) => {
+          if (hints && hints.length) {
+            const regex = this.createSearchQuery(hints);
+            this.highlightWords(regex);
+          }
 
-        // Delay for button animation
-        setTimeout(() => {
-          resolve(hints);
-        }, 100);
-      } catch (error) {
-        reject(error);
-      }
+          // Delay for button animation
+          setTimeout(() => {
+            resolve(hints);
+          }, 100);
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
   }
 
