@@ -52,11 +52,7 @@ export class Orthography implements IOrthography {
             const regex = this.createSearchQuery(hints);
             this.highlightWords(regex);
           }
-
-          // Delay for button animation
-          setTimeout(() => {
-            resolve(hints);
-          }, 100);
+          resolve(hints);
         })
         .catch((error) => {
           reject(error);
@@ -87,6 +83,37 @@ export class Orthography implements IOrthography {
         })
       );
     }
+  }
+
+  public updateDataPos() {
+    return new Promise<any>((resolve, reject) => {
+      this.getHintsFromServer()
+        .then((hints) => {
+          if (hints && hints.length) {
+            this.markers.forEach((marker: any) => marker.clear());
+            const regex = this.createSearchQuery(hints);
+            const activeLeaf: any = this.app.workspace.activeLeaf;
+            const editor = activeLeaf.view.sourceMode.cmEditor;
+            const searchQuery = new RegExp(regex);
+            const cursor = editor.getSearchCursor(searchQuery);
+            while (cursor.findNext()) {
+              const from = cursor.from();
+              const to = cursor.to();
+              this.markers.push(
+                editor.markText(from, to, {
+                  attributes: {
+                    'data-pos': from.line + '-' + from.ch
+                  }
+                })
+              );
+            }
+          }
+          resolve(hints);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   }
 
   private clearHighlightWords() {

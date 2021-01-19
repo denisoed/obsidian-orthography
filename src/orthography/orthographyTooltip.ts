@@ -120,9 +120,8 @@ export class OrthographyTooltip
 
       doc.replaceRange(event.target.innerText, from, to);
 
-      // Updating orthography list
-      this.clear();
-      this.check();
+      // Updating data pos for highlight words
+      this.updateDataPos();
     }
   }
 }
