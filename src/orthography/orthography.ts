@@ -75,7 +75,10 @@ export class Orthography implements IOrthography {
       const to = cursor.to();
       this.markers.push(
         editor.markText(from, to, {
-          className: HIGHLIGHT_CSS_CLASS + ' ' + 'col-' + from.ch
+          className: HIGHLIGHT_CSS_CLASS,
+          attributes: {
+            'data-pos': from.line + '-' + from.ch
+          }
         })
       );
     }

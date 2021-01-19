@@ -31,7 +31,7 @@ export class OrthographyTooltip
   private setDataToTooltip(element: any): void {
     const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
     const hint = data.find((d: any) =>
-      element.className.includes(d.col) ? d : null
+      new RegExp('\\b' + (d.row + '-' + d.col) + '\\b').test(element.getAttribute('data-pos')) ? d : null
     );
     if (hint && hint.hasOwnProperty('s')) {
       this.appendHintButton(hint);
@@ -81,7 +81,7 @@ export class OrthographyTooltip
       hint.s.forEach((h: string) => {
         const button = document.createElement('button');
         button.classList.add(TOOLTIP_HINT_CSS_CLASS);
-        button.classList.add('col-' + hint.col);
+        button.setAttribute('data-pos', hint.row + '-' + hint.col);
         button.innerText = h;
         this.tooltip.appendChild(button);
       });
@@ -92,7 +92,7 @@ export class OrthographyTooltip
     if (event.target.className.includes(TOOLTIP_HINT_CSS_CLASS)) {
       const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
       const hint = data.find((d: any) =>
-        event.target.className.includes(d.col) ? d : null
+        new RegExp('\\b' + (d.row + '-' + d.col) + '\\b').test(event.target.getAttribute('data-pos')) ? d : null
       );
 
       if (!hint) return;
@@ -112,8 +112,9 @@ export class OrthographyTooltip
 
       doc.replaceRange(event.target.innerText, from, to);
 
-      // Updating the list of orthography errors
-      this.getHintsFromServer();
+      // Updating orthography list
+      this.clear();
+      this.check();
     }
   }
 }

@@ -2,6 +2,9 @@ import { Plugin } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
 import { OrthographyRunner, OrthographyTooltip } from './orthography';
 
+
+// Обновлять классы для слов, после правки любого слова
+
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private runner: any;
