@@ -1,10 +1,12 @@
 import { Plugin } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
 import { OrthographyRunner, OrthographyTooltip } from './orthography';
+import Dispatcher from 'src/dispatcher/dispatcher';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private runner: any;
+  public emitter: any;
 
   async onload(): Promise<void> {
     const settings = new OrthographySettings(
@@ -13,6 +15,8 @@ export default class OrthographyPlugin extends Plugin {
     );
     await settings.loadSettings();
     this.settings = settings;
+
+    this.emitter = new Dispatcher();
 
     this.addSettingTab(new OrthographySettingTab(this.app, this, settings));
 
@@ -46,14 +50,14 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private initOrthographyTooltip(): void {
-    const { app, settings } = this;
-    const tooltip = new OrthographyTooltip(app, settings);
+    const { app, settings, emitter } = this;
+    const tooltip = new OrthographyTooltip(app, settings, emitter);
     tooltip.init();
   }
 
   private initOrthographyRunner(): void {
-    const { app, settings } = this;
-    this.runner = new OrthographyRunner(app, settings);
+    const { app, settings, emitter } = this;
+    this.runner = new OrthographyRunner(app, settings, emitter);
     this.runner.init();
   }
 }

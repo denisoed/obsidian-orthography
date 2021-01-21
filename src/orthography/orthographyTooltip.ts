@@ -1,4 +1,6 @@
+import type { App } from 'obsidian';
 import { Orthography } from './orthography';
+import { OrthographySettings } from 'src/settings';
 import {
   TOOLTIP_CSS_CLASS,
   TOOLTIP_VISIBLE_CSS_CLASS,
@@ -10,13 +12,22 @@ interface IOrthographyTooltip {
   init(): void;
 }
 
-export class OrthographyTooltip
-  extends Orthography
-  implements IOrthographyTooltip {
+export class OrthographyTooltip implements IOrthographyTooltip {
+  private app: App;
+  private settings: OrthographySettings;
   private tooltip: any;
+  private orthography: Orthography;
+  private emitter: any;
+
+  constructor(app: App, settings: OrthographySettings, emitter: any) {
+    this.app = app;
+    this.settings = settings;
+    this.emitter = emitter;
+  }
 
   public init(): void {
     this.createTooltip();
+    this.orthography = new Orthography(this.app, this.settings);
   }
 
   private createTooltip(): void {
@@ -30,15 +41,15 @@ export class OrthographyTooltip
 
   private setDataToTooltip(element: any): void {
     const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
-    const hint = data.find((d: any) =>
-      new RegExp('\\b' + (d.row + '-' + d.col) + '\\b').test(
+    const word = data.find((item: any) =>
+      new RegExp('\\b' + (item.row + '-' + item.col) + '\\b').test(
         element.getAttribute('data-pos')
       )
-        ? d
+        ? item
         : null
     );
-    if (hint && Object.prototype.hasOwnProperty.call(hint, 's')) {
-      this.appendHintButton(hint);
+    if (word && Object.prototype.hasOwnProperty.call(word, 's')) {
+      this.appendHintButton(word);
     }
   }
 
@@ -95,33 +106,34 @@ export class OrthographyTooltip
   private replaceWord(event: any) {
     if (event.target.className.includes(TOOLTIP_HINT_CSS_CLASS)) {
       const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
-      const hint = data.find((d: any) =>
-        new RegExp('\\b' + (d.row + '-' + d.col) + '\\b').test(
+      const word = data.find((pos: any) =>
+        new RegExp('\\b' + (pos.row + '-' + pos.col) + '\\b').test(
           event.target.getAttribute('data-pos')
         )
-          ? d
+          ? pos
           : null
       );
 
-      if (!hint) return;
+      if (!word) return;
 
       const activeLeaf: any = this.app.workspace.activeLeaf;
       const editor = activeLeaf.view.sourceMode.cmEditor;
+
       const doc = editor.getDoc();
 
       const from = {
-        line: hint.row,
-        ch: hint.col
+        line: word.row,
+        ch: word.col
       };
       const to = {
-        line: hint.row,
-        ch: hint.col + hint.len
+        line: word.row,
+        ch: word.col + word.len
       };
 
       doc.replaceRange(event.target.innerText, from, to);
 
       // Updating data pos for highlight words
-      this.updateDataPos();
+      this.orthography.updateDataPos();
     }
   }
 }

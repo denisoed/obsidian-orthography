@@ -1,4 +1,4 @@
-import type { App } from 'obsidian';
+import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { API_URL } from '../config';
 import { HIGHLIGHT_CSS_CLASS } from './constants';
@@ -8,8 +8,8 @@ interface IOrthography {
 }
 
 export class Orthography implements IOrthography {
-  public app: App;
-  public settings: OrthographySettings;
+  private app: App;
+  private settings: OrthographySettings;
   private markers: any = [];
 
   constructor(app: App, settings: OrthographySettings) {

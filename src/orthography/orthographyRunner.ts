@@ -1,5 +1,7 @@
 import { Notice } from 'obsidian';
+import { OrthographySettings } from 'src/settings';
 import { Orthography } from './orthography';
+import type { App } from 'obsidian';
 import {
   RUNNER_CSS_CLASS,
   RUNNER_ACTIVE_CSS_CLASS,
@@ -11,14 +13,23 @@ interface IOrthographyRunner {
   init(): void;
 }
 
-export class OrthographyRunner
-  extends Orthography
-  implements IOrthographyRunner {
-  private isActive = false;
-  private isCompleted = false;
+export class OrthographyRunner implements IOrthographyRunner {
+  private app: App;
+  private settings: OrthographySettings;
+  private isActive: boolean;
+  private isCompleted: boolean;
+  private orthography: Orthography;
+  private emitter: any;
+
+  constructor(app: App, settings: OrthographySettings, emitter: any) {
+    this.app = app;
+    this.settings = settings;
+    this.emitter = emitter;
+  }
 
   public init(): void {
     this.createRunner();
+    this.orthography = new Orthography(this.app, this.settings);
   }
 
   public run(): void {
@@ -55,7 +66,7 @@ export class OrthographyRunner
     const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
     runner.classList.add(RUNNER_ACTIVE_CSS_CLASS);
 
-    this.check().then((hints) => {
+    this.orthography.check().then((hints: []) => {
       this.isActive = false;
       runner.classList.remove(RUNNER_ACTIVE_CSS_CLASS);
       if (hints && hints.length) {
@@ -83,7 +94,7 @@ export class OrthographyRunner
       this.isActive = false;
       runnerIcon.textContent = '⌘';
       runner.classList.remove(RUNNER_ACTIVE_CSS_CLASS);
-      this.clear();
+      this.orthography.clear();
     }, 250);
   }
 

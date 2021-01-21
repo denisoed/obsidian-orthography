@@ -1,19 +1,19 @@
 export default class DispatcherEvent {
-  eventName: string
-  callbacks: any[]
+  eventName: string;
+  callbacks: any[];
 
-  constructor(eventName: string){
-    this.eventName = eventName
-    this.callbacks = []
+  constructor(eventName: string) {
+    this.eventName = eventName;
+    this.callbacks = [];
   }
 
-  registerCallback(callback: Function){
-    this.callbacks.push(callback)
+  registerCallback(callback: any) {
+    this.callbacks.push(callback);
   }
 
-  fire(data: any){
-    this.callbacks.forEach((callback=>{
-      callback(data)
-    }))
+  fire(data: any) {
+    this.callbacks.forEach((callback) => {
+      callback(data);
+    });
   }
 }
