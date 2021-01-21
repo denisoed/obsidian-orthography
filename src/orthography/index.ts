@@ -1,3 +1,3 @@
-export * from './orthography';
+export * from './orthographyChecker';
 export * from './orthographyTooltip';
 export * from './orthographyRunner';

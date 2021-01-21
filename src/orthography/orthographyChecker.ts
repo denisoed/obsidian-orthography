@@ -1,13 +1,13 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { API_URL } from '../config';
-import { HIGHLIGHT_CSS_CLASS } from './constants';
+import { HIGHLIGHT_CSS_CLASS } from '../constants';
 
-interface IOrthography {
+interface IOrthographyChecker {
   check(): void;
 }
 
-export class Orthography implements IOrthography {
+export class OrthographyChecker implements IOrthographyChecker {
   private app: App;
   private settings: OrthographySettings;
   private markers: any = [];

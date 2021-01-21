@@ -1,13 +1,13 @@
 import { Notice } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
-import { Orthography } from './orthography';
+import { OrthographyChecker } from './orthographyChecker';
 import type { App } from 'obsidian';
 import {
   RUNNER_CSS_CLASS,
   RUNNER_ACTIVE_CSS_CLASS,
   RUNNER_CLEAR_CSS_CLASS,
   RUNNER_HIDDEN_CSS_CLASS
-} from './constants';
+} from '../constants';
 
 interface IOrthographyRunner {
   init(): void;
@@ -18,7 +18,7 @@ export class OrthographyRunner implements IOrthographyRunner {
   private settings: OrthographySettings;
   private isActive: boolean;
   private isCompleted: boolean;
-  private orthography: Orthography;
+  private orthography: OrthographyChecker;
   private emitter: any;
 
   constructor(app: App, settings: OrthographySettings, emitter: any) {
@@ -29,7 +29,7 @@ export class OrthographyRunner implements IOrthographyRunner {
 
   public init(): void {
     this.createRunner();
-    this.orthography = new Orthography(this.app, this.settings);
+    this.orthography = new OrthographyChecker(this.app, this.settings);
   }
 
   public run(): void {

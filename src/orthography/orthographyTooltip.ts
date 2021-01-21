@@ -1,12 +1,12 @@
 import type { App } from 'obsidian';
-import { Orthography } from './orthography';
+import { OrthographyChecker } from './orthographyChecker';
 import { OrthographySettings } from 'src/settings';
 import {
   TOOLTIP_CSS_CLASS,
   TOOLTIP_VISIBLE_CSS_CLASS,
   TOOLTIP_HINT_CSS_CLASS,
   HIGHLIGHT_CSS_CLASS
-} from './constants';
+} from '../constants';
 
 interface IOrthographyTooltip {
   init(): void;
@@ -16,7 +16,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   private app: App;
   private settings: OrthographySettings;
   private tooltip: any;
-  private orthography: Orthography;
+  private orthography: OrthographyChecker;
   private emitter: any;
 
   constructor(app: App, settings: OrthographySettings, emitter: any) {
@@ -27,7 +27,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
 
   public init(): void {
     this.createTooltip();
-    this.orthography = new Orthography(this.app, this.settings);
+    this.orthography = new OrthographyChecker(this.app, this.settings);
   }
 
   private createTooltip(): void {
