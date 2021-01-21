@@ -6,7 +6,7 @@ import Dispatcher from 'src/dispatcher/dispatcher';
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private runner: any;
-  public emitter: any;
+  private emitter: any;
 
   async onload(): Promise<void> {
     const settings = new OrthographySettings(

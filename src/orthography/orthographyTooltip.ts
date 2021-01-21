@@ -56,7 +56,6 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   private toggleTooltip(event: any): void {
     if (event.type === 'mouseover') {
       if (event.target.className.includes(HIGHLIGHT_CSS_CLASS)) {
-        this.tooltip.innerHTML = '';
         this.setDataToTooltip(event.target);
         this.tooltip.classList.add(TOOLTIP_VISIBLE_CSS_CLASS);
         this.tooltip.style.left = this.getLeftPos(event);
@@ -93,6 +92,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
 
   private appendHintButton(hint: any) {
     if (hint && hint.s && hint.s.length) {
+      this.tooltip.innerHTML = '';
       hint.s.forEach((h: string) => {
         const button = document.createElement('button');
         button.classList.add(TOOLTIP_HINT_CSS_CLASS);
