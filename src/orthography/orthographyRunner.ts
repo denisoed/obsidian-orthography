@@ -30,6 +30,11 @@ export class OrthographyRunner implements IOrthographyRunner {
   public init(): void {
     this.createRunner();
     this.orthography = new OrthographyChecker(this.app, this.settings);
+    this.emitter.on('onUpdateWordPos', () => {
+      if (this.isCompleted) {
+        this.returnButtonCheck();
+      }
+    });
   }
 
   public run(): void {

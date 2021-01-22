@@ -9,7 +9,7 @@ export default class OrthographyPlugin extends Plugin {
   private emitter: any;
 
   async onload(): Promise<void> {
-    // ------ Init -------- // 
+    // ------ Init -------- //
     this.emitter = new Dispatcher();
 
     const settings = new OrthographySettings(this, this.emitter);

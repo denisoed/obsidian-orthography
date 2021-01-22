@@ -16,8 +16,10 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   private app: App;
   private settings: OrthographySettings;
   private tooltip: any;
-  private orthography: OrthographyChecker;
+  private checker: OrthographyChecker;
   private emitter: any;
+  private editor: any;
+  private eventUdpateWordPos: any;
 
   constructor(app: App, settings: OrthographySettings, emitter: any) {
     this.app = app;
@@ -27,7 +29,8 @@ export class OrthographyTooltip implements IOrthographyTooltip {
 
   public init(): void {
     this.createTooltip();
-    this.orthography = new OrthographyChecker(this.app, this.settings);
+    this.checker = new OrthographyChecker(this.app, this.settings);
+    this.getEditor();
   }
 
   private createTooltip(): void {
@@ -116,6 +119,8 @@ export class OrthographyTooltip implements IOrthographyTooltip {
 
       if (!word) return;
 
+      this.editor.off('change', this.eventUdpateWordPos);
+
       const activeLeaf: any = this.app.workspace.activeLeaf;
       const editor = activeLeaf.view.sourceMode.cmEditor;
 
@@ -133,7 +138,22 @@ export class OrthographyTooltip implements IOrthographyTooltip {
       doc.replaceRange(event.target.innerText, from, to);
 
       // Updating data pos for highlight words
-      this.orthography.updateDataPos();
+      this.checker.updateDataPos();
+      this.editor.on('change', this.eventUdpateWordPos);
     }
+  }
+
+  private getEditor() {
+    setTimeout(() => {
+      const activeLeaf: any = this.app.workspace.activeLeaf;
+      this.editor = activeLeaf.view.sourceMode.cmEditor;
+      this.eventUdpateWordPos = this.onUpdateWordPos.bind(this);
+      this.editor.on('change', this.eventUdpateWordPos);
+    }, 1000);
+  }
+
+  private onUpdateWordPos() {
+    this.emitter.dispatch('onUpdateWordPos');
+    this.checker.clear();
   }
 }
