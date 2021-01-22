@@ -5,8 +5,8 @@ import type OrthographyPlugin from '../main';
 export class OrthographySettingTab extends PluginSettingTab {
   constructor(
     app: App,
-    plugin: OrthographyPlugin,
-    private settings: OrthographySettings
+    private settings: OrthographySettings,
+    plugin: OrthographyPlugin
   ) {
     super(app, plugin);
   }

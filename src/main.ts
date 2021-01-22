@@ -9,20 +9,21 @@ export default class OrthographyPlugin extends Plugin {
   private emitter: any;
 
   async onload(): Promise<void> {
-    const settings = new OrthographySettings(
-      this,
-      this.onUpdateSettings.bind(this)
-    );
+    // ------ Init -------- // 
+    this.emitter = new Dispatcher();
+
+    const settings = new OrthographySettings(this, this.emitter);
     await settings.loadSettings();
     this.settings = settings;
 
-    this.emitter = new Dispatcher();
-
-    this.addSettingTab(new OrthographySettingTab(this.app, this, settings));
+    this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
     this.initOrthographyTooltip();
 
     if (settings.displayRunner) this.initOrthographyRunner();
+
+    // ------- Events -------- //
+    this.emitter.on('onUpdateSettings', this.onUpdateSettings.bind(this));
 
     this.addCommand({
       id: 'check-orthography',
