@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-orthography",
 	"name": "Obsidian Orthography",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"minAppVersion": "0.10.7",
 	"description": "Obsidian plugin to check orthography errors",
 	"author": "Denisoed",
