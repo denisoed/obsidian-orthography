@@ -1,6 +1,6 @@
 # Obsidian Orthography
 
-Obsidian plugin to check orthography errors in text
+Obsidian plugin to check & fix orthography errors in text
 
 ![Gif](./obsidian-orthography.gif)
 
