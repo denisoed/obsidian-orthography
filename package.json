@@ -1,6 +1,6 @@
 {
   "name": "obsidian-orthography",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Check orthography plugin for Obsidian (https://obsidian.md)",
   "repository": {
     "type": "git",

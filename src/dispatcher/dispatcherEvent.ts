@@ -7,11 +7,11 @@ export default class DispatcherEvent {
     this.callbacks = [];
   }
 
-  registerCallback(callback: any) {
+  registerCallback(callback: () => void): void {
     this.callbacks.push(callback);
   }
 
-  fire(data: any) {
+  fire(data: any): void {
     this.callbacks.forEach((callback) => {
       callback(data);
     });

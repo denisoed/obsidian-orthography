@@ -15,7 +15,7 @@ export default class Dispatcher {
   }
 
   //start listen event
-  on(eventName: string, callback: any): void {
+  on(eventName: string, callback: () => void): void {
     let event = this.events[eventName];
     if (!event) {
       event = new DispatcherEvent(eventName);
@@ -25,7 +25,7 @@ export default class Dispatcher {
   }
 
   //stop listen event
-  off(eventName: string, callback: any): void {
+  off(eventName: string): void {
     const event = this.events[eventName];
     if (event) {
       delete this.events[eventName];
