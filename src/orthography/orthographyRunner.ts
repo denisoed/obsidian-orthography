@@ -20,6 +20,8 @@ export class OrthographyRunner implements IOrthographyRunner {
   private isCompleted: boolean;
   private orthography: OrthographyChecker;
   private emitter: any;
+  private onClickByBtn: any;
+  private runner: any;
 
   constructor(app: App, settings: OrthographySettings, emitter: any) {
     this.app = app;
@@ -30,11 +32,15 @@ export class OrthographyRunner implements IOrthographyRunner {
   public init(): void {
     this.createRunner();
     this.orthography = new OrthographyChecker(this.app, this.settings);
-    this.emitter.on('onUpdateWordPos', () => {
-      if (this.isCompleted) {
-        this.returnButtonCheck();
-      }
-    });
+    this.emitter.on('onUpdateWordPos', this.checkIfIsCompleted.bind(this));
+  }
+
+  public destroy(): void {
+    this.emitter.off('onUpdateWordPos', this.checkIfIsCompleted.bind(this));
+    this.runner.removeEventListener('click', this.onClickByBtn);
+    this.orthography.clear();
+    const runners = document.querySelectorAll('.' + RUNNER_CSS_CLASS);
+    if (runners) runners.forEach((runner: any) => runner.remove());
   }
 
   public run(): void {
@@ -66,8 +72,10 @@ export class OrthographyRunner implements IOrthographyRunner {
 
   private setButtonClear() {
     this.isActive = true;
-
     const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
+
+    if (!runner) return;
+
     const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
     runner.classList.add(RUNNER_ACTIVE_CSS_CLASS);
 
@@ -89,6 +97,9 @@ export class OrthographyRunner implements IOrthographyRunner {
     this.isCompleted = false;
 
     const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
+
+    if (!runner) return;
+
     const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
     runnerIcon.classList.remove(RUNNER_CLEAR_CSS_CLASS);
     runner.classList.add(RUNNER_ACTIVE_CSS_CLASS);
@@ -104,12 +115,19 @@ export class OrthographyRunner implements IOrthographyRunner {
   }
 
   private createButton(text: string) {
-    const runner = document.createElement('button');
+    this.runner = document.createElement('button');
     const icon = document.createElement('span');
     icon.innerText = text;
-    runner.classList.add(RUNNER_CSS_CLASS);
-    runner.appendChild(icon);
-    runner.addEventListener('click', this.run.bind(this));
-    return runner;
+    this.runner.classList.add(RUNNER_CSS_CLASS);
+    this.runner.appendChild(icon);
+    this.onClickByBtn = this.run.bind(this);
+    this.runner.addEventListener('click', this.onClickByBtn);
+    return this.runner;
+  }
+
+  private checkIfIsCompleted(): void {
+    if (this.isCompleted) {
+      this.returnButtonCheck();
+    }
   }
 }

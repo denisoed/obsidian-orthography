@@ -5,6 +5,7 @@ import { OrthographyRunner, OrthographyTooltip } from './orthography';
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private runner: any;
+  private tooltip: any;
   private emitter: any;
 
   async onload(): Promise<void> {
@@ -38,7 +39,9 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   unload() {
-    
+    this.emitter.off('onUpdateSettings', this.onUpdateSettings.bind(this));
+    this.runner.destroy();
+    this.tooltip.destroy();
   }
 
   private onUpdateSettings(data: any) {
@@ -55,8 +58,8 @@ export default class OrthographyPlugin extends Plugin {
 
   private initOrthographyTooltip(): void {
     const { app, settings, emitter } = this;
-    const tooltip = new OrthographyTooltip(app, settings, emitter);
-    tooltip.init();
+    this.tooltip = new OrthographyTooltip(app, settings, emitter);
+    this.tooltip.init();
   }
 
   private initOrthographyRunner(): void {

@@ -20,6 +20,8 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   private emitter: any;
   private editor: any;
   private eventUdpateWordPos: any;
+  private eventTooltipToggle: any;
+  private eventReplaceWord: any;
 
   constructor(app: App, settings: OrthographySettings, emitter: any) {
     this.app = app;
@@ -33,13 +35,22 @@ export class OrthographyTooltip implements IOrthographyTooltip {
     this.getEditor();
   }
 
+  public destroy(): void {
+    document.removeEventListener('mouseover', this.eventTooltipToggle);
+    this.tooltip.removeEventListener('click', this.eventReplaceWord);
+    const tooltips = document.querySelectorAll('.' + TOOLTIP_CSS_CLASS);
+    if (tooltips) tooltips.forEach((tooltip: any) => tooltip.remove());
+  }
+
   private createTooltip(): void {
     const tooltip = document.createElement('div');
     tooltip.classList.add(TOOLTIP_CSS_CLASS);
     document.body.appendChild(tooltip);
-    document.addEventListener('mouseover', this.toggleTooltip.bind(this));
+    this.eventTooltipToggle = this.toggleTooltip.bind(this);
+    document.addEventListener('mouseover', this.eventTooltipToggle);
     this.tooltip = document.querySelector('.' + TOOLTIP_CSS_CLASS);
-    this.tooltip.addEventListener('click', this.replaceWord.bind(this));
+    this.eventReplaceWord = this.replaceWord.bind(this);
+    this.tooltip.addEventListener('click', this.eventReplaceWord);
   }
 
   private setDataToTooltip(element: any): void {
