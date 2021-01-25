@@ -153,7 +153,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   }
 
   private onUpdateWordPos() {
-    this.emitter.dispatch('onUpdateWordPos');
+    this.emitter.trigger('onUpdateWordPos');
     this.checker.clear();
   }
 }

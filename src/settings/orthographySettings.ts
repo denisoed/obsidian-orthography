@@ -29,7 +29,7 @@ export class OrthographySettings {
   set displayRunner(value: boolean) {
     const { data } = this;
     data.displayRunner = value;
-    this.emitter.dispatch('onUpdateSettings', this.data);
+    this.emitter.trigger('onUpdateSettings', this.data);
   }
 
   get language(): string {
@@ -40,7 +40,7 @@ export class OrthographySettings {
   set language(value: string) {
     const { data } = this;
     data.language = value;
-    this.emitter.dispatch('onUpdateSettings', this.data);
+    this.emitter.trigger('onUpdateSettings', this.data);
   }
 
   async loadSettings(): Promise<void> {

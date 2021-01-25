@@ -1,7 +1,6 @@
-import { Plugin } from 'obsidian';
+import { Plugin, Events } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
 import { OrthographyRunner, OrthographyTooltip } from './orthography';
-import Dispatcher from 'src/dispatcher/dispatcher';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
@@ -10,7 +9,7 @@ export default class OrthographyPlugin extends Plugin {
 
   async onload(): Promise<void> {
     // ------ Init -------- //
-    this.emitter = new Dispatcher();
+    this.emitter = new Events();
 
     const settings = new OrthographySettings(this, this.emitter);
     await settings.loadSettings();
@@ -36,6 +35,10 @@ export default class OrthographyPlugin extends Plugin {
         }
       ]
     });
+  }
+
+  unload() {
+    
   }
 
   private onUpdateSettings(data: any) {
