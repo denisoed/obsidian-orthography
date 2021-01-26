@@ -38,7 +38,7 @@ export default class OrthographyPlugin extends Plugin {
     });
   }
 
-  unload() {
+  onunload() {
     this.emitter.off('onUpdateSettings', this.onUpdateSettings.bind(this));
     this.runner.destroy();
     this.tooltip.destroy();
