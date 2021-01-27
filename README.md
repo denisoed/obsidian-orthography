@@ -2,6 +2,10 @@
 
 [![Developed by Mad Devs](https://maddevs.io/badge-dark.svg)](https://maddevs.io/)
 &nbsp;
+![License MIT](https://img.shields.io/github/license/denisoed/obsidian-orthography)
+&nbsp;
+![Version](https://img.shields.io/github/manifest-json/v/denisoed/obsidian-orthography)
+&nbsp;
 
 Obsidian plugin to check & fix orthography errors in text
 
