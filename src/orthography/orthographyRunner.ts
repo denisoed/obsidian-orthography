@@ -1,4 +1,4 @@
-import { Notice } from 'obsidian';
+import { Notice, Events } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { OrthographyChecker } from './orthographyChecker';
 import type { App } from 'obsidian';
@@ -23,7 +23,7 @@ export class OrthographyRunner implements IOrthographyRunner {
   private onClickByBtn: any;
   private runner: any;
 
-  constructor(app: App, settings: OrthographySettings, emitter: any) {
+  constructor(app: App, settings: OrthographySettings, emitter: Events) {
     this.app = app;
     this.settings = settings;
     this.emitter = emitter;

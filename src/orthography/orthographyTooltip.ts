@@ -1,4 +1,4 @@
-import type { App } from 'obsidian';
+import type { App, Events } from 'obsidian';
 import { OrthographyChecker } from './orthographyChecker';
 import { OrthographySettings } from 'src/settings';
 import {
@@ -23,7 +23,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   private eventTooltipToggle: any;
   private eventReplaceWord: any;
 
-  constructor(app: App, settings: OrthographySettings, emitter: any) {
+  constructor(app: App, settings: OrthographySettings, emitter: Events) {
     this.app = app;
     this.settings = settings;
     this.emitter = emitter;

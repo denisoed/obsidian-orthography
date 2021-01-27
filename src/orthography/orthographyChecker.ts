@@ -85,7 +85,7 @@ export class OrthographyChecker implements IOrthographyChecker {
     }
   }
 
-  public updateDataPos() {
+  public updateDataPos(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       this.getHintsFromServer()
         .then((hints) => {

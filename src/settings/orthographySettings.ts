@@ -1,3 +1,4 @@
+import type { Events } from 'obsidian';
 import type OrthographyPlugin from '../main';
 
 interface SettingsData {
@@ -16,7 +17,7 @@ export class OrthographySettings {
   private data: SettingsData;
   private emitter: any;
 
-  constructor(private plugin: OrthographyPlugin, emitter: any) {
+  constructor(private plugin: OrthographyPlugin, emitter: Events) {
     this.data = getDefaultData();
     this.emitter = emitter;
   }
