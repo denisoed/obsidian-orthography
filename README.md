@@ -22,3 +22,7 @@ Obsidian plugin to check & fix orthography errors in text
 * Search for spelling errors in the text
 * Displaying options for correcting word mistakes
 * Correct a word mistake in one click
+
+## Todo
+ 
+- [ ] Integration [Grammarly](https://www.grammarly.com)
