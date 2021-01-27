@@ -1,5 +1,8 @@
 # Obsidian Orthography
 
+[![Developed by Mad Devs](https://maddevs.io/badge-dark.svg)](https://maddevs.io/)
+&nbsp;
+
 Obsidian plugin to check & fix orthography errors in text
 
 ![Gif](./obsidian-orthography.gif)
