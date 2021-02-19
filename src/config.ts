@@ -1,2 +1,1 @@
-export const API_URL =
-  'https://speller.yandex.net/services/spellservice.json/checkText';
+export const API_URL = 'http://localhost:7777';
