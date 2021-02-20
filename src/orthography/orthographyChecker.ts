@@ -28,13 +28,15 @@ export class OrthographyChecker implements IOrthographyChecker {
   public getHintsFromServer(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       const text = this.getEditorText();
-      this.getData(text)
+      const formData = new FormData();
+      formData.append('text', text);
+      this.postData(API_URL, formData)
         .then((hintsData) => {
           localStorage.setItem(
             'obsidian-orthography',
-            JSON.stringify(hintsData.alerts)
+            JSON.stringify(hintsData)
           );
-          resolve(hintsData.alerts);
+          resolve(hintsData);
         })
         .catch((error) => {
           reject(error);
@@ -126,18 +128,16 @@ export class OrthographyChecker implements IOrthographyChecker {
     if (!list.length) return new RegExp(/^/gi);
 
     const words = list.map(function (item: any) {
-      return item['highlightText'];
+      return item['word'];
     });
     const searchRequest = new RegExp(words.join('|'), 'gi');
     return searchRequest;
   }
 
-  private async getData(text: string) {
-    const url: any = new URL(API_URL);
-    const params: any = { text };
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  private async postData(url: string, formData: FormData) {
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'POST',
+      body: formData
     });
     return await response.json();
   }
