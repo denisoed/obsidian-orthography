@@ -1,6 +1,6 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
-import { API_URL } from '../config';
+import { API_URL_SPELLER } from '../config';
 import { HIGHLIGHT_CSS_CLASS } from '../constants';
 
 interface IOrthographyChecker {
@@ -30,7 +30,7 @@ export class OrthographyChecker implements IOrthographyChecker {
       const text = this.getEditorText();
       const formData = new FormData();
       formData.append('text', text);
-      this.postData(API_URL, formData)
+      this.postData(API_URL_SPELLER, formData)
         .then((hintsData) => {
           localStorage.setItem(
             'obsidian-orthography',
