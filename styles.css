@@ -122,6 +122,14 @@
   opacity: 0.5;
 }
 
+.orthography-grammar-item--opened .orthography-grammar-minicard {
+  display: none;
+}
+
+.orthography-grammar-item--opened .orthography-grammar-card {
+  display: flex;
+}
+
 /* Mini card */
 
 .orthography-grammar-minicard {
@@ -129,7 +137,6 @@
   display: flex;
   align-items: center;
   margin-right: 8px;
-  display: none;
 }
 
 .orthography-grammar-minicard > div:first-child {
@@ -200,7 +207,7 @@
 
 .orthography-grammar-card {
   width: 100%;
-  display: flex;
+  display: none;
   flex-direction: column;
 }
 

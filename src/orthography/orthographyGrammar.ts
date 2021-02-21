@@ -14,11 +14,14 @@ export class OrthographyGrammar {
     this.createBar();
   }
 
-  public destroy(): void {}
+  public destroy(): void {
+    const minicards = document.querySelectorAll('.orthography-grammar-item');
+    minicards.forEach(mc => mc.removeEventListener('click', this.toggleCard));
+  }
 
   private createBar() {
-    var child = document.createElement('div');
-    child.classList.add('orthography-grammar');
+    const grammar = document.createElement('div');
+    grammar.classList.add('orthography-grammar');
     const bar: any = data.map(el => {
       return `
         <div class="orthography-grammar-item ${el.impact}">
@@ -42,8 +45,18 @@ export class OrthographyGrammar {
       `;
     }).join('');
     console.log(data);
-    child.innerHTML = bar;
-    document.body.appendChild(child);
+    grammar.innerHTML = bar;
+    document.body.appendChild(grammar);
+    const minicards = document.querySelectorAll('.orthography-grammar-item');
+    minicards.forEach(mc => mc.addEventListener('click', this.toggleCard));
+  }
+
+  private toggleCard(e: any): void {
+    if (e.currentTarget.className.contains('orthography-grammar-item--opened')) {
+      e.currentTarget.classList.remove('orthography-grammar-item--opened');
+    } else {
+      e.currentTarget.classList.add('orthography-grammar-item--opened');
+    }
   }
 }
 
