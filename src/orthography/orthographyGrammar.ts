@@ -59,8 +59,12 @@ export class OrthographyGrammar {
           <div class="orthography-grammar-card">
             <div>${el.cardLayout.group || ''}</div>
             <div>
-              <span>${el.highlightText || ''}</span>
-              <span>${el.replacements[0] || ''}</span>
+              <span class="${(el.group === 'Punctuation' || el.group === 'Style') ? 'orthography-grammar-hightligh--red' : ''}">${el.highlightText || ''}</span>
+              ${
+                (el.group !== 'Punctuation' && el.group !== 'Style') &&
+                el.replacements && el.replacements.length ?
+                `<span class="orthography-grammar-replacements">${el.replacements[0]}</span>` : ''
+              }
             </div>
             <div>${el.explanation || ''}</div>
           </div>

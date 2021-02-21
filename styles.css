@@ -90,8 +90,8 @@
   max-width: 350px;
   height: 400px;
   position: fixed;
-  bottom: 80px;
-  right: 45px;
+  bottom: 100px;
+  right: 60px;
   padding: 0 10px 3px;
   overflow: auto;
   background-color: #202020;
@@ -250,20 +250,29 @@
   text-decoration-color: red;
 }
 
-.orthography-grammar-card > div:nth-child(2) span:last-child {
+.orthography-grammar-replacements {
   margin-left: 5px;
   background-color: #57A884;
   border-radius: 3px;
   padding: 2px 6px;
   padding-right: 10px;
+  line-height: normal;
 }
 
-.orthography-grammar-card > div:nth-child(2) span:last-child::before {
+.orthography-grammar-replacements::before {
   content: '→';
   color: #fff;
   display: inline-block;
   vertical-align: middle;
   margin-right: 5px;
+}
+
+.orthography-grammar-hightligh--red {
+  background-color: red;
+  border-radius: 3px;
+  padding: 2px 6px;
+  line-height: normal;
+  text-decoration: none !important;
 }
 
 .orthography-grammar-card > div:nth-child(3) {
@@ -287,7 +296,7 @@
   align-items: center;
   background-color: #202020;
   padding: 5px 10px;
-  margin: 0 -10px;
+  margin: 0 -10px 5px;
   z-index: 2;
 }
 
