@@ -1,6 +1,8 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { API_URL_GRAMMAR } from '../config';
+import highlightWords from './helpers/highlightWords';
+
 import UIBar from './UIElements/UIBar';
 
 let self: any;
@@ -50,6 +52,8 @@ export class OrthographyGrammar {
     const bar = UIBar(data);
     this.grammar.innerHTML = bar;
     document.body.appendChild(this.grammar);
+
+    highlightWords(this.app, data.alerts, 'highlightText');
 
     const minicards = document.querySelectorAll('.orthography-grammar-item');
     minicards.forEach(mc => mc.addEventListener('click', this.toggleCard));
