@@ -1,4 +1,4 @@
-import { moveIcon, collapseIcon, horizontalSizeIcon } from './icons';
+import { moveIcon, collapseIcon, horizontalSizeIcon } from './UIIcons';
 
 const UIBar = (data: any) => {
   if (data && data.alerts) {

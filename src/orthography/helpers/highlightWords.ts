@@ -1,4 +1,4 @@
-import { App } from 'obsidian';
+import type { App } from 'obsidian';
 import { HIGHLIGHT_CSS_CLASS } from '../../constants';
 
 const createSearchQuery = (data: [], key: string) => {

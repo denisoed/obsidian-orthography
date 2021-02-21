@@ -2,6 +2,7 @@ import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { API_URL_SPELLER } from '../config';
 import { HIGHLIGHT_CSS_CLASS } from '../constants';
+import highlightWords from './helpers/highlightWords';
 
 interface IOrthographyChecker {
   check(): void;
@@ -49,8 +50,7 @@ export class OrthographyChecker implements IOrthographyChecker {
       this.getHintsFromServer()
         .then((hints) => {
           if (hints && hints.length) {
-            const regex = this.createSearchQuery(hints);
-            this.highlightWords(regex);
+            highlightWords(this.app, hints, 'word');
           }
           resolve(hints);
         })
@@ -64,25 +64,6 @@ export class OrthographyChecker implements IOrthographyChecker {
     const activeLeaf: any = this.app.workspace.activeLeaf;
     const editor = activeLeaf.view.sourceMode.cmEditor;
     return editor.getValue();
-  }
-
-  private highlightWords(regex: RegExp): void {
-    const activeLeaf: any = this.app.workspace.activeLeaf;
-    const editor = activeLeaf.view.sourceMode.cmEditor;
-    const searchQuery = new RegExp(regex);
-    const cursor = editor.getSearchCursor(searchQuery);
-    while (cursor.findNext()) {
-      const from = cursor.from();
-      const to = cursor.to();
-      this.markers.push(
-        editor.markText(from, to, {
-          className: HIGHLIGHT_CSS_CLASS,
-          attributes: {
-            'data-pos': from.line + '-' + from.ch
-          }
-        })
-      );
-    }
   }
 
   public updateDataPos(): Promise<any> {
