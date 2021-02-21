@@ -3,12 +3,14 @@ import type OrthographyPlugin from '../main';
 
 interface SettingsData {
   displayRunner: boolean;
+  useGrammar: boolean;
   language: string;
 }
 
 function getDefaultData(): SettingsData {
   return {
     displayRunner: true,
+    useGrammar: false,
     language: 'en, ru, uk'
   };
 }
@@ -30,6 +32,17 @@ export class OrthographySettings {
   set displayRunner(value: boolean) {
     const { data } = this;
     data.displayRunner = value;
+    this.emitter.trigger('onUpdateSettings', this.data);
+  }
+
+  get useGrammar(): boolean {
+    const { data } = this;
+    return data.useGrammar;
+  }
+
+  set useGrammar(value: boolean) {
+    const { data } = this;
+    data.useGrammar = value;
     this.emitter.trigger('onUpdateSettings', this.data);
   }
 

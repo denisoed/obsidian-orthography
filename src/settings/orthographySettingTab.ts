@@ -16,6 +16,7 @@ export class OrthographySettingTab extends PluginSettingTab {
 
     containerEl.empty();
     OrthographySettingTab.setDisplayRunner(containerEl, settings);
+    OrthographySettingTab.setGrammar(containerEl, settings);
     // OrthographySettingTab.setLanguage(containerEl, settings);
   }
 
@@ -29,6 +30,21 @@ export class OrthographySettingTab extends PluginSettingTab {
       .addToggle((toggle) =>
         toggle.setValue(settings.displayRunner).onChange((value) => {
           settings.displayRunner = value;
+          settings.saveSettings();
+        })
+      );
+  }
+
+  static setGrammar(
+    containerEl: HTMLElement,
+    settings: OrthographySettings
+  ): void {
+    new Setting(containerEl)
+      .setName('Grammarly')
+      .setDesc('Use grammarly to find and correct errors.')
+      .addToggle((toggle) =>
+        toggle.setValue(settings.useGrammar).onChange((value) => {
+          settings.useGrammar = value;
           settings.saveSettings();
         })
       );

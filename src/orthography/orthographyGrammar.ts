@@ -23,16 +23,17 @@ export class OrthographyGrammar {
 
   public init(): void {
     self = this;
-    setTimeout(() => {
-      const text = this.getEditorText();
-      this.getData(text).then(res => {
-        localStorage.setItem(
-          'obsidian-orthography-hints',
-          JSON.stringify(res)
-        );
-        this.createBar();
-      });
-    }, 1000);
+  }
+
+  public async check() {
+    const text = this.getEditorText();
+    const data = await this.getData(text);
+    localStorage.setItem(
+      'obsidian-orthography-hints',
+      JSON.stringify(data)
+    );
+    await this.createBar();
+    return data;
   }
   
   public destroy(): void {

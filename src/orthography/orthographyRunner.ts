@@ -1,6 +1,7 @@
 import { Notice, Events } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { OrthographyChecker } from './orthographyChecker';
+import { OrthographyGrammar } from './orthographyGrammar';
 import type { App } from 'obsidian';
 import {
   RUNNER_CSS_CLASS,
@@ -19,6 +20,7 @@ export class OrthographyRunner implements IOrthographyRunner {
   private isActive: boolean;
   private isCompleted: boolean;
   private orthography: OrthographyChecker;
+  private grammar: OrthographyGrammar;
   private emitter: any;
   private onClickByBtn: any;
   private runner: any;
@@ -31,6 +33,7 @@ export class OrthographyRunner implements IOrthographyRunner {
 
   public init(): void {
     this.createRunner();
+    this.grammar = new OrthographyGrammar(this.app, this.settings);
     this.orthography = new OrthographyChecker(this.app, this.settings);
     this.emitter.on('onUpdateWordPos', this.checkIfIsCompleted.bind(this));
   }
@@ -70,7 +73,7 @@ export class OrthographyRunner implements IOrthographyRunner {
     document.body.appendChild(runner);
   }
 
-  private setButtonClear() {
+  private async setButtonClear() {
     this.isActive = true;
     const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
 
@@ -79,17 +82,26 @@ export class OrthographyRunner implements IOrthographyRunner {
     const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
     runner.classList.add(RUNNER_ACTIVE_CSS_CLASS);
 
-    this.orthography.check().then((hints: []) => {
+    try {
+      let response;
+      if (this.settings.useGrammar) {
+        response = await this.grammar.check();
+      }
+      if (!this.settings.useGrammar) {
+        response = await this.orthography.check();
+      }
       this.isActive = false;
       runner.classList.remove(RUNNER_ACTIVE_CSS_CLASS);
-      if (hints && hints.length) {
+      if (response) {
         this.isCompleted = true;
         runnerIcon.textContent = '✕';
         runnerIcon.classList.add(RUNNER_CLEAR_CSS_CLASS);
       } else {
         new Notice('Orthography errors not found!');
       }
-    });
+    } catch (error) {
+      new Notice(error);
+    }
   }
 
   private returnButtonCheck() {

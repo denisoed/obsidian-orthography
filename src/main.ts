@@ -6,6 +6,7 @@ export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private runner: any;
   private tooltip: any;
+  private grammar: any;
   private emitter: any;
 
   async onload(): Promise<void> {
@@ -18,11 +19,11 @@ export default class OrthographyPlugin extends Plugin {
 
     this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
-    this.initOrthographyTooltip();
+    if (!settings.useGrammar) this.initOrthographyTooltip();
 
     if (settings.displayRunner) this.initOrthographyRunner();
 
-    new OrthographyGrammar(this.app, settings).init();
+    // if (settings.useGrammar) this.initOrthographyGrammar();
 
     // ------- Events -------- //
     this.emitter.on('onUpdateSettings', this.onUpdateSettings.bind(this));
@@ -68,5 +69,11 @@ export default class OrthographyPlugin extends Plugin {
     const { app, settings, emitter } = this;
     this.runner = new OrthographyRunner(app, settings, emitter);
     this.runner.init();
+  }
+
+  private initOrthographyGrammar(): void {
+    const { app, settings } = this;
+    this.grammar = new OrthographyGrammar(app, settings);
+    this.grammar.init();
   }
 }
