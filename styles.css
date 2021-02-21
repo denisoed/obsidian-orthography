@@ -149,17 +149,6 @@
   margin-right: 10px;
 }
 
-.orthography-grammar-minicard > div:first-child:after {
-  content: '';
-  width: 3px;
-  height: 3px;
-  background-color: #ccc;
-  border-radius: 100%;
-  margin-left: 10px;
-  display: block;
-  opacity: 0.2;
-}
-
 .orthography-grammar-minicard > div:first-child:before {
   content: '';
   width: 5px;
@@ -174,9 +163,22 @@
   background-color: red !important;
 }
 
-.orthography-grammar-minicard > div:nth-child(2) {
+.orthography-grammar-item-sugg {
+  display: flex;
+  align-items: center;
   font-size: 14px;
   opacity: .4;
+}
+
+.orthography-grammar-item-sugg::before {
+  content: '';
+  width: 3px;
+  height: 3px;
+  background-color: #ccc;
+  border-radius: 100%;
+  margin-right: 10px;
+  display: block;
+  opacity: 0.2;
 }
 
 /* Arrows */
