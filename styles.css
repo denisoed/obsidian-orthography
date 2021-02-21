@@ -92,8 +92,7 @@
   position: fixed;
   bottom: 80px;
   right: 45px;
-  padding: 10px;
-  padding-top: 0;
+  padding: 0 10px 3px;
   overflow: auto;
   background-color: #202020;
   box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.4);
@@ -284,18 +283,25 @@
   left: 0;
   top: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  align-items: center;
   background-color: #202020;
-  padding: 5px;
+  padding: 5px 10px;
+  margin: 0 -10px;
   z-index: 2;
 }
 
-.orthography-grammar-mover {
+.orthography-grammar-controls div {
   cursor: pointer;
+  margin-left: 10px;
 }
 
-.orthography-grammar-mover svg {
-  width: 15px;
+.orthography-grammar-controls div:active {
+  transform: scale(1.2);
+}
+
+.orthography-grammar-controls div svg {
+  width: 16px;
   height: auto;
   fill: #fff;
   opacity: 0.5;

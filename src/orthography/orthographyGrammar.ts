@@ -1,6 +1,6 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
-import { moveIcon } from './icons';
+import { moveIcon, collapseIcon } from './icons';
 
 let self: any;
 
@@ -9,6 +9,7 @@ export class OrthographyGrammar {
   private settings: OrthographySettings;
   private grammar: any;
   private mover: any;
+  private collapse: any;
   private mousePosition: any;
   private grammarOffset: any = [0, 0];
   private moverSelected = false;
@@ -25,6 +26,8 @@ export class OrthographyGrammar {
     minicards.forEach(mc => mc.addEventListener('click', this.toggleCard));
     this.mover = document.getElementById('mover');
     this.mover.addEventListener('mousedown', this.moverIsDown);
+    this.collapse = document.getElementById('collapse');
+    this.collapse.addEventListener('mousedown', this.closeOpenedCards);
     document.addEventListener('mouseup', () => this.moverSelected = false);
     document.addEventListener('mousemove', this.moveMover);
   }
@@ -33,6 +36,7 @@ export class OrthographyGrammar {
     const minicards = document.querySelectorAll('.orthography-grammar-item');
     minicards.forEach(mc => mc.removeEventListener('click', this.toggleCard));
     this.mover.removeEventListener('mousedown', this.moverIsDown);
+    this.collapse.removeEventListener('mousedown', this.closeOpenedCards);
     document.removeEventListener('mouseup', () => this.moverSelected = false);
     document.removeEventListener('mousemove', this.moveMover);
   }
@@ -66,8 +70,7 @@ export class OrthographyGrammar {
     const controls: any = `
       <div class="orthography-grammar-controls">
         <div id="mover" class="orthography-grammar-mover" title="Move bar">${moveIcon}</div>
-        <div>Close all</div>
-        <div>Toggle</div>
+        <div id="collapse" class="orthography-grammar-collapse" title="Collapse opened cards">${collapseIcon}</div>
       </div>
     `;
     this.grammar.innerHTML = `${controls}${cards}`;
@@ -97,9 +100,14 @@ export class OrthographyGrammar {
         x: e.clientX,
         y: e.clientY
       };
-      self.grammar.style.left = (self.mousePosition.x + self.grammarOffset[0]) + 'px';
-      self.grammar.style.top = (self.mousePosition.y + self.grammarOffset[1]) + 'px';
+      self.grammar.style.left = `${(self.mousePosition.x + self.grammarOffset[0])}px`;
+      self.grammar.style.top = `${(self.mousePosition.y + self.grammarOffset[1])}px`;
     }
+  }
+
+  private closeOpenedCards() {
+    const minicards = document.querySelectorAll('.orthography-grammar-item');
+    minicards.forEach(mc => mc.classList.remove('orthography-grammar-item--opened'));
   }
 }
 
