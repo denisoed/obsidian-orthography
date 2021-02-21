@@ -1,6 +1,6 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
-import { moveIcon, collapseIcon } from './icons';
+import { moveIcon, collapseIcon, horizontalSizeIcon } from './icons';
 
 let self: any;
 
@@ -69,6 +69,7 @@ export class OrthographyGrammar {
     }).join('');
     const controls: any = `
       <div class="orthography-grammar-controls">
+        <div id="horizontalSizeIcon" class="orthography-grammar-horizontalSize" title="Change the size of the bar">${horizontalSizeIcon}</div>
         <div id="mover" class="orthography-grammar-mover" title="Move bar">${moveIcon}</div>
         <div id="collapse" class="orthography-grammar-collapse" title="Collapse opened cards">${collapseIcon}</div>
       </div>

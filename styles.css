@@ -86,8 +86,8 @@
 }
 
 .orthography-grammar {
-  width: auto;
-  max-width: 400px;
+  width: 350px;
+  max-width: 350px;
   height: 400px;
   position: fixed;
   bottom: 80px;
@@ -305,4 +305,9 @@
   height: auto;
   fill: #fff;
   opacity: 0.5;
+}
+
+.orthography-grammar-horizontalSize {
+  margin-right: auto;
+  margin-left: 0 !important;
 }
