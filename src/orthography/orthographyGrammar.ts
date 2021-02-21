@@ -1,9 +1,17 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
+import { moveIcon } from './icons';
+
+let self: any;
 
 export class OrthographyGrammar {
   private app: App;
   private settings: OrthographySettings;
+  private grammar: any;
+  private mover: any;
+  private mousePosition: any;
+  private grammarOffset: any = [0, 0];
+  private moverSelected = false;
 
   constructor(app: App, settings: OrthographySettings) {
     this.app = app;
@@ -11,18 +19,29 @@ export class OrthographyGrammar {
   }
 
   public init(): void {
+    self = this;
     this.createBar();
+    const minicards = document.querySelectorAll('.orthography-grammar-item');
+    minicards.forEach(mc => mc.addEventListener('click', this.toggleCard));
+    this.mover = document.getElementById('mover');
+    this.mover.addEventListener('mousedown', this.moverIsDown);
+    document.addEventListener('mouseup', () => this.moverSelected = false);
+    document.addEventListener('mousemove', this.moveMover);
   }
-
+  
   public destroy(): void {
     const minicards = document.querySelectorAll('.orthography-grammar-item');
     minicards.forEach(mc => mc.removeEventListener('click', this.toggleCard));
+    this.mover.removeEventListener('mousedown', this.moverIsDown);
+    document.removeEventListener('mouseup', () => this.moverSelected = false);
+    document.removeEventListener('mousemove', this.moveMover);
   }
 
   private createBar() {
-    const grammar = document.createElement('div');
-    grammar.classList.add('orthography-grammar');
-    const bar: any = data.map(el => {
+    this.grammar = document.createElement('div');
+    this.grammar.classList.add('orthography-grammar');
+    this.grammar.id = 'orthography-grammar';
+    const cards: any = data.map(el => {
       return `
         <div class="orthography-grammar-item ${el.impact}">
           <div class="orthography-grammar-minicard">
@@ -44,11 +63,15 @@ export class OrthographyGrammar {
         </div>
       `;
     }).join('');
-    console.log(data);
-    grammar.innerHTML = bar;
-    document.body.appendChild(grammar);
-    const minicards = document.querySelectorAll('.orthography-grammar-item');
-    minicards.forEach(mc => mc.addEventListener('click', this.toggleCard));
+    const controls: any = `
+      <div class="orthography-grammar-controls">
+        <div id="mover" class="orthography-grammar-mover" title="Move bar">${moveIcon}</div>
+        <div>Close all</div>
+        <div>Toggle</div>
+      </div>
+    `;
+    this.grammar.innerHTML = `${controls}${cards}`;
+    document.body.appendChild(this.grammar);
   }
 
   private toggleCard(e: any): void {
@@ -56,6 +79,26 @@ export class OrthographyGrammar {
       e.currentTarget.classList.remove('orthography-grammar-item--opened');
     } else {
       e.currentTarget.classList.add('orthography-grammar-item--opened');
+    }
+  }
+
+  private moverIsDown(e: any) {
+    self.moverSelected = true;
+    self.grammarOffset = [
+      self.grammar.offsetLeft - e.clientX,
+      self.grammar.offsetTop - e.clientY
+    ];
+  }
+
+  private moveMover(e: any) {
+    e.preventDefault();
+    if (self.moverSelected) {
+      self.mousePosition = {
+        x: e.clientX,
+        y: e.clientY
+      };
+      self.grammar.style.left = (self.mousePosition.x + self.grammarOffset[0]) + 'px';
+      self.grammar.style.top = (self.mousePosition.y + self.grammarOffset[1]) + 'px';
     }
   }
 }
