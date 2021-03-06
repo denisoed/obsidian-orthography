@@ -103,7 +103,6 @@ export class OrthographyRunner implements IOrthographyRunner {
     const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
     runnerIcon.classList.remove(RUNNER_CLEAR_CSS_CLASS);
     runner.classList.add(RUNNER_ACTIVE_CSS_CLASS);
-    localStorage.removeItem('obsidian-orthography');
 
     // Delay for button animation
     setTimeout(() => {

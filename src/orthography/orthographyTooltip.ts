@@ -12,6 +12,8 @@ interface IOrthographyTooltip {
   init(): void;
 }
 
+let self: any;
+
 export class OrthographyTooltip implements IOrthographyTooltip {
   private app: App;
   private settings: OrthographySettings;
@@ -19,9 +21,6 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   private checker: OrthographyChecker;
   private emitter: any;
   private editor: any;
-  private eventUdpateWordPos: any;
-  private eventTooltipToggle: any;
-  private eventReplaceWord: any;
 
   constructor(app: App, settings: OrthographySettings, emitter: Events) {
     this.app = app;
@@ -30,14 +29,17 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   }
 
   public init(): void {
+    self = this;
     this.createTooltip();
     this.checker = new OrthographyChecker(this.app, this.settings);
     this.getEditor();
+    this.app.workspace.on('active-leaf-change', self.activeLeafChange);
   }
 
   public destroy(): void {
-    document.removeEventListener('mouseover', this.eventTooltipToggle);
-    this.tooltip.removeEventListener('click', this.eventReplaceWord);
+    document.removeEventListener('mouseover', self.toggleTooltip);
+    this.app.workspace.off('active-leaf-change', self.activeLeafChange);
+    this.tooltip.removeEventListener('click', self.replaceWord);
     const tooltips = document.querySelectorAll('.' + TOOLTIP_CSS_CLASS);
     if (tooltips) tooltips.forEach((tooltip: any) => tooltip.remove());
   }
@@ -46,11 +48,9 @@ export class OrthographyTooltip implements IOrthographyTooltip {
     const tooltip = document.createElement('div');
     tooltip.classList.add(TOOLTIP_CSS_CLASS);
     document.body.appendChild(tooltip);
-    this.eventTooltipToggle = this.toggleTooltip.bind(this);
-    document.addEventListener('mouseover', this.eventTooltipToggle);
+    document.addEventListener('mouseover', self.toggleTooltip);
     this.tooltip = document.querySelector('.' + TOOLTIP_CSS_CLASS);
-    this.eventReplaceWord = this.replaceWord.bind(this);
-    this.tooltip.addEventListener('click', this.eventReplaceWord);
+    this.tooltip.addEventListener('click', self.replaceWord);
   }
 
   private setDataToTooltip(element: any): void {
@@ -70,18 +70,18 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   private toggleTooltip(event: any): void {
     if (event.type === 'mouseover') {
       if (event.target.className.includes(HIGHLIGHT_CSS_CLASS)) {
-        this.setDataToTooltip(event.target);
-        this.tooltip.classList.add(TOOLTIP_VISIBLE_CSS_CLASS);
-        this.tooltip.style.left = this.getLeftPos(event);
-        this.tooltip.style.top = this.getTopPos(event);
+        self.setDataToTooltip(event.target);
+        self.tooltip.classList.add(TOOLTIP_VISIBLE_CSS_CLASS);
+        self.tooltip.style.left = self.getLeftPos(event);
+        self.tooltip.style.top = self.getTopPos(event);
       }
     }
     if (
       !event.target.className.includes(TOOLTIP_CSS_CLASS) &&
       !event.target.className.includes(HIGHLIGHT_CSS_CLASS)
     ) {
-      this.tooltip.classList.remove(TOOLTIP_VISIBLE_CSS_CLASS);
-      this.tooltip.innerHTML = '';
+      self.tooltip.classList.remove(TOOLTIP_VISIBLE_CSS_CLASS);
+      self.tooltip.innerHTML = '';
     }
   }
 
@@ -90,7 +90,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
     if (word.x + this.tooltip.clientWidth + 10 < document.body.clientWidth) {
       return word.x + 'px';
     }
-    return document.body.clientWidth + 5 - this.tooltip.clientWidth + 'px';
+    return (document.body.clientWidth + 5) - this.tooltip.clientWidth + 'px';
   }
 
   private getTopPos(event: any) {
@@ -101,7 +101,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
     ) {
       return word.y + word.height + 'px';
     }
-    return document.body.clientHeight + 10 - this.tooltip.clientHeight + 'px';
+    return (document.body.clientHeight + 10) - this.tooltip.clientHeight + 'px';
   }
 
   private appendHintButton(hint: any) {
@@ -130,9 +130,9 @@ export class OrthographyTooltip implements IOrthographyTooltip {
 
       if (!word) return;
 
-      this.editor.off('change', this.eventUdpateWordPos);
+      self.editor.off('change', self.onUpdateWordPos);
 
-      const activeLeaf: any = this.app.workspace.activeLeaf;
+      const activeLeaf: any = self.app.workspace.activeLeaf;
       const editor = activeLeaf.view.sourceMode.cmEditor;
 
       const doc = editor.getDoc();
@@ -149,8 +149,8 @@ export class OrthographyTooltip implements IOrthographyTooltip {
       doc.replaceRange(event.target.innerText, from, to);
 
       // Updating data pos for highlight words
-      this.checker.updateDataPos();
-      this.editor.on('change', this.eventUdpateWordPos);
+      self.checker.updateDataPos();
+      self.editor.on('change', self.onUpdateWordPos);
     }
   }
 
@@ -158,13 +158,20 @@ export class OrthographyTooltip implements IOrthographyTooltip {
     setTimeout(() => {
       const activeLeaf: any = this.app.workspace.activeLeaf;
       this.editor = activeLeaf.view.sourceMode.cmEditor;
-      this.eventUdpateWordPos = this.onUpdateWordPos.bind(this);
-      this.editor.on('change', this.eventUdpateWordPos);
+      this.editor.on('change', self.onUpdateWordPos);
     }, 1000);
   }
 
+  private activeLeafChange() {
+    if (self.editor) {
+      self.editor.off('change', self.onUpdateWordPos);
+      self.onUpdateWordPos();
+      self.getEditor();
+    }
+  }
+
   private onUpdateWordPos() {
-    this.emitter.trigger('onUpdateWordPos');
-    this.checker.clear();
+    self.emitter.trigger('onUpdateWordPos');
+    self.checker.clear();
   }
 }
