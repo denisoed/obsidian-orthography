@@ -69,7 +69,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
 
   private toggleTooltip(event: any): void {
     if (event.type === 'mouseover') {
-      if (event.target.className.includes(HIGHLIGHT_CSS_CLASS)) {
+      if (event.target && event.target.className.includes(HIGHLIGHT_CSS_CLASS)) {
         self.setDataToTooltip(event.target);
         self.tooltip.classList.add(TOOLTIP_VISIBLE_CSS_CLASS);
         self.tooltip.style.left = self.getLeftPos(event);
