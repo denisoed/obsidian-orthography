@@ -26,3 +26,17 @@ Obsidian plugin to check & fix orthography errors in text
 ## Todo
  
 - [ ] Integration [Grammarly](https://www.grammarly.com)
+
+## For Developers
+
+### How to get started developing
+
+1. Create new vault(folder) in Obsidian. For example `Orthography`
+
+2. In the terminal, go to the `./Orthography/.obsidian` folder and create there the `plugins` folder
+
+3. Clone the repository into the `plugins` folder: `git clone https://github.com/denisoed/obsidian-orthography.git`
+
+4. Install dependencies: `npm i`
+
+5. And run for develop: `npm run dev`
