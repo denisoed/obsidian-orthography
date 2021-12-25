@@ -1,4 +1,3 @@
-import type { App } from 'obsidian';
 import { O_HIGHLIGHT } from '../../cssClasses';
 
 const createSearchQuery = (data: [], key: string) => {
@@ -11,10 +10,8 @@ const createSearchQuery = (data: [], key: string) => {
   return searchRequest;
 };
 
-const highlightWords = (app: App, data: any, key: string): void => {
+const highlightWords = (editor: any, data: any, key: string): void => {
   const markers = [];
-  const activeLeaf: any = app.workspace.activeLeaf;
-  const editor = activeLeaf.view.sourceMode.cmEditor;
   const searchQuery = new RegExp(createSearchQuery(data, key));
   const cursor = editor.getSearchCursor(searchQuery);
   while (cursor.findNext()) {

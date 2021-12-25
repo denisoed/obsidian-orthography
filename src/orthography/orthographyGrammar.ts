@@ -6,7 +6,6 @@ import {
   O_GRAMMAR_ITEM,
   O_GRAMMAR_ITEM_OPENED
 } from '../cssClasses';
-import { O_LOCALSTORAGE_KEY_HINTS } from '../constants';
 import highlightWords from './helpers/highlightWords';
 import { IAlert } from '../interfaces';
 
@@ -35,9 +34,11 @@ export class OrthographyGrammar {
   public async check(): Promise<IAlert> {
     const text = this.getEditorText();
     const data = await this.getData(text);
-    localStorage.setItem(O_LOCALSTORAGE_KEY_HINTS, JSON.stringify(data));
-    await this.createBar();
-    return data;
+    if (data.alerts.length) {
+      await this.createBar(data);
+      return data;
+    }
+    return null;
   }
 
   public destroy(): void {
@@ -52,18 +53,16 @@ export class OrthographyGrammar {
     if (self.grammar) document.getElementById(O_GRAMMAR).remove();
   }
 
-  private createBar() {
+  private createBar(data: IAlert) {
     self.grammar = document.createElement('div');
     self.grammar.classList.add(O_GRAMMAR);
     self.grammar.id = O_GRAMMAR;
-    const data: any = JSON.parse(
-      localStorage.getItem(O_LOCALSTORAGE_KEY_HINTS)
-    );
     const bar = UIBar(data);
     self.grammar.innerHTML = bar;
     document.body.appendChild(self.grammar);
 
-    highlightWords(this.app, data.alerts, 'highlightText');
+    const activeEditor = this.getEditor();
+    highlightWords(activeEditor, data.alerts, 'highlightText');
 
     this.setListeners();
   }
@@ -124,9 +123,12 @@ export class OrthographyGrammar {
     return await response.json();
   }
 
-  private getEditorText() {
+  private getEditor() {
     const activeLeaf: any = this.app.workspace.activeLeaf;
-    const editor = activeLeaf.view.sourceMode.cmEditor;
-    return editor.getValue();
+    return activeLeaf.view.sourceMode.cmEditor;
+  }
+
+  private getEditorText() {
+    return this.getEditor().getValue();
   }
 }

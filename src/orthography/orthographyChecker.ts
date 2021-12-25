@@ -50,7 +50,8 @@ export class OrthographyChecker implements IOrthographyChecker {
       this.getHintsFromServer()
         .then((hints) => {
           if (hints && hints.length) {
-            highlightWords(this.app, hints, 'word');
+            const activeEditor = this.getEditor();
+            highlightWords(activeEditor, hints, 'word');
           }
           resolve(hints);
         })
@@ -60,10 +61,13 @@ export class OrthographyChecker implements IOrthographyChecker {
     });
   }
 
-  private getEditorText() {
+  private getEditor() {
     const activeLeaf: any = this.app.workspace.activeLeaf;
-    const editor = activeLeaf.view.sourceMode.cmEditor;
-    return editor.getValue();
+    return activeLeaf.view.sourceMode.cmEditor;
+  }
+
+  private getEditorText() {
+    return this.getEditor().getValue();
   }
 
   public updateDataPos(): Promise<any> {

@@ -105,7 +105,7 @@ export class OrthographyRunner implements IOrthographyRunner {
         runnerIcon.textContent = O_RUNNER_ICON_CLEAR;
         runnerIcon.classList.add(O_RUNNER_CLEAR);
       } else {
-        new Notice('Orthography errors not found!');
+        new Notice('No spelling errors found.');
       }
     } catch (error) {
       new Notice(error);
