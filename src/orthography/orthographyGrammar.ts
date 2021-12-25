@@ -1,7 +1,10 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { API_URL_GRAMMAR } from '../config';
+import { O_G_I_OPENED, O_G_ITEM, O_GRAMMAR } from '../cssClasses';
+import { LOCALSTORAGE_KEY_HINTS } from '../constants';
 import highlightWords from './helpers/highlightWords';
+import { IAlert } from '../interfaces';
 
 import UIBar from './UIElements/UIBar';
 
@@ -13,7 +16,7 @@ export class OrthographyGrammar {
   private grammar: any;
   private mover: any;
   private collapse: any;
-  private grammarOffset: any = [0, 0];
+  private grammarOffset: number[] = [0, 0];
   private moverSelected = false;
 
   constructor(app: App, settings: OrthographySettings) {
@@ -25,53 +28,54 @@ export class OrthographyGrammar {
     self = this;
   }
 
-  public async check() {
+  public async check(): Promise<IAlert> {
     const text = this.getEditorText();
     const data = await this.getData(text);
-    localStorage.setItem('obsidian-orthography-hints', JSON.stringify(data));
+    localStorage.setItem(LOCALSTORAGE_KEY_HINTS, JSON.stringify(data));
     await this.createBar();
     return data;
   }
 
   public destroy(): void {
-    const minicards = document.querySelectorAll('.orthography-grammar-item');
+    const minicards = document.querySelectorAll(`.${O_G_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', this.toggleCard));
     this.mover.removeEventListener('mousedown', this.moverIsDown);
     this.collapse.removeEventListener('mousedown', this.closeOpenedCards);
-    document.removeEventListener('mouseup', () => (this.moverSelected = false));
+    document.removeEventListener('mouseup', () => (self.moverSelected = false));
     document.removeEventListener('mousemove', this.moveMover);
+    document.getElementById(O_GRAMMAR).remove();
   }
 
   private createBar() {
-    this.grammar = document.createElement('div');
-    this.grammar.classList.add('orthography-grammar');
-    this.grammar.id = 'orthography-grammar';
-    const data: any = JSON.parse(
-      localStorage.getItem('obsidian-orthography-hints')
-    );
+    self.grammar = document.createElement('div');
+    self.grammar.classList.add(O_GRAMMAR);
+    self.grammar.id = O_GRAMMAR;
+    const data: any = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY_HINTS));
     const bar = UIBar(data);
-    this.grammar.innerHTML = bar;
-    document.body.appendChild(this.grammar);
+    self.grammar.innerHTML = bar;
+    document.body.appendChild(self.grammar);
 
     highlightWords(this.app, data.alerts, 'highlightText');
 
-    const minicards = document.querySelectorAll('.orthography-grammar-item');
+    this.setListeners();
+  }
+
+  private setListeners() {
+    const minicards = document.querySelectorAll(`.${O_G_ITEM}`);
     minicards.forEach((mc) => mc.addEventListener('click', this.toggleCard));
     this.mover = document.getElementById('mover');
     this.mover.addEventListener('mousedown', this.moverIsDown);
     this.collapse = document.getElementById('collapse');
     this.collapse.addEventListener('mousedown', this.closeOpenedCards);
-    document.addEventListener('mouseup', () => (this.moverSelected = false));
+    document.addEventListener('mouseup', () => (self.moverSelected = false));
     document.addEventListener('mousemove', this.moveMover);
   }
 
   private toggleCard(e: any): void {
-    if (
-      e.currentTarget.className.contains('orthography-grammar-item--opened')
-    ) {
-      e.currentTarget.classList.remove('orthography-grammar-item--opened');
+    if (e.currentTarget.className.contains(O_G_I_OPENED)) {
+      e.currentTarget.classList.remove(O_G_I_OPENED);
     } else {
-      e.currentTarget.classList.add('orthography-grammar-item--opened');
+      e.currentTarget.classList.add(O_G_I_OPENED);
     }
   }
 
@@ -96,10 +100,8 @@ export class OrthographyGrammar {
   }
 
   private closeOpenedCards() {
-    const minicards = document.querySelectorAll('.orthography-grammar-item');
-    minicards.forEach((mc) =>
-      mc.classList.remove('orthography-grammar-item--opened')
-    );
+    const minicards = document.querySelectorAll(`.${O_G_ITEM}`);
+    minicards.forEach((mc) => mc.classList.remove(O_G_I_OPENED));
   }
 
   private async getData(text: string) {

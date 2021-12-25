@@ -123,6 +123,7 @@ export class OrthographyRunner implements IOrthographyRunner {
       runnerIcon.textContent = '⌘';
       runner.classList.remove(RUNNER_ACTIVE_CSS_CLASS);
       this.orthography.clear();
+      this.grammar.destroy();
     }, 250);
   }
 

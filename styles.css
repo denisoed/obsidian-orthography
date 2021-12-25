@@ -29,7 +29,9 @@
 
 .obsidian-orthography-runner {
   width: 40px;
+  max-width: 40px;
   height: 40px;
+  max-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
