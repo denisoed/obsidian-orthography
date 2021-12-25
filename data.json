@@ -1,1 +1,5 @@
-{"displayRunner":true,"useGrammar":false,"language":"en, ru, uk"}
+{
+  "displayRunner": true,
+  "useGrammar": true,
+  "language": "en, ru, uk"
+}

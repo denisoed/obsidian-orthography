@@ -24,6 +24,6 @@ const replaceWord = (app: App, position: any, word: string): void => {
   };
 
   doc.replaceRange(word, from, to);
-}
+};
 
 export default replaceWord;

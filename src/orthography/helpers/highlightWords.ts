@@ -9,7 +9,7 @@ const createSearchQuery = (data: [], key: string) => {
   });
   const searchRequest = new RegExp(words.join('|'), 'gi');
   return searchRequest;
-}
+};
 
 const highlightWords = (app: App, data: any, key: string): void => {
   const markers = [];
@@ -29,6 +29,6 @@ const highlightWords = (app: App, data: any, key: string): void => {
       })
     );
   }
-}
+};
 
 export default highlightWords;

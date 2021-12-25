@@ -1,6 +1,10 @@
 import { Plugin, Events } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
-import { OrthographyRunner, OrthographyTooltip, OrthographyGrammar } from './orthography';
+import {
+  OrthographyRunner,
+  OrthographyTooltip,
+  OrthographyGrammar
+} from './orthography';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
@@ -23,7 +27,7 @@ export default class OrthographyPlugin extends Plugin {
 
     if (settings.displayRunner) this.initOrthographyRunner();
 
-    // if (settings.useGrammar) this.initOrthographyGrammar();
+    if (settings.useGrammar) this.initOrthographyGrammar();
 
     // ------- Events -------- //
     this.emitter.on('onUpdateSettings', this.onUpdateSettings.bind(this));

@@ -28,20 +28,17 @@ export class OrthographyGrammar {
   public async check() {
     const text = this.getEditorText();
     const data = await this.getData(text);
-    localStorage.setItem(
-      'obsidian-orthography-hints',
-      JSON.stringify(data)
-    );
+    localStorage.setItem('obsidian-orthography-hints', JSON.stringify(data));
     await this.createBar();
     return data;
   }
-  
+
   public destroy(): void {
     const minicards = document.querySelectorAll('.orthography-grammar-item');
-    minicards.forEach(mc => mc.removeEventListener('click', this.toggleCard));
+    minicards.forEach((mc) => mc.removeEventListener('click', this.toggleCard));
     this.mover.removeEventListener('mousedown', this.moverIsDown);
     this.collapse.removeEventListener('mousedown', this.closeOpenedCards);
-    document.removeEventListener('mouseup', () => this.moverSelected = false);
+    document.removeEventListener('mouseup', () => (this.moverSelected = false));
     document.removeEventListener('mousemove', this.moveMover);
   }
 
@@ -49,7 +46,9 @@ export class OrthographyGrammar {
     this.grammar = document.createElement('div');
     this.grammar.classList.add('orthography-grammar');
     this.grammar.id = 'orthography-grammar';
-    const data: any = JSON.parse(localStorage.getItem('obsidian-orthography-hints'));
+    const data: any = JSON.parse(
+      localStorage.getItem('obsidian-orthography-hints')
+    );
     const bar = UIBar(data);
     this.grammar.innerHTML = bar;
     document.body.appendChild(this.grammar);
@@ -57,17 +56,19 @@ export class OrthographyGrammar {
     highlightWords(this.app, data.alerts, 'highlightText');
 
     const minicards = document.querySelectorAll('.orthography-grammar-item');
-    minicards.forEach(mc => mc.addEventListener('click', this.toggleCard));
+    minicards.forEach((mc) => mc.addEventListener('click', this.toggleCard));
     this.mover = document.getElementById('mover');
     this.mover.addEventListener('mousedown', this.moverIsDown);
     this.collapse = document.getElementById('collapse');
     this.collapse.addEventListener('mousedown', this.closeOpenedCards);
-    document.addEventListener('mouseup', () => this.moverSelected = false);
+    document.addEventListener('mouseup', () => (this.moverSelected = false));
     document.addEventListener('mousemove', this.moveMover);
   }
 
   private toggleCard(e: any): void {
-    if (e.currentTarget.className.contains('orthography-grammar-item--opened')) {
+    if (
+      e.currentTarget.className.contains('orthography-grammar-item--opened')
+    ) {
       e.currentTarget.classList.remove('orthography-grammar-item--opened');
     } else {
       e.currentTarget.classList.add('orthography-grammar-item--opened');
@@ -89,20 +90,24 @@ export class OrthographyGrammar {
         x: e.clientX,
         y: e.clientY
       };
-      self.grammar.style.left = `${(mousePosition.x + self.grammarOffset[0])}px`;
-      self.grammar.style.top = `${(mousePosition.y + self.grammarOffset[1])}px`;
+      self.grammar.style.left = `${mousePosition.x + self.grammarOffset[0]}px`;
+      self.grammar.style.top = `${mousePosition.y + self.grammarOffset[1]}px`;
     }
   }
 
   private closeOpenedCards() {
     const minicards = document.querySelectorAll('.orthography-grammar-item');
-    minicards.forEach(mc => mc.classList.remove('orthography-grammar-item--opened'));
+    minicards.forEach((mc) =>
+      mc.classList.remove('orthography-grammar-item--opened')
+    );
   }
 
   private async getData(text: string) {
     const url: any = new URL(API_URL_GRAMMAR);
-    const  params: any = { text }
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    const params: any = { text };
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key])
+    );
     const response = await fetch(url, {
       method: 'GET'
     });
