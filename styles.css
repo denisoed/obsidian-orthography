@@ -325,3 +325,47 @@
   margin-right: auto;
   margin-left: 0 !important;
 }
+
+/* UIHint fallback */
+
+.obsidian-orthography-hints-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.obsidian-orthography-hints-fallback p {
+  opacity: 0.5;
+}
+
+.obsidian-orthography-hints-fallback button {
+  box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
+  font-size: 14px;
+  margin: 0;
+}
+
+.obsidian-orthography-hints-fallback button:active {
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.4);
+  transform: translateY(1px);
+}
+
+/* Loader */
+
+.obsidian-orthography-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  opacity: 0.5;
+}

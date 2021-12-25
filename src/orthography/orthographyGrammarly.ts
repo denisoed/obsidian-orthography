@@ -33,7 +33,7 @@ export class OrthographyGrammarly {
     self.grammar = document.createElement('div');
     self.grammar.classList.add(O_GRAMMAR);
     self.grammar.id = O_GRAMMAR;
-    const bar = UIBar(null);
+    const bar = UIBar(null, false);
     self.grammar.innerHTML = bar;
     document.body.appendChild(self.grammar);
     self.setListeners();
@@ -44,11 +44,19 @@ export class OrthographyGrammarly {
     if (self.grammar) document.getElementById(O_GRAMMAR).remove();
   }
 
-  public update(data: IAlert): void {
+  public update(data: IAlert, loading?: boolean): void {
     self.removeListeners();
-    const bar = UIBar(data);
+    const bar = UIBar(data, loading);
     self.grammar.innerHTML = bar;
     self.setListeners();
+  }
+
+  public setLoader(): void {
+    this.update(null, true);
+  }
+
+  public removeLoader(): void {
+    this.update(null, false);
   }
 
   private setListeners() {

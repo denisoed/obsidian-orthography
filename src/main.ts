@@ -63,6 +63,7 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private async onChange(editor: any) {
+    this.grammar.setLoader();
     const text = editor.doc.getValue();
     const data = await this.getData(text);
     this.grammar.update(data);
