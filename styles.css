@@ -311,7 +311,7 @@
 }
 
 .obsidian-orthography-grammar-controls div:active {
-  transform: scale(1.2);
+  transform: scale(0.9);
 }
 
 .obsidian-orthography-grammar-controls div svg {
@@ -324,6 +324,10 @@
 .obsidian-orthography-grammar-horizontalSize {
   margin-right: auto;
   margin-left: 0 !important;
+}
+
+.obsidian-orthography-grammar-reload:active {
+  transform: scale(0.96);
 }
 
 /* UIHint fallback */

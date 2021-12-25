@@ -5,9 +5,10 @@ import UIHintsFallback from './UIHintsFallback';
 import UILoader from './UILoader';
 
 const UIBar = (data: IAlert, loading: boolean): string => {
-  const controls: string = UIControls();
+  const hasData = data && data.alerts;
+  const controls: string = UIControls(!!hasData);
   const fallback = loading ? UILoader() : UIHintsFallback();
-  const cards = data && data.alerts ? UIHints(data.alerts) : fallback;
+  const cards = hasData ? UIHints(data.alerts) : fallback;
   return `${controls}${cards}`;
 };
 

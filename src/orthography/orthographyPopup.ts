@@ -11,7 +11,7 @@ import UIBar from './UIElements/UIBar';
 
 let self: any;
 
-export class OrthographyGrammarly {
+export class OrthographyPopup {
   private app: App;
   private settings: OrthographySettings;
   private grammar: any;

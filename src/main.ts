@@ -1,6 +1,6 @@
 import { Plugin, Events } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
-import { OrthographyGrammarly, OrthographyToggler } from './orthography';
+import { OrthographyPopup, OrthographyToggler } from './orthography';
 import debounce from './orthography/helpers/debounce';
 import { API_URL_GRAMMAR } from './config';
 
@@ -24,7 +24,7 @@ export default class OrthographyPlugin extends Plugin {
     this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
     this.initOrthographyToggler();
-    this.initOrthographyGrammarly();
+    this.initOrthographyPopup();
 
     // ------- Events -------- //
     this.emitter.on('orthography:open', this.grammar.create);
@@ -51,9 +51,9 @@ export default class OrthographyPlugin extends Plugin {
     this.toggler.init();
   }
 
-  private initOrthographyGrammarly(): void {
+  private initOrthographyPopup(): void {
     const { app, settings } = this;
-    this.grammar = new OrthographyGrammarly(app, settings);
+    this.grammar = new OrthographyPopup(app, settings);
     this.grammar.init();
   }
 
