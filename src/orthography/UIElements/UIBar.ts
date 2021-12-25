@@ -1,23 +1,28 @@
-import { moveIcon, collapseIcon, horizontalSizeIcon } from './UIIcons';
+import UIControls from './UIControls';
+import { IAlert, IData } from '../../interfaces';
 
-const UIBar = (data: any) => {
-  if (data && data.alerts) {
-    const controls: string = `
-      <div class="orthography-grammar-controls">
-        <div id="horizontalSizeIcon" class="orthography-grammar-horizontalSize" title="Change the size of the bar">${horizontalSizeIcon}</div>
-        <div id="mover" class="orthography-grammar-mover" title="Move bar">${moveIcon}</div>
-        <div id="collapse" class="orthography-grammar-collapse" title="Collapse opened cards">${collapseIcon}</div>
-      </div>
-    `;
+const UIBar = (data: IAlert): string => {
+  const { alerts } = data;
+  if (alerts && alerts.length) {
+    const controls: string = UIControls();
     const cards: string = data.alerts
-      .map((el: any) => {
+      .map((card: IData) => {
+        const {
+          impact,
+          highlightText,
+          minicardTitle,
+          group,
+          replacements,
+          explanation,
+          cardLayout
+        } = card;
         return `
-          <div class="orthography-grammar-item ${el.impact}">
+          <div class="orthography-grammar-item ${impact}">
             <div class="orthography-grammar-minicard">
-              <div>${el.highlightText || ''}</div>
+              <div>${highlightText || ''}</div>
               ${
-                el.minicardTitle
-                  ? `<div class="orthography-grammar-item-sugg">${el.minicardTitle}</div>`
+                minicardTitle
+                  ? `<div class="orthography-grammar-item-sugg">${minicardTitle}</div>`
                   : ''
               }
               <div class="orthography-grammar-arrows">
@@ -26,23 +31,23 @@ const UIBar = (data: any) => {
               </div>
             </div>
             <div class="orthography-grammar-card">
-              <div>${el.cardLayout.group || ''}</div>
+              <div>${cardLayout.group || ''}</div>
               <div>
                 <span class="${
-                  el.group === 'Punctuation' || el.group === 'Style'
+                  group === 'Punctuation' || group === 'Style'
                     ? 'orthography-grammar-hightligh--red'
                     : ''
-                }">${el.highlightText || ''}</span>
+                }">${highlightText || ''}</span>
                 ${
-                  el.group !== 'Punctuation' &&
-                  el.group !== 'Style' &&
-                  el.replacements &&
-                  el.replacements.length
-                    ? `<span class="orthography-grammar-replacements">${el.replacements[0]}</span>`
+                  group !== 'Punctuation' &&
+                  group !== 'Style' &&
+                  replacements &&
+                  replacements.length
+                    ? `<span class="orthography-grammar-replacements">${replacements[0]}</span>`
                     : ''
                 }
               </div>
-              <div>${el.explanation || ''}</div>
+              <div>${explanation || ''}</div>
             </div>
           </div>
         `;
