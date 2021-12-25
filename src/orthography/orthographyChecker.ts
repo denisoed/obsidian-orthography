@@ -1,7 +1,7 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { API_URL_SPELLER } from '../config';
-import { HIGHLIGHT_CSS_CLASS } from '../constants';
+import { O_HIGHLIGHT } from '../cssClasses';
 import highlightWords from './helpers/highlightWords';
 
 interface IOrthographyChecker {
@@ -98,7 +98,7 @@ export class OrthographyChecker implements IOrthographyChecker {
   }
 
   private clearHighlightWords() {
-    const highlightWords = document.querySelectorAll('.' + HIGHLIGHT_CSS_CLASS);
+    const highlightWords = document.querySelectorAll('.' + O_HIGHLIGHT);
     highlightWords.forEach((span) => {
       span.removeAttribute('class');
     });

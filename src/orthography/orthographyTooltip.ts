@@ -2,11 +2,11 @@ import type { App, Events } from 'obsidian';
 import { OrthographyChecker } from './orthographyChecker';
 import { OrthographySettings } from 'src/settings';
 import {
-  TOOLTIP_CSS_CLASS,
-  TOOLTIP_VISIBLE_CSS_CLASS,
-  TOOLTIP_HINT_CSS_CLASS,
-  HIGHLIGHT_CSS_CLASS
-} from '../constants';
+  O_TOOLTIP,
+  O_TOOLTIP_VISIBLE,
+  O_TOOLTIP_HINT,
+  O_HIGHLIGHT
+} from '../cssClasses';
 
 interface IOrthographyTooltip {
   init(): void;
@@ -38,17 +38,17 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   public destroy(): void {
     document.removeEventListener('mouseover', this.eventTooltipToggle);
     this.tooltip.removeEventListener('click', this.eventReplaceWord);
-    const tooltips = document.querySelectorAll('.' + TOOLTIP_CSS_CLASS);
+    const tooltips = document.querySelectorAll('.' + O_TOOLTIP);
     if (tooltips) tooltips.forEach((tooltip: any) => tooltip.remove());
   }
 
   private createTooltip(): void {
     const tooltip = document.createElement('div');
-    tooltip.classList.add(TOOLTIP_CSS_CLASS);
+    tooltip.classList.add(O_TOOLTIP);
     document.body.appendChild(tooltip);
     this.eventTooltipToggle = this.toggleTooltip.bind(this);
     document.addEventListener('mouseover', this.eventTooltipToggle);
-    this.tooltip = document.querySelector('.' + TOOLTIP_CSS_CLASS);
+    this.tooltip = document.querySelector('.' + O_TOOLTIP);
     this.eventReplaceWord = this.replaceWord.bind(this);
     this.tooltip.addEventListener('click', this.eventReplaceWord);
   }
@@ -69,18 +69,18 @@ export class OrthographyTooltip implements IOrthographyTooltip {
 
   private toggleTooltip(event: any): void {
     if (event.type === 'mouseover') {
-      if (event.target.className.includes(HIGHLIGHT_CSS_CLASS)) {
+      if (event.target.className.includes(O_HIGHLIGHT)) {
         this.setDataToTooltip(event.target);
-        this.tooltip.classList.add(TOOLTIP_VISIBLE_CSS_CLASS);
+        this.tooltip.classList.add(O_TOOLTIP_VISIBLE);
         this.tooltip.style.left = this.getLeftPos(event);
         this.tooltip.style.top = this.getTopPos(event);
       }
     }
     if (
-      !event.target.className.includes(TOOLTIP_CSS_CLASS) &&
-      !event.target.className.includes(HIGHLIGHT_CSS_CLASS)
+      !event.target.className.includes(O_TOOLTIP) &&
+      !event.target.className.includes(O_HIGHLIGHT)
     ) {
-      this.tooltip.classList.remove(TOOLTIP_VISIBLE_CSS_CLASS);
+      this.tooltip.classList.remove(O_TOOLTIP_VISIBLE);
       this.tooltip.innerHTML = '';
     }
   }
@@ -109,7 +109,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
       this.tooltip.innerHTML = '';
       hint.s.forEach((h: string) => {
         const button = document.createElement('button');
-        button.classList.add(TOOLTIP_HINT_CSS_CLASS);
+        button.classList.add(O_TOOLTIP_HINT);
         button.setAttribute('data-pos', hint.row + '-' + hint.col);
         button.innerText = h;
         this.tooltip.appendChild(button);
@@ -118,7 +118,7 @@ export class OrthographyTooltip implements IOrthographyTooltip {
   }
 
   private replaceWord(event: any) {
-    if (event.target.className.includes(TOOLTIP_HINT_CSS_CLASS)) {
+    if (event.target.className.includes(O_TOOLTIP_HINT)) {
       const data = JSON.parse(localStorage.getItem('obsidian-orthography'));
       const word = data.find((pos: any) =>
         new RegExp('\\b' + (pos.row + '-' + pos.col) + '\\b').test(

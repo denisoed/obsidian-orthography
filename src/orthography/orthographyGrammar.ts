@@ -1,8 +1,12 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { API_URL_GRAMMAR } from '../config';
-import { O_G_I_OPENED, O_G_ITEM, O_GRAMMAR } from '../cssClasses';
-import { LOCALSTORAGE_KEY_HINTS } from '../constants';
+import {
+  O_GRAMMAR,
+  O_GRAMMAR_ITEM,
+  O_GRAMMAR_ITEM_OPENED
+} from '../cssClasses';
+import { O_LOCALSTORAGE_KEY_HINTS } from '../constants';
 import highlightWords from './helpers/highlightWords';
 import { IAlert } from '../interfaces';
 
@@ -31,13 +35,13 @@ export class OrthographyGrammar {
   public async check(): Promise<IAlert> {
     const text = this.getEditorText();
     const data = await this.getData(text);
-    localStorage.setItem(LOCALSTORAGE_KEY_HINTS, JSON.stringify(data));
+    localStorage.setItem(O_LOCALSTORAGE_KEY_HINTS, JSON.stringify(data));
     await this.createBar();
     return data;
   }
 
   public destroy(): void {
-    const minicards = document.querySelectorAll(`.${O_G_ITEM}`);
+    const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', this.toggleCard));
     this.mover.removeEventListener('mousedown', this.moverIsDown);
     this.collapse.removeEventListener('mousedown', this.closeOpenedCards);
@@ -50,7 +54,7 @@ export class OrthographyGrammar {
     self.grammar = document.createElement('div');
     self.grammar.classList.add(O_GRAMMAR);
     self.grammar.id = O_GRAMMAR;
-    const data: any = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY_HINTS));
+    const data: any = JSON.parse(localStorage.getItem(O_LOCALSTORAGE_KEY_HINTS));
     const bar = UIBar(data);
     self.grammar.innerHTML = bar;
     document.body.appendChild(self.grammar);
@@ -61,7 +65,7 @@ export class OrthographyGrammar {
   }
 
   private setListeners() {
-    const minicards = document.querySelectorAll(`.${O_G_ITEM}`);
+    const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.addEventListener('click', this.toggleCard));
     this.mover = document.getElementById('mover');
     this.mover.addEventListener('mousedown', this.moverIsDown);
@@ -72,10 +76,10 @@ export class OrthographyGrammar {
   }
 
   private toggleCard(e: any): void {
-    if (e.currentTarget.className.contains(O_G_I_OPENED)) {
-      e.currentTarget.classList.remove(O_G_I_OPENED);
+    if (e.currentTarget.className.contains(O_GRAMMAR_ITEM_OPENED)) {
+      e.currentTarget.classList.remove(O_GRAMMAR_ITEM_OPENED);
     } else {
-      e.currentTarget.classList.add(O_G_I_OPENED);
+      e.currentTarget.classList.add(O_GRAMMAR_ITEM_OPENED);
     }
   }
 
@@ -100,8 +104,8 @@ export class OrthographyGrammar {
   }
 
   private closeOpenedCards() {
-    const minicards = document.querySelectorAll(`.${O_G_ITEM}`);
-    minicards.forEach((mc) => mc.classList.remove(O_G_I_OPENED));
+    const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
+    minicards.forEach((mc) => mc.classList.remove(O_GRAMMAR_ITEM_OPENED));
   }
 
   private async getData(text: string) {

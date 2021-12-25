@@ -1,5 +1,5 @@
 import type { App } from 'obsidian';
-import { HIGHLIGHT_CSS_CLASS } from '../../constants';
+import { O_HIGHLIGHT } from '../../cssClasses';
 
 const createSearchQuery = (data: [], key: string) => {
   if (!data.length) return new RegExp(/^/gi);
@@ -22,7 +22,7 @@ const highlightWords = (app: App, data: any, key: string): void => {
     const to = cursor.to();
     markers.push(
       editor.markText(from, to, {
-        className: HIGHLIGHT_CSS_CLASS,
+        className: O_HIGHLIGHT,
         attributes: {
           'data-pos': from.line + '-' + from.ch
         }

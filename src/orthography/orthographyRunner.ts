@@ -2,13 +2,14 @@ import { Notice, Events } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import { OrthographyChecker } from './orthographyChecker';
 import { OrthographyGrammar } from './orthographyGrammar';
+import { O_RUNNER_ICON, O_RUNNER_ICON_CLEAR } from '../constants';
 import type { App } from 'obsidian';
 import {
-  RUNNER_CSS_CLASS,
-  RUNNER_ACTIVE_CSS_CLASS,
-  RUNNER_CLEAR_CSS_CLASS,
-  RUNNER_HIDDEN_CSS_CLASS
-} from '../constants';
+  O_RUNNER,
+  O_RUNNER_ACTIVE,
+  O_RUNNER_CLEAR,
+  O_RUNNER_HIDDEN
+} from '../cssClasses';
 
 interface IOrthographyRunner {
   init(): void;
@@ -42,7 +43,7 @@ export class OrthographyRunner implements IOrthographyRunner {
     this.emitter.off('onUpdateWordPos', this.checkIfIsCompleted.bind(this));
     this.runner.removeEventListener('click', this.onClickByBtn);
     this.orthography.clear();
-    const runners = document.querySelectorAll('.' + RUNNER_CSS_CLASS);
+    const runners = document.querySelectorAll('.' + O_RUNNER);
     if (runners) runners.forEach((runner: any) => runner.remove());
   }
 
@@ -59,28 +60,28 @@ export class OrthographyRunner implements IOrthographyRunner {
   }
 
   public show(): void {
-    const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
-    runner.classList.remove(RUNNER_HIDDEN_CSS_CLASS);
+    const runner = document.querySelector('.' + O_RUNNER);
+    runner.classList.remove(O_RUNNER_HIDDEN);
   }
 
   public hide(): void {
-    const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
-    runner.classList.add(RUNNER_HIDDEN_CSS_CLASS);
+    const runner = document.querySelector('.' + O_RUNNER);
+    runner.classList.add(O_RUNNER_HIDDEN);
   }
 
   private createRunner() {
-    const runner = this.createButton('⌘');
+    const runner = this.createButton(O_RUNNER_ICON);
     document.body.appendChild(runner);
   }
 
   private async setButtonClear() {
     this.isActive = true;
-    const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
+    const runner = document.querySelector('.' + O_RUNNER);
 
     if (!runner) return;
 
-    const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
-    runner.classList.add(RUNNER_ACTIVE_CSS_CLASS);
+    const runnerIcon = document.querySelector('.' + O_RUNNER + ' span');
+    runner.classList.add(O_RUNNER_ACTIVE);
 
     try {
       let response;
@@ -91,11 +92,11 @@ export class OrthographyRunner implements IOrthographyRunner {
         response = await this.orthography.check();
       }
       this.isActive = false;
-      runner.classList.remove(RUNNER_ACTIVE_CSS_CLASS);
+      runner.classList.remove(O_RUNNER_ACTIVE);
       if (response) {
         this.isCompleted = true;
-        runnerIcon.textContent = '✕';
-        runnerIcon.classList.add(RUNNER_CLEAR_CSS_CLASS);
+        runnerIcon.textContent = O_RUNNER_ICON_CLEAR;
+        runnerIcon.classList.add(O_RUNNER_CLEAR);
       } else {
         new Notice('Orthography errors not found!');
       }
@@ -108,20 +109,20 @@ export class OrthographyRunner implements IOrthographyRunner {
     this.isActive = true;
     this.isCompleted = false;
 
-    const runner = document.querySelector('.' + RUNNER_CSS_CLASS);
+    const runner = document.querySelector('.' + O_RUNNER);
 
     if (!runner) return;
 
-    const runnerIcon = document.querySelector('.' + RUNNER_CSS_CLASS + ' span');
-    runnerIcon.classList.remove(RUNNER_CLEAR_CSS_CLASS);
-    runner.classList.add(RUNNER_ACTIVE_CSS_CLASS);
+    const runnerIcon = document.querySelector('.' + O_RUNNER + ' span');
+    runnerIcon.classList.remove(O_RUNNER_CLEAR);
+    runner.classList.add(O_RUNNER_ACTIVE);
     localStorage.removeItem('obsidian-orthography');
 
     // Delay for button animation
     setTimeout(() => {
       this.isActive = false;
-      runnerIcon.textContent = '⌘';
-      runner.classList.remove(RUNNER_ACTIVE_CSS_CLASS);
+      runnerIcon.textContent = O_RUNNER_ICON;
+      runner.classList.remove(O_RUNNER_ACTIVE);
       this.orthography.clear();
       this.grammar.destroy();
     }, 250);
@@ -131,7 +132,7 @@ export class OrthographyRunner implements IOrthographyRunner {
     this.runner = document.createElement('button');
     const icon = document.createElement('span');
     icon.innerText = text;
-    this.runner.classList.add(RUNNER_CSS_CLASS);
+    this.runner.classList.add(O_RUNNER);
     this.runner.appendChild(icon);
     this.onClickByBtn = this.run.bind(this);
     this.runner.addEventListener('click', this.onClickByBtn);
