@@ -1,11 +1,11 @@
 import { App } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
-import { API_URL_GRAMMAR } from '../config';
 import {
   O_GRAMMAR,
   O_GRAMMAR_ITEM,
   O_GRAMMAR_ITEM_OPENED
 } from '../cssClasses';
+import { IAlert } from '../interfaces';
 
 import UIBar from './UIElements/UIBar';
 
@@ -27,13 +27,6 @@ export class OrthographyGrammarly {
 
   public init(): void {
     self = this;
-    // setTimeout(() => {
-    //   const activeEditor = this.getEditor();
-    //   activeEditor.on('change', (editor: any) => {
-    //     const text = editor.doc.getValue();
-    //     console.log(text);
-    //   });
-    // }, 1000);
   }
 
   public create(): void {
@@ -47,6 +40,29 @@ export class OrthographyGrammarly {
   }
 
   public destroy(): void {
+    self.removeListeners();
+    if (self.grammar) document.getElementById(O_GRAMMAR).remove();
+  }
+
+  public update(data: IAlert): void {
+    self.removeListeners();
+    const bar = UIBar(data);
+    self.grammar.innerHTML = bar;
+    self.setListeners();
+  }
+
+  private setListeners() {
+    const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
+    minicards.forEach((mc) => mc.addEventListener('click', self.toggleCard));
+    self.mover = document.getElementById('mover');
+    self.mover.addEventListener('mousedown', self.moverIsDown);
+    self.collapse = document.getElementById('collapse');
+    self.collapse.addEventListener('mousedown', self.closeOpenedCards);
+    document.addEventListener('mouseup', () => (self.moverSelected = false));
+    document.addEventListener('mousemove', self.moveMover);
+  }
+
+  private removeListeners() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
     if (self.mover)
@@ -55,18 +71,6 @@ export class OrthographyGrammarly {
       self.collapse.removeEventListener('mousedown', self.closeOpenedCards);
     document.removeEventListener('mouseup', () => (self.moverSelected = false));
     document.removeEventListener('mousemove', self.moveMover);
-    if (self.grammar) document.getElementById(O_GRAMMAR).remove();
-  }
-
-  private setListeners() {
-    const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
-    minicards.forEach((mc) => mc.addEventListener('click', this.toggleCard));
-    this.mover = document.getElementById('mover');
-    this.mover.addEventListener('mousedown', this.moverIsDown);
-    this.collapse = document.getElementById('collapse');
-    this.collapse.addEventListener('mousedown', this.closeOpenedCards);
-    document.addEventListener('mouseup', () => (self.moverSelected = false));
-    document.addEventListener('mousemove', this.moveMover);
   }
 
   private toggleCard(e: any): void {
@@ -100,26 +104,5 @@ export class OrthographyGrammarly {
   private closeOpenedCards() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.classList.remove(O_GRAMMAR_ITEM_OPENED));
-  }
-
-  private async getData(text: string) {
-    const url: any = new URL(API_URL_GRAMMAR);
-    const params: any = { text };
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key])
-    );
-    const response = await fetch(url, {
-      method: 'GET'
-    });
-    return await response.json();
-  }
-
-  private getEditor() {
-    const activeLeaf: any = this.app.workspace.activeLeaf;
-    return activeLeaf.view.sourceMode.cmEditor;
-  }
-
-  private getEditorText() {
-    return this.getEditor().getValue();
   }
 }
