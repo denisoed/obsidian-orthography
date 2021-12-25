@@ -1,17 +1,12 @@
 import { Plugin, Events } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
-import {
-  OrthographyRunner,
-  OrthographyTooltip,
-  OrthographyGrammar
-} from './orthography';
+import { OrthographyGrammarly, OrthographyToggler } from './orthography';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
-  private runner: any;
-  private tooltip: any;
   private grammar: any;
   private emitter: any;
+  private toggler: any;
 
   async onload(): Promise<void> {
     // ------ Init -------- //
@@ -23,61 +18,29 @@ export default class OrthographyPlugin extends Plugin {
 
     this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
-    if (!settings.useGrammar) this.initOrthographyTooltip();
-
-    if (settings.displayRunner) this.initOrthographyRunner();
-
-    if (settings.useGrammar) this.initOrthographyGrammar();
+    this.initOrthographyToggler();
+    this.initOrthographyGrammarly();
 
     // ------- Events -------- //
-    this.emitter.on('onUpdateSettings', this.onUpdateSettings.bind(this));
-
-    this.addCommand({
-      id: 'check-orthography',
-      name: 'Check Orthography',
-      callback: () => this.runner.run(),
-      hotkeys: [
-        {
-          modifiers: ['Mod', 'Shift'],
-          key: 'l'
-        }
-      ]
-    });
+    this.emitter.on('orthography:open', this.grammar.create);
+    this.emitter.on('orthography:close', this.grammar.destroy);
   }
 
   onunload(): void {
-    this.emitter.off('onUpdateSettings', this.onUpdateSettings.bind(this));
-    this.runner.destroy();
-    this.tooltip.destroy();
+    this.emitter.off('orthography:open', this.grammar.create);
+    this.emitter.off('orthography:close', this.grammar.destroy);
+    this.toggler.destroy();
   }
 
-  private onUpdateSettings(data: any) {
-    if (data.displayRunner) {
-      if (!this.runner) {
-        this.initOrthographyRunner();
-      } else {
-        this.runner.show();
-      }
-    } else {
-      this.runner.hide();
-    }
-  }
-
-  private initOrthographyTooltip(): void {
+  private initOrthographyToggler(): void {
     const { app, settings, emitter } = this;
-    this.tooltip = new OrthographyTooltip(app, settings, emitter);
-    this.tooltip.init();
+    this.toggler = new OrthographyToggler(app, settings, emitter);
+    this.toggler.init();
   }
 
-  private initOrthographyRunner(): void {
-    const { app, settings, emitter } = this;
-    this.runner = new OrthographyRunner(app, settings, emitter);
-    this.runner.init();
-  }
-
-  private initOrthographyGrammar(): void {
+  private initOrthographyGrammarly(): void {
     const { app, settings } = this;
-    this.grammar = new OrthographyGrammar(app, settings);
+    this.grammar = new OrthographyGrammarly(app, settings);
     this.grammar.init();
   }
 }

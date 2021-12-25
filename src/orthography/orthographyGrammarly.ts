@@ -6,14 +6,12 @@ import {
   O_GRAMMAR_ITEM,
   O_GRAMMAR_ITEM_OPENED
 } from '../cssClasses';
-import highlightWords from './helpers/highlightWords';
-import { IAlert } from '../interfaces';
 
 import UIBar from './UIElements/UIBar';
 
 let self: any;
 
-export class OrthographyGrammar {
+export class OrthographyGrammarly {
   private app: App;
   private settings: OrthographySettings;
   private grammar: any;
@@ -29,7 +27,6 @@ export class OrthographyGrammar {
 
   public init(): void {
     self = this;
-    console.log('OrthographyGrammar initialized');
     // setTimeout(() => {
     //   const activeEditor = this.getEditor();
     //   activeEditor.on('change', (editor: any) => {
@@ -39,40 +36,26 @@ export class OrthographyGrammar {
     // }, 1000);
   }
 
-  public async check(): Promise<IAlert> {
-    const text = this.getEditorText();
-    const data = await this.getData(text);
-    if (data.alerts.length) {
-      await this.createBar(data);
-      return data;
-    }
-    return null;
+  public create(): void {
+    self.grammar = document.createElement('div');
+    self.grammar.classList.add(O_GRAMMAR);
+    self.grammar.id = O_GRAMMAR;
+    const bar = UIBar(null);
+    self.grammar.innerHTML = bar;
+    document.body.appendChild(self.grammar);
+    self.setListeners();
   }
 
   public destroy(): void {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
-    minicards.forEach((mc) => mc.removeEventListener('click', this.toggleCard));
-    if (this.mover)
-      this.mover.removeEventListener('mousedown', this.moverIsDown);
-    if (this.collapse)
-      this.collapse.removeEventListener('mousedown', this.closeOpenedCards);
+    minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
+    if (self.mover)
+      self.mover.removeEventListener('mousedown', self.moverIsDown);
+    if (self.collapse)
+      self.collapse.removeEventListener('mousedown', self.closeOpenedCards);
     document.removeEventListener('mouseup', () => (self.moverSelected = false));
-    document.removeEventListener('mousemove', this.moveMover);
+    document.removeEventListener('mousemove', self.moveMover);
     if (self.grammar) document.getElementById(O_GRAMMAR).remove();
-  }
-
-  private createBar(data: IAlert) {
-    self.grammar = document.createElement('div');
-    self.grammar.classList.add(O_GRAMMAR);
-    self.grammar.id = O_GRAMMAR;
-    const bar = UIBar(data);
-    self.grammar.innerHTML = bar;
-    document.body.appendChild(self.grammar);
-
-    const activeEditor = this.getEditor();
-    highlightWords(activeEditor, data.alerts, 'highlightText');
-
-    this.setListeners();
   }
 
   private setListeners() {
