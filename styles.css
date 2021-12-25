@@ -43,7 +43,7 @@
   box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
   z-index: 2;
   transition: all 0.1s ease;
-  color: rgba(255, 0, 0, 1);
+  color: rgb(209, 209, 209);
 }
 
 .obsidian-orthography-runner--clear {

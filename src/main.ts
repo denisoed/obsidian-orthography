@@ -10,7 +10,8 @@ export default class OrthographyPlugin extends Plugin {
   private emitter: any;
   private toggler: any;
   private activeEditor: any;
-  private debounceFunc = debounce(this.onChange.bind(this), 1000);
+  private debounceGetDataFunc = debounce(this.handleEvents.bind(this), 1000);
+  private getDataFunc = debounce(this.handleEvents.bind(this), 0);
   private aborter: any;
 
   async onload(): Promise<void> {
@@ -29,19 +30,22 @@ export default class OrthographyPlugin extends Plugin {
     // ------- Events -------- //
     this.emitter.on('orthography:open', this.grammar.create);
     this.emitter.on('orthography:close', this.grammar.destroy);
+    this.emitter.on('orthography:run', this.getDataFunc);
 
     // ---- Get active editor ---- //
     // NOTE: find a better way to do this
     this.registerDomEvent(document, 'click', () => {
-      if (this.activeEditor) this.activeEditor.off('change', this.debounceFunc);
+      if (this.activeEditor)
+        this.activeEditor.off('change', this.debounceGetDataFunc);
       this.activeEditor = this.getEditor();
-      this.activeEditor.on('change', this.debounceFunc);
+      this.activeEditor.on('change', this.debounceGetDataFunc);
     });
   }
 
   onunload(): void {
     this.emitter.off('orthography:open', this.grammar.create);
     this.emitter.off('orthography:close', this.grammar.destroy);
+    this.emitter.of('orthography:run', this.handleEvents);
     this.toggler.destroy();
   }
 
@@ -52,8 +56,8 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private initOrthographyPopup(): void {
-    const { app, settings } = this;
-    this.grammar = new OrthographyPopup(app, settings);
+    const { app, settings, emitter } = this;
+    this.grammar = new OrthographyPopup(app, settings, emitter);
     this.grammar.init();
   }
 
@@ -62,14 +66,14 @@ export default class OrthographyPlugin extends Plugin {
     return activeLeaf.view.sourceMode.cmEditor;
   }
 
-  private async onChange(editor: any) {
+  private async handleEvents() {
     this.grammar.setLoader();
-    const text = editor.doc.getValue();
-    const data = await this.getData(text);
+    const text = this.activeEditor.getValue();
+    const data = await this.fetchData(text);
     this.grammar.update(data);
   }
 
-  private async getData(text: string) {
+  private async fetchData(text: string) {
     if (this.aborter) this.aborter.abort();
 
     this.aborter = new AbortController();

@@ -1,8 +1,8 @@
 const UIHintsFallback = (): string => {
   const hintsFallback = `
     <div class="obsidian-orthography-hints-fallback">
-      <button>
-        Run spell-checking
+      <button id="runner">
+        Run orthography check
       </button>
     </div>
   `;

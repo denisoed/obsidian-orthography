@@ -1,4 +1,4 @@
-import { App } from 'obsidian';
+import { App, Events } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import {
   O_GRAMMAR,
@@ -14,15 +14,19 @@ let self: any;
 export class OrthographyPopup {
   private app: App;
   private settings: OrthographySettings;
+  private emitter: any;
   private grammar: any;
   private mover: any;
+  private reloader: any;
+  private runner: any;
   private collapse: any;
   private grammarOffset: number[] = [0, 0];
   private moverSelected = false;
 
-  constructor(app: App, settings: OrthographySettings) {
+  constructor(app: App, settings: OrthographySettings, emitter: Events) {
     this.app = app;
     this.settings = settings;
+    this.emitter = emitter;
   }
 
   public init(): void {
@@ -62,6 +66,14 @@ export class OrthographyPopup {
   private setListeners() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.addEventListener('click', self.toggleCard));
+    self.reloader = document.getElementById('reloader');
+    if (self.reloader) {
+      self.reloader.addEventListener('click', self.runOnClick);
+    }
+    self.runner = document.getElementById('runner');
+    if (self.runner) {
+      self.runner.addEventListener('click', self.runOnClick);
+    }
     self.mover = document.getElementById('mover');
     self.mover.addEventListener('mousedown', self.moverIsDown);
     self.collapse = document.getElementById('collapse');
@@ -73,6 +85,9 @@ export class OrthographyPopup {
   private removeListeners() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
+    if (self.reloader)
+      self.reloader.removeEventListener('click', self.runOnClick);
+    if (self.runner) self.runner.removeEventListener('click', self.runOnClick);
     if (self.mover)
       self.mover.removeEventListener('mousedown', self.moverIsDown);
     if (self.collapse)
@@ -107,6 +122,10 @@ export class OrthographyPopup {
       self.grammar.style.left = `${mousePosition.x + self.grammarOffset[0]}px`;
       self.grammar.style.top = `${mousePosition.y + self.grammarOffset[1]}px`;
     }
+  }
+
+  private runOnClick() {
+    self.emitter.trigger('orthography:run');
   }
 
   private closeOpenedCards() {
