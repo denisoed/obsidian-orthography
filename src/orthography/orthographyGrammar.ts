@@ -43,18 +43,22 @@ export class OrthographyGrammar {
   public destroy(): void {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', this.toggleCard));
-    this.mover.removeEventListener('mousedown', this.moverIsDown);
-    this.collapse.removeEventListener('mousedown', this.closeOpenedCards);
+    if (this.mover)
+      this.mover.removeEventListener('mousedown', this.moverIsDown);
+    if (this.collapse)
+      this.collapse.removeEventListener('mousedown', this.closeOpenedCards);
     document.removeEventListener('mouseup', () => (self.moverSelected = false));
     document.removeEventListener('mousemove', this.moveMover);
-    document.getElementById(O_GRAMMAR).remove();
+    if (self.grammar) document.getElementById(O_GRAMMAR).remove();
   }
 
   private createBar() {
     self.grammar = document.createElement('div');
     self.grammar.classList.add(O_GRAMMAR);
     self.grammar.id = O_GRAMMAR;
-    const data: any = JSON.parse(localStorage.getItem(O_LOCALSTORAGE_KEY_HINTS));
+    const data: any = JSON.parse(
+      localStorage.getItem(O_LOCALSTORAGE_KEY_HINTS)
+    );
     const bar = UIBar(data);
     self.grammar.innerHTML = bar;
     document.body.appendChild(self.grammar);

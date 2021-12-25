@@ -86,7 +86,14 @@ export class OrthographyRunner implements IOrthographyRunner {
     try {
       let response;
       if (this.settings.useGrammar) {
-        response = await this.grammar.check();
+        try {
+          response = await this.grammar.check();
+        } catch (error) {
+          this.returnButtonCheck();
+          return new Notice(
+            'No connection to the server. Please, check your internet connection.'
+          );
+        }
       }
       if (!this.settings.useGrammar) {
         response = await this.orthography.check();
