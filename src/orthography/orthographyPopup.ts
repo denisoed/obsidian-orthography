@@ -22,6 +22,7 @@ export class OrthographyPopup {
   private collapse: any;
   private grammarOffset: number[] = [0, 0];
   private moverSelected = false;
+  private created = false;
 
   constructor(app: App, settings: OrthographySettings, emitter: Events) {
     this.app = app;
@@ -34,6 +35,7 @@ export class OrthographyPopup {
   }
 
   public create(): void {
+    self.created = true;
     self.grammar = document.createElement('div');
     self.grammar.classList.add(O_GRAMMAR);
     self.grammar.id = O_GRAMMAR;
@@ -44,6 +46,7 @@ export class OrthographyPopup {
   }
 
   public destroy(): void {
+    self.created = false;
     self.removeListeners();
     if (self.grammar) document.getElementById(O_GRAMMAR).remove();
   }

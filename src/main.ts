@@ -6,7 +6,7 @@ import { API_URL_GRAMMAR } from './config';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
-  private grammar: any;
+  private popup: any;
   private emitter: any;
   private toggler: any;
   private activeEditor: any;
@@ -28,8 +28,8 @@ export default class OrthographyPlugin extends Plugin {
     this.initOrthographyPopup();
 
     // ------- Events -------- //
-    this.emitter.on('orthography:open', this.grammar.create);
-    this.emitter.on('orthography:close', this.grammar.destroy);
+    this.emitter.on('orthography:open', this.popup.create);
+    this.emitter.on('orthography:close', this.popup.destroy);
     this.emitter.on('orthography:run', this.getDataFunc);
 
     // ---- Get active editor ---- //
@@ -43,8 +43,8 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   onunload(): void {
-    this.emitter.off('orthography:open', this.grammar.create);
-    this.emitter.off('orthography:close', this.grammar.destroy);
+    this.emitter.off('orthography:open', this.popup.create);
+    this.emitter.off('orthography:close', this.popup.destroy);
     this.emitter.of('orthography:run', this.handleEvents);
     this.toggler.destroy();
   }
@@ -57,8 +57,8 @@ export default class OrthographyPlugin extends Plugin {
 
   private initOrthographyPopup(): void {
     const { app, settings, emitter } = this;
-    this.grammar = new OrthographyPopup(app, settings, emitter);
-    this.grammar.init();
+    this.popup = new OrthographyPopup(app, settings, emitter);
+    this.popup.init();
   }
 
   private getEditor() {
@@ -67,10 +67,11 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private async handleEvents() {
-    this.grammar.setLoader();
+    if (!this.popup.created) return;
+    this.popup.setLoader();
     const text = this.activeEditor.getValue();
     const data = await this.fetchData(text);
-    this.grammar.update(data);
+    this.popup.update(data);
   }
 
   private async fetchData(text: string) {

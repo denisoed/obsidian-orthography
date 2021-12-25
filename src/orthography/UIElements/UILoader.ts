@@ -1,7 +1,7 @@
 const UILoader = (): string => {
   const loader = `
     <div class="obsidian-orthography-loader">
-      Loading...
+      Checking...
     </div>
   `;
 
