@@ -1,4 +1,4 @@
-import { Plugin, Events } from 'obsidian';
+import { Plugin, Events, Notice } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
 import {
   OrthographyPopup,
@@ -88,8 +88,13 @@ export default class OrthographyPlugin extends Plugin {
     this.data.clearHighlightWords();
     const text = this.activeEditor.getValue();
     const data = await this.data.fetchData(text);
-    this.data.highlightWords(this.activeEditor, data.alerts, 'highlightText');
-    this.popup.update(data);
+    if (data && data.alerts && data.alerts.length) {
+      this.data.highlightWords(this.activeEditor, data.alerts, 'highlightText');
+      this.popup.update(data);
+    } else {
+      new Notice('Spelling errors not found!');
+      this.popup.removeLoader();
+    }
   }
 
   private onPopupOpen() {

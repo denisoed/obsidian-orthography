@@ -5,7 +5,7 @@ import UIHintsFallback from './UIHintsFallback';
 import UILoader from './UILoader';
 
 const UIBar = (data: IAlert, loading: boolean): string => {
-  const hasData = data && data.alerts;
+  const hasData = data && data.alerts && data.alerts.length;
   const controls: string = UIControls(!!hasData);
   const fallback = loading ? UILoader() : UIHintsFallback();
   const cards = hasData ? UIHints(data.alerts) : fallback;
