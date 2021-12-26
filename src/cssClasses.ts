@@ -1,8 +1,8 @@
 // Grammer popup
-export const O_GRAMMAR = 'obsidian-orthography-grammar';
-export const O_GRAMMAR_ITEM = 'obsidian-orthography-grammar-item';
+export const O_GRAMMAR = 'obsidian-orthography-popup';
+export const O_GRAMMAR_ITEM = 'obsidian-orthography-popup-item';
 export const O_GRAMMAR_ITEM_OPENED =
-  'obsidian-orthography-grammar-item--opened';
+  'obsidian-orthography-popup-item--opened';
 
 // Runner
 export const O_RUNNER = 'obsidian-orthography-runner';

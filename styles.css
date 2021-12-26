@@ -87,7 +87,7 @@
   }
 }
 
-.obsidian-orthography-grammar {
+.obsidian-orthography-popup {
   width: 350px;
   max-width: 350px;
   height: 400px;
@@ -102,7 +102,7 @@
   z-index: 15;
 }
 
-.obsidian-orthography-grammar-item {
+.obsidian-orthography-popup-item {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -120,38 +120,38 @@
   transition: all .2s ease;
 }
 
-.obsidian-orthography-grammar-item:hover {
+.obsidian-orthography-popup-item:hover {
   transform: scale(1.015);
 }
 
-.obsidian-orthography-grammar-item:hover .obsidian-orthography-grammar-arrows {
+.obsidian-orthography-popup-item:hover .obsidian-orthography-popup-arrows {
   opacity: 0.5;
 }
 
-.obsidian-orthography-grammar-item--opened .obsidian-orthography-grammar-minicard {
+.obsidian-orthography-popup-item--opened .obsidian-orthography-popup-minicard {
   display: none;
 }
 
-.obsidian-orthography-grammar-item--opened .obsidian-orthography-grammar-card {
+.obsidian-orthography-popup-item--opened .obsidian-orthography-popup-card {
   display: flex;
 }
 
 /* Mini card */
 
-.obsidian-orthography-grammar-minicard {
+.obsidian-orthography-popup-minicard {
   width: 100%;
   display: flex;
   align-items: center;
   margin-right: 8px;
 }
 
-.obsidian-orthography-grammar-minicard > div:first-child {
+.obsidian-orthography-popup-minicard > div:first-child {
   display: flex;
   align-items: center;
   margin-right: 10px;
 }
 
-.obsidian-orthography-grammar-minicard > div:first-child:before {
+.obsidian-orthography-popup-minicard > div:first-child:before {
   content: '';
   width: 5px;
   height: 5px;
@@ -161,18 +161,18 @@
   background-color: #fbd599;
 }
 
-.critical .obsidian-orthography-grammar-minicard > div:first-child:before {
+.critical .obsidian-orthography-popup-minicard > div:first-child:before {
   background-color: red !important;
 }
 
-.obsidian-orthography-grammar-item-sugg {
+.obsidian-orthography-popup-item-sugg {
   display: flex;
   align-items: center;
   font-size: 14px;
   opacity: .4;
 }
 
-.obsidian-orthography-grammar-item-sugg::before {
+.obsidian-orthography-popup-item-sugg::before {
   content: '';
   width: 3px;
   height: 3px;
@@ -185,7 +185,7 @@
 
 /* Arrows */
 
-.obsidian-orthography-grammar-arrows {
+.obsidian-orthography-popup-arrows {
   height: 100%;
   position: absolute;
   right: 10px;
@@ -195,31 +195,31 @@
   flex-direction: column;
 }
 
-.obsidian-orthography-grammar-arrows svg {
+.obsidian-orthography-popup-arrows svg {
   fill: #fff;
   opacity: 0.5;
   width: 8px;
 }
 
-.obsidian-orthography-grammar-arrows svg:first-child {
+.obsidian-orthography-popup-arrows svg:first-child {
   transform: rotate(180deg);
   margin-top: 12px;
   margin-right: -8px;
 }
 
-.obsidian-orthography-grammar-arrows svg:last-child {
+.obsidian-orthography-popup-arrows svg:last-child {
   margin-top: 6px;
 }
 
 /* Card */
 
-.obsidian-orthography-grammar-card {
+.obsidian-orthography-popup-card {
   width: 100%;
   display: none;
   flex-direction: column;
 }
 
-.obsidian-orthography-grammar-card > div:first-child {
+.obsidian-orthography-popup-card > div:first-child {
   display: flex;
   align-items: center;
   margin-right: 10px;
@@ -227,7 +227,7 @@
   opacity: 0.8;
 }
 
-.obsidian-orthography-grammar-card > div:first-child:before {
+.obsidian-orthography-popup-card > div:first-child:before {
   content: '';
   width: 5px;
   height: 5px;
@@ -237,24 +237,24 @@
   background-color: #fbd599;
 }
 
-.obsidian-orthography-grammar-card > div:nth-child(2) {
+.obsidian-orthography-popup-card > div:nth-child(2) {
   display: flex;
   align-items: center;
   margin-left: 15px;
   margin-top: 10px;
 }
 
-.obsidian-orthography-grammar-card > div:nth-child(2) span {
+.obsidian-orthography-popup-card > div:nth-child(2) span {
   display: flex;
   align-items: center;
 }
 
-.obsidian-orthography-grammar-card > div:nth-child(2) span:first-child {
+.obsidian-orthography-popup-card > div:nth-child(2) span:first-child {
   text-decoration: line-through;
   text-decoration-color: red;
 }
 
-.obsidian-orthography-grammar-replacements {
+.obsidian-orthography-popup-replacement {
   margin-left: 5px;
   background-color: #57A884;
   border-radius: 3px;
@@ -263,7 +263,7 @@
   line-height: normal;
 }
 
-.obsidian-orthography-grammar-replacements::before {
+.obsidian-orthography-popup-replacement::before {
   content: '→';
   color: #fff;
   display: inline-block;
@@ -271,7 +271,7 @@
   margin-right: 5px;
 }
 
-.obsidian-orthography-grammar-hightligh--red {
+.obsidian-orthography-popup-hightligh--red {
   background-color: red;
   border-radius: 3px;
   padding: 2px 6px;
@@ -279,19 +279,19 @@
   text-decoration: none !important;
 }
 
-.obsidian-orthography-grammar-card > div:nth-child(3) {
+.obsidian-orthography-popup-card > div:nth-child(3) {
   font-size: 14px;
   margin-left: 15px;
   opacity: 0.5;
 }
 
-.critical .obsidian-orthography-grammar-card > div:first-child:before {
+.critical .obsidian-orthography-popup-card > div:first-child:before {
   background-color: red !important;
 }
 
 /* Controls */
 
-.obsidian-orthography-grammar-controls {
+.obsidian-orthography-popup-controls {
   position: sticky;
   left: 0;
   top: 0;
@@ -304,28 +304,28 @@
   z-index: 2;
 }
 
-.obsidian-orthography-grammar-controls div {
+.obsidian-orthography-popup-controls div {
   cursor: pointer;
   margin-left: 10px;
 }
 
-.obsidian-orthography-grammar-controls div:active {
+.obsidian-orthography-popup-controls div:active {
   transform: scale(0.9);
 }
 
-.obsidian-orthography-grammar-controls div svg {
+.obsidian-orthography-popup-controls div svg {
   width: 16px;
   height: auto;
   fill: #fff;
   opacity: 0.5;
 }
 
-.obsidian-orthography-grammar-horizontalSize {
+.obsidian-orthography-popup-horizontalSize {
   margin-right: auto;
   margin-left: 0 !important;
 }
 
-.obsidian-orthography-grammar-reload:active {
+.obsidian-orthography-popup-reload:active {
   transform: scale(0.96);
 }
 

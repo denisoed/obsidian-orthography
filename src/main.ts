@@ -7,6 +7,7 @@ import {
 } from './orthography';
 import debounce from './orthography/helpers/debounce';
 
+// Use self in events callbacks
 let self: any;
 
 export default class OrthographyPlugin extends Plugin {
