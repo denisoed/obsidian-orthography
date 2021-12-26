@@ -1,18 +1,21 @@
 import { Plugin, Events } from 'obsidian';
 import { OrthographySettings, OrthographySettingTab } from './settings';
-import { OrthographyPopup, OrthographyToggler } from './orthography';
+import {
+  OrthographyPopup,
+  OrthographyToggler,
+  OrthographyData
+} from './orthography';
 import debounce from './orthography/helpers/debounce';
-import { API_URL_GRAMMAR } from './config';
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private popup: any;
-  private emitter: any;
   private toggler: any;
+  private data: any;
+  private emitter: any;
   private activeEditor: any;
   private debounceGetDataFunc = debounce(this.handleEvents.bind(this), 1000);
   private getDataFunc = debounce(this.handleEvents.bind(this), 0);
-  private aborter: any;
 
   async onload(): Promise<void> {
     // ------ Init -------- //
@@ -26,6 +29,7 @@ export default class OrthographyPlugin extends Plugin {
 
     this.initOrthographyToggler();
     this.initOrthographyPopup();
+    this.initOrthographyData();
 
     // ------- Events -------- //
     this.emitter.on('orthography:open', this.popup.create);
@@ -61,6 +65,12 @@ export default class OrthographyPlugin extends Plugin {
     this.popup.init();
   }
 
+  private initOrthographyData(): void {
+    const { app, settings } = this;
+    this.data = new OrthographyData(app, settings);
+    this.data.init();
+  }
+
   private getEditor() {
     const activeLeaf: any = this.app.workspace.activeLeaf;
     return activeLeaf.view.sourceMode.cmEditor;
@@ -69,27 +79,10 @@ export default class OrthographyPlugin extends Plugin {
   private async handleEvents() {
     if (!this.popup.created) return;
     this.popup.setLoader();
+    this.data.clearHighlightWords();
     const text = this.activeEditor.getValue();
-    const data = await this.fetchData(text);
+    const data = await this.data.fetchData(text);
+    this.data.highlightWords(this.activeEditor, data.alerts, 'highlightText');
     this.popup.update(data);
-  }
-
-  private async fetchData(text: string) {
-    if (this.aborter) this.aborter.abort();
-
-    this.aborter = new AbortController();
-    const { signal } = this.aborter;
-
-    const url: any = new URL(API_URL_GRAMMAR);
-    const params: any = { text };
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key])
-    );
-    const response = await fetch(url, {
-      method: 'GET',
-      signal
-    });
-    this.aborter = null;
-    return await response.json();
   }
 }

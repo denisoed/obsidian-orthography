@@ -10,7 +10,7 @@ const createSearchQuery = (data: [], key: string) => {
   return searchRequest;
 };
 
-const highlightWords = (editor: any, data: any, key: string): void => {
+export const highlightWords = (editor: any, data: any, key: string): void => {
   const markers = [];
   const searchQuery = new RegExp(createSearchQuery(data, key));
   const cursor = editor.getSearchCursor(searchQuery);
@@ -19,13 +19,15 @@ const highlightWords = (editor: any, data: any, key: string): void => {
     const to = cursor.to();
     markers.push(
       editor.markText(from, to, {
-        className: O_HIGHLIGHT,
-        attributes: {
-          'data-pos': from.line + '-' + from.ch
-        }
+        className: O_HIGHLIGHT
       })
     );
   }
 };
 
-export default highlightWords;
+export const clearHighlightWords = (): void => {
+  const highlightWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
+  highlightWords.forEach((span) => {
+    span.removeAttribute('class');
+  });
+};
