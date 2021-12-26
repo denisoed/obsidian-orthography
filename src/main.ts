@@ -7,6 +7,8 @@ import {
 } from './orthography';
 import debounce from './orthography/helpers/debounce';
 
+let self: any;
+
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private popup: any;
@@ -19,6 +21,7 @@ export default class OrthographyPlugin extends Plugin {
 
   async onload(): Promise<void> {
     // ------ Init -------- //
+    self = this;
     this.emitter = new Events();
 
     const settings = new OrthographySettings(this, this.emitter);
@@ -32,8 +35,8 @@ export default class OrthographyPlugin extends Plugin {
     this.initOrthographyData();
 
     // ------- Events -------- //
-    this.emitter.on('orthography:open', this.popup.create);
-    this.emitter.on('orthography:close', this.popup.destroy);
+    this.emitter.on('orthography:open', this.onPopupOpen);
+    this.emitter.on('orthography:close', this.onPopupClose);
     this.emitter.on('orthography:run', this.getDataFunc);
 
     // ---- Get active editor ---- //
@@ -47,10 +50,12 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   onunload(): void {
-    this.emitter.off('orthography:open', this.popup.create);
-    this.emitter.off('orthography:close', this.popup.destroy);
-    this.emitter.of('orthography:run', this.handleEvents);
+    this.emitter.off('orthography:open', this.onPopupOpen);
+    this.emitter.off('orthography:close', this.onPopupClose);
+    this.emitter.off('orthography:run', this.handleEvents);
     this.toggler.destroy();
+    this.popup.destroy();
+    this.data.destroy();
   }
 
   private initOrthographyToggler(): void {
@@ -84,5 +89,14 @@ export default class OrthographyPlugin extends Plugin {
     const data = await this.data.fetchData(text);
     this.data.highlightWords(this.activeEditor, data.alerts, 'highlightText');
     this.popup.update(data);
+  }
+
+  private onPopupOpen() {
+    self.popup.create();
+  }
+
+  private onPopupClose() {
+    self.data.destroy();
+    self.popup.destroy();
   }
 }

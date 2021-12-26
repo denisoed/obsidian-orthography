@@ -26,6 +26,7 @@ export class OrthographyData implements IOrthographyData {
 
   public destroy(): void {
     self.clearHighlightWords();
+    self.aborter = null;
   }
 
   public async fetchData(text: string): Promise<JSON> {
