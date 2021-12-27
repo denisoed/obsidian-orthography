@@ -88,7 +88,7 @@ export class OrthographyWord implements IOrthographyWord {
     doc.replaceRange(word, from, to);
   }
 
-  private clearHighlightWords(): void {
+  public clearHighlightWords(): void {
     const highlightWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
     highlightWords.forEach((span) => {
       span.removeAttribute('class');

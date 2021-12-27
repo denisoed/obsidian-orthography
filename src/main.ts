@@ -41,28 +41,20 @@ export default class OrthographyPlugin extends Plugin {
     this.emitter.on('orthography:open', this.onPopupOpen);
     this.emitter.on('orthography:close', this.onPopupClose);
     this.emitter.on('orthography:run', this.getDataFunc);
-    this.emitter.on('orthography:replace', this.replaceText);
-
-    // ---- Get active editor ---- //
-    // NOTE: find a better way to do this
-    this.registerDomEvent(document, 'click', () => {
-      if (this.activeEditor)
-        this.activeEditor.off('change', this.debounceGetDataFunc);
-      this.activeEditor = this.getEditor();
-      this.activeEditor.on('change', this.debounceGetDataFunc);
-    });
+    this.emitter.on('orthography:replace', this.onReplaceWord);
   }
 
   onunload(): void {
     this.emitter.off('orthography:open', this.onPopupOpen);
     this.emitter.off('orthography:close', this.onPopupClose);
     this.emitter.off('orthography:run', this.handleEvents);
-    this.emitter.off('orthography:replace', this.replaceText);
+    this.emitter.off('orthography:replace', this.onReplaceWord);
     this.toggler.destroy();
     this.popup.destroy();
     this.word.destroy();
     this.hints = null;
     this.markers = null;
+    this.activeEditor = null;
   }
 
   private initOrthographyToggler(): void {
@@ -90,7 +82,9 @@ export default class OrthographyPlugin extends Plugin {
 
   private async handleEvents() {
     if (!this.popup.created) return;
+    this.activeEditor = this.getEditor();
     const text = this.activeEditor.getValue();
+    this.word.destroy();
     this.popup.setLoader();
     this.markers = [];
     this.hints = await this.word.fetchData(text);
@@ -116,7 +110,7 @@ export default class OrthographyPlugin extends Plugin {
     self.popup.destroy();
   }
 
-  private replaceText(event: any) {
+  private onReplaceWord(event: any) {
     const index = event.target.getAttribute('data-index');
     const [row, col] = self.markers[index].attributes.position.split('-');
     const origWordLen = event.target.getAttribute('data-text').length;
