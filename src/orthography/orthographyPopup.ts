@@ -72,15 +72,15 @@ export class OrthographyPopup {
     minicards.forEach((mc) => mc.addEventListener('click', self.toggleCard));
     const replacements = document.querySelectorAll(`.${O_POPUP_REPLACEMENT}`);
     replacements.forEach((rp) =>
-      rp.addEventListener('click', self.replaceText)
+      rp.addEventListener('click', self.onReplaceWord)
     );
     self.reloader = document.getElementById('reloader');
     if (self.reloader) {
-      self.reloader.addEventListener('click', self.runOnClick);
+      self.reloader.addEventListener('click', self.onRun);
     }
     self.runner = document.getElementById('runner');
     if (self.runner) {
-      self.runner.addEventListener('click', self.runOnClick);
+      self.runner.addEventListener('click', self.onRun);
     }
     self.mover = document.getElementById('mover');
     self.mover.addEventListener('mousedown', self.moverIsDown);
@@ -95,11 +95,10 @@ export class OrthographyPopup {
     minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
     const replacements = document.querySelectorAll(`.${O_POPUP_REPLACEMENT}`);
     replacements.forEach((rp) =>
-      rp.removeEventListener('click', self.replaceText)
+      rp.removeEventListener('click', self.onReplaceWord)
     );
-    if (self.reloader)
-      self.reloader.removeEventListener('click', self.runOnClick);
-    if (self.runner) self.runner.removeEventListener('click', self.runOnClick);
+    if (self.reloader) self.reloader.removeEventListener('click', self.onRun);
+    if (self.runner) self.runner.removeEventListener('click', self.onRun);
     if (self.mover)
       self.mover.removeEventListener('mousedown', self.moverIsDown);
     if (self.collapse)
@@ -136,7 +135,7 @@ export class OrthographyPopup {
     }
   }
 
-  private runOnClick() {
+  private onRun() {
     self.emitter.trigger('orthography:run');
   }
 
@@ -145,7 +144,13 @@ export class OrthographyPopup {
     minicards.forEach((mc) => mc.classList.remove(O_GRAMMAR_ITEM_OPENED));
   }
 
-  private replaceText(event: any) {
+  private onReplaceWord(event: any) {
     self.emitter.trigger('orthography:replace', event);
+    const { index } = event.currentTarget.dataset;
+    const selectedItem = document.getElementById(`${O_GRAMMAR_ITEM}-${index}`);
+    selectedItem.remove();
+    if (!document.querySelectorAll(`.${O_GRAMMAR_ITEM}`).length) {
+      self.removeLoader();
+    }
   }
 }
