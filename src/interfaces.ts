@@ -6,8 +6,15 @@ export interface IData {
   replacements: string[];
   explanation: string;
   cardLayout: { group: string };
+  text: string;
 }
 
 export interface IAlert {
   alerts: IData[];
+}
+
+export interface IPosition {
+  row: number;
+  col: number;
+  len: number;
 }

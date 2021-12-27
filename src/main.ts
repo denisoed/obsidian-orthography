@@ -3,7 +3,7 @@ import { OrthographySettings, OrthographySettingTab } from './settings';
 import {
   OrthographyPopup,
   OrthographyToggler,
-  OrthographyData
+  OrthographyWord
 } from './orthography';
 import debounce from './orthography/helpers/debounce';
 
@@ -14,9 +14,11 @@ export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private popup: any;
   private toggler: any;
-  private data: any;
+  private word: any;
   private emitter: any;
+  private markers: any;
   private activeEditor: any;
+  private hints: any;
   private debounceGetDataFunc = debounce(this.handleEvents.bind(this), 1000);
   private getDataFunc = debounce(this.handleEvents.bind(this), 0);
 
@@ -33,12 +35,13 @@ export default class OrthographyPlugin extends Plugin {
 
     this.initOrthographyToggler();
     this.initOrthographyPopup();
-    this.initOrthographyData();
+    this.initOrthographyWord();
 
     // ------- Events -------- //
     this.emitter.on('orthography:open', this.onPopupOpen);
     this.emitter.on('orthography:close', this.onPopupClose);
     this.emitter.on('orthography:run', this.getDataFunc);
+    this.emitter.on('orthography:replace', this.replaceText);
 
     // ---- Get active editor ---- //
     // NOTE: find a better way to do this
@@ -54,9 +57,12 @@ export default class OrthographyPlugin extends Plugin {
     this.emitter.off('orthography:open', this.onPopupOpen);
     this.emitter.off('orthography:close', this.onPopupClose);
     this.emitter.off('orthography:run', this.handleEvents);
+    this.emitter.off('orthography:replace', this.replaceText);
     this.toggler.destroy();
     this.popup.destroy();
-    this.data.destroy();
+    this.word.destroy();
+    this.hints = null;
+    this.markers = null;
   }
 
   private initOrthographyToggler(): void {
@@ -71,10 +77,10 @@ export default class OrthographyPlugin extends Plugin {
     this.popup.init();
   }
 
-  private initOrthographyData(): void {
+  private initOrthographyWord(): void {
     const { app, settings } = this;
-    this.data = new OrthographyData(app, settings);
-    this.data.init();
+    this.word = new OrthographyWord(app, settings);
+    this.word.init();
   }
 
   private getEditor() {
@@ -84,13 +90,17 @@ export default class OrthographyPlugin extends Plugin {
 
   private async handleEvents() {
     if (!this.popup.created) return;
-    this.popup.setLoader();
-    this.data.clearHighlightWords();
     const text = this.activeEditor.getValue();
-    const data = await this.data.fetchData(text);
-    if (data && data.alerts && data.alerts.length) {
-      this.data.highlightWords(this.activeEditor, data.alerts, 'highlightText');
-      this.popup.update(data);
+    this.popup.setLoader();
+    this.markers = [];
+    this.hints = await this.word.fetchData(text);
+    if (this.hints && this.hints.alerts && this.hints.alerts.length) {
+      this.markers = this.word.highlightWords(
+        this.activeEditor,
+        this.hints.alerts,
+        'highlightText'
+      );
+      this.popup.update(this.hints);
     } else {
       new Notice('Spelling errors not found!');
       this.popup.removeLoader();
@@ -102,7 +112,23 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private onPopupClose() {
-    self.data.destroy();
+    self.word.destroy();
     self.popup.destroy();
+  }
+
+  private replaceText(event: any) {
+    const index = event.target.getAttribute('data-index');
+    const [row, col] = self.markers[index].attributes.position.split('-');
+    const origWordLen = event.target.getAttribute('data-text').length;
+    const newWord = event.target.innerText;
+    self.word.replaceWord(
+      self.activeEditor,
+      {
+        row: +row,
+        col: +col,
+        len: +origWordLen
+      },
+      newWord
+    );
   }
 }

@@ -3,7 +3,8 @@ import { OrthographySettings } from 'src/settings';
 import {
   O_GRAMMAR,
   O_GRAMMAR_ITEM,
-  O_GRAMMAR_ITEM_OPENED
+  O_GRAMMAR_ITEM_OPENED,
+  O_POPUP_REPLACEMENT
 } from '../cssClasses';
 import { IAlert } from '../interfaces';
 
@@ -69,6 +70,10 @@ export class OrthographyPopup {
   private setListeners() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.addEventListener('click', self.toggleCard));
+    const replacements = document.querySelectorAll(`.${O_POPUP_REPLACEMENT}`);
+    replacements.forEach((rp) =>
+      rp.addEventListener('click', self.replaceText)
+    );
     self.reloader = document.getElementById('reloader');
     if (self.reloader) {
       self.reloader.addEventListener('click', self.runOnClick);
@@ -88,6 +93,10 @@ export class OrthographyPopup {
   private removeListeners() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
+    const replacements = document.querySelectorAll(`.${O_POPUP_REPLACEMENT}`);
+    replacements.forEach((rp) =>
+      rp.removeEventListener('click', self.replaceText)
+    );
     if (self.reloader)
       self.reloader.removeEventListener('click', self.runOnClick);
     if (self.runner) self.runner.removeEventListener('click', self.runOnClick);
@@ -134,5 +143,9 @@ export class OrthographyPopup {
   private closeOpenedCards() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.classList.remove(O_GRAMMAR_ITEM_OPENED));
+  }
+
+  private replaceText(event: any) {
+    self.emitter.trigger('orthography:replace', event);
   }
 }

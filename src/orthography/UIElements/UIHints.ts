@@ -3,7 +3,7 @@ import { IData } from '../../interfaces';
 const UIHints = (alerts: IData[]): string => {
   if (!alerts || !alerts.length) return '';
   return alerts
-    .map((card: IData) => {
+    .map((card: IData, index: number) => {
       const {
         impact,
         highlightText,
@@ -11,7 +11,8 @@ const UIHints = (alerts: IData[]): string => {
         group,
         replacements,
         explanation,
-        cardLayout
+        cardLayout,
+        text
       } = card;
       return `
           <div class="obsidian-orthography-popup-item ${impact}">
@@ -40,7 +41,7 @@ const UIHints = (alerts: IData[]): string => {
                   group !== 'Style' &&
                   replacements &&
                   replacements.length
-                    ? `<span class="obsidian-orthography-popup-replacement">${replacements[0]}</span>`
+                    ? `<span data-text="${text}" data-index="${index}" class="obsidian-orthography-popup-replacement">${replacements[0]}</span>`
                     : ''
                 }
               </div>

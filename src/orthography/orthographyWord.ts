@@ -2,14 +2,15 @@ import { OrthographySettings } from '../settings';
 import type { App } from 'obsidian';
 import { O_HIGHLIGHT } from '../cssClasses';
 import { API_URL_GRAMMAR } from '../config';
+import { IPosition } from 'src/interfaces';
 
-interface IOrthographyData {
+interface IOrthographyWord {
   init(): void;
 }
 
 let self: any;
 
-export class OrthographyData implements IOrthographyData {
+export class OrthographyWord implements IOrthographyWord {
   private app: App;
   private settings: OrthographySettings;
   private markers: any[] = [];
@@ -26,7 +27,10 @@ export class OrthographyData implements IOrthographyData {
 
   public destroy(): void {
     self.clearHighlightWords();
-    self.aborter = null;
+    if (self.aborter) {
+      self.aborter.abort();
+      self.aborter = null;
+    }
   }
 
   public async fetchData(text: string): Promise<JSON> {
@@ -49,6 +53,7 @@ export class OrthographyData implements IOrthographyData {
   }
 
   public highlightWords(editor: any, data: any, key: string): void {
+    self.clearHighlightWords();
     const searchQuery = new RegExp(self.createSearchQuery(data, key));
     const cursor = editor.getSearchCursor(searchQuery);
     while (cursor.findNext()) {
@@ -56,18 +61,40 @@ export class OrthographyData implements IOrthographyData {
       const to = cursor.to();
       self.markers.push(
         editor.markText(from, to, {
-          className: O_HIGHLIGHT
+          className: O_HIGHLIGHT,
+          attributes: {
+            position: from.line + '-' + from.ch
+          }
         })
       );
     }
+    return self.markers;
   }
 
-  public clearHighlightWords(): void {
+  replaceWord(editor: any, position: IPosition, word: string): void {
+    if (!position) return;
+
+    const doc = editor.getDoc();
+
+    const from = {
+      line: position.row,
+      ch: position.col
+    };
+    const to = {
+      line: position.row,
+      ch: position.col + position.len
+    };
+
+    doc.replaceRange(word, from, to);
+  }
+
+  private clearHighlightWords(): void {
     const highlightWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
     highlightWords.forEach((span) => {
       span.removeAttribute('class');
     });
     self.markers.forEach((marker: any) => marker.clear());
+    self.markers = [];
   }
 
   private createSearchQuery(data: [], key: string): RegExp {
