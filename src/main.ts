@@ -6,7 +6,7 @@ import {
   OrthographyWord
 } from './orthography';
 import debounce from './orthography/helpers/debounce';
-import formatter from './orthography/helpers/formatter';
+import { formatAlerts, removePremium } from './orthography/helpers/formatters';
 
 // Use self in events callbacks
 let self: any;
@@ -90,12 +90,15 @@ export default class OrthographyPlugin extends Plugin {
     this.markers = [];
     this.hints = await this.word.fetchData(text);
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
+      const alerts = removePremium(this.hints.alerts);
       this.markers = this.word.highlightWords(
         this.activeEditor,
-        this.hints.alerts,
+        alerts,
         'highlightText'
       );
-      this.popup.update({ alerts: formatter(this.hints.alerts, this.markers) });
+      this.popup.update({
+        alerts: formatAlerts(alerts, this.markers)
+      });
     } else {
       new Notice('Spelling errors not found!');
       this.popup.removeLoader();
