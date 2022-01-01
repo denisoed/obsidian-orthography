@@ -15,5 +15,8 @@ export default {
     typescript(),
     nodeResolve({browser: true}),
     commonjs(),
-  ]
+  ],
+  onwarn: function(warning) {
+    if ( warning.code === 'THIS_IS_UNDEFINED' ) { return; }
+  },
 };

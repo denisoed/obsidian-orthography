@@ -3,6 +3,7 @@ import { OrthographySettings } from 'src/settings';
 import {
   O_GRAMMAR,
   O_GRAMMAR_ITEM,
+  O_GRAMMAR_RESIZED,
   O_GRAMMAR_ITEM_OPENED,
   O_POPUP_REPLACEMENT,
   O_HIGHLIGHT_FOCUSED
@@ -18,6 +19,7 @@ export class OrthographyPopup {
   private settings: OrthographySettings;
   private emitter: any;
   private grammar: any;
+  private sizer: any;
   private mover: any;
   private reloader: any;
   private runner: any;
@@ -89,12 +91,16 @@ export class OrthographyPopup {
     if (self.runner) {
       self.runner.addEventListener('click', self.onRun);
     }
+    self.sizer = document.getElementById('sizer');
+    if (self.sizer) {
+      self.sizer.addEventListener('click', self.onResize);
+    }
     self.mover = document.getElementById('mover');
     self.mover.addEventListener('mousedown', self.moverIsDown);
     self.collapse = document.getElementById('collapse');
     self.collapse.addEventListener('mousedown', self.closeOpenedCards);
-    document.addEventListener('mouseup', () => (self.moverSelected = false));
-    document.addEventListener('mousemove', self.moveMover);
+    document.addEventListener('mouseup', self.onMouseUp);
+    document.addEventListener('mousemove', self.onMouseMove);
   }
 
   private removeListeners() {
@@ -112,12 +118,13 @@ export class OrthographyPopup {
     );
     if (self.reloader) self.reloader.removeEventListener('click', self.onRun);
     if (self.runner) self.runner.removeEventListener('click', self.onRun);
+    if (self.sizer) self.sizer.removeEventListener('click', self.onResize);
     if (self.mover)
       self.mover.removeEventListener('mousedown', self.moverIsDown);
     if (self.collapse)
       self.collapse.removeEventListener('mousedown', self.closeOpenedCards);
-    document.removeEventListener('mouseup', () => (self.moverSelected = false));
-    document.removeEventListener('mousemove', self.moveMover);
+    document.removeEventListener('mouseup', self.onMouseUp);
+    document.removeEventListener('mousemove', self.onMouseMove);
   }
 
   private toggleCard(e: any): void {
@@ -136,7 +143,11 @@ export class OrthographyPopup {
     ];
   }
 
-  private moveMover(e: any) {
+  private onMouseUp() {
+    self.moverSelected = false;
+  }
+
+  private onMouseMove(e: any) {
     e.preventDefault();
     if (self.moverSelected) {
       const mousePosition = {
@@ -145,6 +156,14 @@ export class OrthographyPopup {
       };
       self.grammar.style.left = `${mousePosition.x + self.grammarOffset[0]}px`;
       self.grammar.style.top = `${mousePosition.y + self.grammarOffset[1]}px`;
+    }
+  }
+
+  private onResize() {
+    if (self.grammar.className.contains(O_GRAMMAR_RESIZED)) {
+      self.grammar.classList.remove(O_GRAMMAR_RESIZED);
+    } else {
+      self.grammar.classList.add(O_GRAMMAR_RESIZED);
     }
   }
 

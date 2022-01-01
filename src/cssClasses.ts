@@ -1,6 +1,7 @@
 // Grammer popup
 export const O_GRAMMAR = 'obsidian-orthography-popup';
 export const O_GRAMMAR_ITEM = 'obsidian-orthography-popup-item';
+export const O_GRAMMAR_RESIZED = 'obsidian-orthography-popup--resized';
 export const O_GRAMMAR_ITEM_OPENED = 'obsidian-orthography-popup-item--opened';
 export const O_POPUP_REPLACEMENT = 'obsidian-orthography-popup-replacement';
 

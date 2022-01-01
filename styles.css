@@ -125,6 +125,11 @@
   transition: all .2s ease;
 }
 
+.obsidian-orthography-popup--resized {
+  width: 500px;
+  max-width: 500px;
+}
+
 .obsidian-orthography-popup-item:hover {
   transform: scale(1.015);
 }

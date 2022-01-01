@@ -3,7 +3,7 @@ import { moveIcon, collapseIcon, horizontalSizeIcon } from './UIIcons';
 const UIControls = (hasData: boolean): string => {
   return `
       <div class="obsidian-orthography-popup-controls">
-        <div id="horizontalSizeIcon" class="obsidian-orthography-popup-horizontalSize" title="Change the size of the bar">${horizontalSizeIcon}</div>
+        <div id="sizer" class="obsidian-orthography-popup-horizontalSize" title="Change the size of the bar">${horizontalSizeIcon}</div>
         ${
           hasData
             ? '<button id="reloader" class="obsidian-orthography-popup-reload" title="Restart the orthography checker">Reload</button>'
