@@ -170,7 +170,9 @@ export class OrthographyPopup {
   private onFocusWord(e: any) {
     const p = e.currentTarget.dataset.position;
     const word = document.querySelector(`[position="${p}"]`);
-    word.classList.add(O_HIGHLIGHT_FOCUSED);
+    if (word) {
+      word.classList.add(O_HIGHLIGHT_FOCUSED);
+    }
   }
 
   private onRemoveFocusWord() {

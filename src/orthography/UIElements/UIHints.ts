@@ -4,12 +4,12 @@ const renderItems = (
   index: number,
   replacements: string[],
   text: string,
-  attributes: { position: string }
+  position: string
 ): string => {
   if (!replacements || !replacements.length) return '';
   return replacements
     .map((item: string) => {
-      return `<span data-index="${index}" data-position="${attributes.position}" data-text="${text}" class="obsidian-orthography-popup-replacement" title="Click to correct your spelling">${item}</span>`;
+      return `<span data-index="${index}" data-position="${position}" data-text="${text}" class="obsidian-orthography-popup-replacement" title="Click to correct your spelling">${item}</span>`;
     })
     .join('or');
 };
@@ -29,10 +29,9 @@ const UIHints = (alerts: IData[]): string => {
         text,
         attributes
       } = card;
+      const position = attributes?.position;
       return `
-          <div data-position="${
-            attributes.position
-          }" id="obsidian-orthography-popup-item-${index}" class="obsidian-orthography-popup-item ${impact}">
+          <div data-position="${position}" id="obsidian-orthography-popup-item-${index}" class="obsidian-orthography-popup-item ${impact}">
             <div class="obsidian-orthography-popup-minicard">
               <div>${highlightText || ''}</div>
               ${
@@ -58,7 +57,7 @@ const UIHints = (alerts: IData[]): string => {
                   group !== 'Style' &&
                   replacements &&
                   replacements.length
-                    ? renderItems(index, replacements, text, attributes)
+                    ? renderItems(index, replacements, text, position)
                     : ''
                 }
               </div>

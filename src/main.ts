@@ -6,7 +6,7 @@ import {
   OrthographyWord
 } from './orthography';
 import debounce from './orthography/helpers/debounce';
-import { formatAlerts, removePremium } from './orthography/helpers/formatters';
+import { sortAlerts, formatAlerts } from './orthography/helpers/formatters';
 
 // Use self in events callbacks
 let self: any;
@@ -90,14 +90,14 @@ export default class OrthographyPlugin extends Plugin {
     this.markers = [];
     this.hints = await this.word.fetchData(text);
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
-      const alerts = removePremium(this.hints.alerts);
+      const alerts = formatAlerts(this.hints.alerts);
       this.markers = this.word.highlightWords(
         this.activeEditor,
         alerts,
         'highlightText'
       );
       this.popup.update({
-        alerts: formatAlerts(alerts, this.markers)
+        alerts: sortAlerts(alerts, this.markers)
       });
     } else {
       new Notice('Spelling errors not found!');
@@ -117,7 +117,7 @@ export default class OrthographyPlugin extends Plugin {
   private onReplaceWord(event: any) {
     const [row, col] = event.currentTarget.dataset.position.split('-');
     const origWordLen = event.currentTarget.dataset.text.length;
-    const newWord = event.target.innerText;
+    const newWord = event.target.textContent;
     self.word.replaceWord(
       self.activeEditor,
       {
