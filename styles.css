@@ -368,6 +368,10 @@
   transform: translateY(1px);
 }
 
+.obsidian-orthography-hints-fallback p {
+  opacity: 0.3;
+}
+
 /* Loader */
 
 .obsidian-orthography-loader {

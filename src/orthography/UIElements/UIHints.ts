@@ -9,7 +9,7 @@ const renderItems = (
   if (!replacements || !replacements.length) return '';
   return replacements
     .map((item: string) => {
-      return `<span data-index="${index}" data-position="${attributes.position}" data-text="${text}" class="obsidian-orthography-popup-replacement">${item}</span>`;
+      return `<span data-index="${index}" data-position="${attributes.position}" data-text="${text}" class="obsidian-orthography-popup-replacement" title="Click to correct your spelling">${item}</span>`;
     })
     .join('or');
 };

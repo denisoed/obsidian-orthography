@@ -4,6 +4,7 @@ const UIHintsFallback = (): string => {
       <button id="runner">
         Run orthography check
       </button>
+      <p>Alpha version</p>
     </div>
   `;
 
