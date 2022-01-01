@@ -6,6 +6,7 @@ import {
   OrthographyWord
 } from './orthography';
 import debounce from './orthography/helpers/debounce';
+import formatter from './orthography/helpers/formatter';
 
 // Use self in events callbacks
 let self: any;
@@ -94,7 +95,7 @@ export default class OrthographyPlugin extends Plugin {
         this.hints.alerts,
         'highlightText'
       );
-      this.popup.update(this.hints);
+      this.popup.update({ alerts: formatter(this.hints.alerts, this.markers) });
     } else {
       new Notice('Spelling errors not found!');
       this.popup.removeLoader();
@@ -111,9 +112,8 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private onReplaceWord(event: any) {
-    const index = event.target.getAttribute('data-index');
-    const [row, col] = self.markers[index].attributes.position.split('-');
-    const origWordLen = event.target.getAttribute('data-text').length;
+    const [row, col] = event.currentTarget.dataset.position.split('-');
+    const origWordLen = event.currentTarget.dataset.text.length;
     const newWord = event.target.innerText;
     self.word.replaceWord(
       self.activeEditor,

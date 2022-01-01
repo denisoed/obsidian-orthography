@@ -1,5 +1,19 @@
 import { IData } from '../../interfaces';
 
+const renderItems = (
+  index: number,
+  replacements: string[],
+  text: string,
+  attributes: { position: string }
+): string => {
+  if (!replacements || !replacements.length) return '';
+  return replacements
+    .map((item: string) => {
+      return `<span data-index="${index}" data-position="${attributes.position}" data-text="${text}" class="obsidian-orthography-popup-replacement">${item}</span>`;
+    })
+    .join('or');
+};
+
 const UIHints = (alerts: IData[]): string => {
   if (!alerts || !alerts.length) return '';
   return alerts
@@ -12,7 +26,8 @@ const UIHints = (alerts: IData[]): string => {
         replacements,
         explanation,
         cardLayout,
-        text
+        text,
+        attributes
       } = card;
       return `
           <div id="obsidian-orthography-popup-item-${index}" class="obsidian-orthography-popup-item ${impact}">
@@ -41,7 +56,7 @@ const UIHints = (alerts: IData[]): string => {
                   group !== 'Style' &&
                   replacements &&
                   replacements.length
-                    ? `<span data-text="${text}" data-index="${index}" class="obsidian-orthography-popup-replacement">${replacements[0]}</span>`
+                    ? renderItems(index, replacements, text, attributes)
                     : ''
                 }
               </div>

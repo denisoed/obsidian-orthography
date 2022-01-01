@@ -7,6 +7,7 @@ export interface IData {
   explanation: string;
   cardLayout: { group: string };
   text: string;
+  attributes: any;
 }
 
 export interface IAlert {
