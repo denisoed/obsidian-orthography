@@ -1,6 +1,11 @@
 .obsidian-orthography-highlight {
   color: #fff;
   border-bottom: 1px solid rgba(255, 0, 0, 1);
+  position: relative;
+}
+
+.obsidian-orthography-highlight--focused {
+  background-color: rgba(255, 0, 0, 0.6);
 }
 
 .obsidian-orthography-tooltip {

@@ -17,3 +17,4 @@ export const O_TOOLTIP_HINT = 'obsidian-orthography-tooltip-hint';
 
 // Highlight
 export const O_HIGHLIGHT = 'obsidian-orthography-highlight';
+export const O_HIGHLIGHT_FOCUSED = 'obsidian-orthography-highlight--focused';

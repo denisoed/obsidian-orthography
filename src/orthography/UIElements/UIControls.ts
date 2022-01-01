@@ -6,7 +6,7 @@ const UIControls = (hasData: boolean): string => {
         <div id="horizontalSizeIcon" class="obsidian-orthography-popup-horizontalSize" title="Change the size of the bar">${horizontalSizeIcon}</div>
         ${
           hasData
-            ? '<button id="reloader" class="obsidian-orthography-popup-reload" title="Reload">Reload</button>'
+            ? '<button id="reloader" class="obsidian-orthography-popup-reload" title="Restart the orthography checker">Reload</button>'
             : ''
         }
         <div id="mover" class="obsidian-orthography-popup-mover" title="Move bar">${moveIcon}</div>

@@ -4,7 +4,8 @@ import {
   O_GRAMMAR,
   O_GRAMMAR_ITEM,
   O_GRAMMAR_ITEM_OPENED,
-  O_POPUP_REPLACEMENT
+  O_POPUP_REPLACEMENT,
+  O_HIGHLIGHT_FOCUSED
 } from '../cssClasses';
 import { IAlert } from '../interfaces';
 
@@ -70,6 +71,12 @@ export class OrthographyPopup {
   private setListeners() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.addEventListener('click', self.toggleCard));
+    minicards.forEach((mc) =>
+      mc.addEventListener('mouseover', self.onFocusWord)
+    );
+    minicards.forEach((mc) =>
+      mc.addEventListener('mouseout', self.onRemoveFocusWord)
+    );
     const replacements = document.querySelectorAll(`.${O_POPUP_REPLACEMENT}`);
     replacements.forEach((rp) =>
       rp.addEventListener('click', self.onReplaceWord)
@@ -93,6 +100,12 @@ export class OrthographyPopup {
   private removeListeners() {
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
+    minicards.forEach((mc) =>
+      mc.removeEventListener('mouseover', self.onFocusWord)
+    );
+    minicards.forEach((mc) =>
+      mc.removeEventListener('mouseout', self.onRemoveFocusWord)
+    );
     const replacements = document.querySelectorAll(`.${O_POPUP_REPLACEMENT}`);
     replacements.forEach((rp) =>
       rp.removeEventListener('click', self.onReplaceWord)
@@ -133,6 +146,17 @@ export class OrthographyPopup {
       self.grammar.style.left = `${mousePosition.x + self.grammarOffset[0]}px`;
       self.grammar.style.top = `${mousePosition.y + self.grammarOffset[1]}px`;
     }
+  }
+
+  private onFocusWord(e: any) {
+    const p = e.currentTarget.dataset.position;
+    const word = document.querySelector(`[position="${p}"]`);
+    word.classList.add(O_HIGHLIGHT_FOCUSED);
+  }
+
+  private onRemoveFocusWord() {
+    const words = document.querySelectorAll(`.${O_HIGHLIGHT_FOCUSED}`);
+    words.forEach((w) => w.classList.remove(O_HIGHLIGHT_FOCUSED));
   }
 
   private onRun() {

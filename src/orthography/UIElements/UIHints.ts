@@ -30,7 +30,9 @@ const UIHints = (alerts: IData[]): string => {
         attributes
       } = card;
       return `
-          <div id="obsidian-orthography-popup-item-${index}" class="obsidian-orthography-popup-item ${impact}">
+          <div data-position="${
+            attributes.position
+          }" id="obsidian-orthography-popup-item-${index}" class="obsidian-orthography-popup-item ${impact}">
             <div class="obsidian-orthography-popup-minicard">
               <div>${highlightText || ''}</div>
               ${
