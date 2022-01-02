@@ -2,7 +2,7 @@ import { OrthographySettings } from '../settings';
 import type { App } from 'obsidian';
 import { O_HIGHLIGHT } from '../cssClasses';
 import { API_URL_GRAMMAR } from '../config';
-import { IPosition } from 'src/interfaces';
+import { IPosition, IData } from 'src/interfaces';
 
 interface IOrthographyWord {
   init(): void;
@@ -13,8 +13,8 @@ let self: any;
 export class OrthographyWord implements IOrthographyWord {
   private app: App;
   private settings: OrthographySettings;
-  private markers: any[] = [];
   private aborter: any;
+  private highlightedWords: any;
 
   constructor(app: App, settings: OrthographySettings) {
     this.app = app;
@@ -52,26 +52,47 @@ export class OrthographyWord implements IOrthographyWord {
     return await response.json();
   }
 
-  public highlightWords(editor: any, data: any, key: string): void {
-    self.clearHighlightWords();
-    const searchQuery = new RegExp(self.createSearchQuery(data, key));
-    const cursor = editor.getSearchCursor(searchQuery);
-    while (cursor.findNext()) {
-      const from = cursor.from();
-      const to = cursor.to();
-      self.markers.push(
-        editor.markText(from, to, {
-          className: O_HIGHLIGHT,
-          attributes: {
-            position: from.line + '-' + from.ch
-          }
-        })
-      );
-    }
-    return self.markers;
+  public highlightWords(editor: any, alerts: IData[]): void {
+    this.clearHighlightWords();
+
+    alerts.forEach((alert: any) => {
+      const wordPosition = { begin: alert.begin, end: alert.end };
+      this.highlightWord(editor, wordPosition);
+    });
   }
 
-  replaceWord(editor: any, position: IPosition, word: string): void {
+  private highlightWord(
+    editor: any,
+    position: { begin: number; end: number }
+  ): void {
+    let ttl = 0;
+    let line = 0;
+    const { begin, end } = position;
+
+    editor.eachLine((l: any) => {
+      const s = ttl === 0 ? ttl : ttl + 1;
+      const lineTextLength = l.text.length;
+      ttl += lineTextLength;
+
+      if (line > 0) {
+        ttl++;
+      }
+
+      if (begin >= s && begin <= ttl) {
+        const diff = ttl - lineTextLength;
+        const posAdjA = begin - diff;
+        const posAdjB = end - diff;
+        this.highlightedWords = editor.markText(
+          { line: line, ch: posAdjA },
+          { line: line, ch: posAdjB },
+          { className: O_HIGHLIGHT }
+        );
+      }
+      line++;
+    });
+  }
+
+  public replaceWord(editor: any, position: IPosition, word: string): void {
     if (!position) return;
 
     const doc = editor.getDoc();
@@ -89,21 +110,12 @@ export class OrthographyWord implements IOrthographyWord {
   }
 
   public clearHighlightWords(): void {
+    if (typeof self.highlightedWords === 'object') {
+      self.highlightedWords.clear();
+    }
     const highlightWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
     highlightWords.forEach((span) => {
       span.removeAttribute('class');
     });
-    self.markers.forEach((marker: any) => marker.clear());
-    self.markers = [];
-  }
-
-  private createSearchQuery(data: [], key: string): RegExp {
-    if (!data.length) return new RegExp(/^/gi);
-
-    const words = data.map(function (item: any) {
-      return item[key];
-    });
-    const searchRequest = new RegExp(words.join('|'), 'gi');
-    return searchRequest;
   }
 }

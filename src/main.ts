@@ -111,11 +111,7 @@ export default class OrthographyPlugin extends Plugin {
     this.hints = await this.word.fetchData(text);
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
       const alerts = formatAlerts(this.hints.alerts);
-      this.markers = this.word.highlightWords(
-        this.activeEditor,
-        alerts,
-        'highlightText'
-      );
+      this.word.highlightWords(this.activeEditor, alerts);
       this.popup.update({
         alerts: sortAlerts(alerts, this.markers)
       });
