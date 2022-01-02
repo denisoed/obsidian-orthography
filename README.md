@@ -11,14 +11,18 @@ Obsidian plugin to check & fix orthography errors in text
 
 ![Gif](./obsidian-orthography.gif)
 
-## Hotkeys
-
-| Keys | Description |
-|---|---|
-| Ctrl + Shift + l | Run the orthography checker |
+**IMPORTANT**: This is experimental and may have instability. It is possible that there are bugs which may delete data in the current note. Please make backups!
 
 ## Features
 
 * Search for spelling errors in the text
 * Displaying options for correcting word mistakes
 * Correct a word mistake in one click
+
+## Pricing
+
+This plugin is provided to everyone for free, however if you would like to
+say thanks or help support continued development, feel free to send a little
+my way through one of the following methods:
+
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="100">](https://www.buymeacoffee.com/denisoed)
