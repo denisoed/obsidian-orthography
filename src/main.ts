@@ -20,8 +20,8 @@ export default class OrthographyPlugin extends Plugin {
   private markers: any;
   private activeEditor: any;
   private hints: any;
-  private debounceGetDataFunc = debounce(this.handleEvents.bind(this), 1000);
-  private getDataFunc = debounce(this.handleEvents.bind(this), 0);
+  private debounceGetDataFunc = debounce(this.onChangeText.bind(this), 1000);
+  private getDataFunc = debounce(this.onRunFromPopup.bind(this), 0);
 
   async onload(): Promise<void> {
     // ------ Init -------- //
@@ -43,13 +43,24 @@ export default class OrthographyPlugin extends Plugin {
     this.emitter.on('orthography:close', this.onPopupClose);
     this.emitter.on('orthography:run', this.getDataFunc);
     this.emitter.on('orthography:replace', this.onReplaceWord);
+
+    // NOTE: find a better way to do this
+    // Listen to changes in the editor
+    this.registerDomEvent(document, 'click', () => {
+      if (this.activeEditor)
+        this.activeEditor.off('change', this.debounceGetDataFunc);
+      this.activeEditor = this.getEditor();
+      this.activeEditor.on('change', this.debounceGetDataFunc);
+    });
   }
 
   onunload(): void {
     this.emitter.off('orthography:open', this.onPopupOpen);
     this.emitter.off('orthography:close', this.onPopupClose);
-    this.emitter.off('orthography:run', this.handleEvents);
+    this.emitter.off('orthography:run', this.onRunFromPopup);
     this.emitter.off('orthography:replace', this.onReplaceWord);
+    if (this.activeEditor)
+      this.activeEditor.off('change', this.debounceGetDataFunc);
     this.toggler.destroy();
     this.popup.destroy();
     this.word.destroy();
@@ -81,13 +92,22 @@ export default class OrthographyPlugin extends Plugin {
     return activeLeaf.view.sourceMode.cmEditor;
   }
 
-  private async handleEvents() {
+  private async onChangeText() {
     if (!this.popup.created) return;
-    this.activeEditor = this.getEditor();
-    const text = this.activeEditor.getValue();
+    this.runChecker();
+  }
+
+  private async onRunFromPopup() {
+    if (!this.popup.created) return;
     this.word.destroy();
     this.popup.setLoader();
     this.markers = [];
+    this.activeEditor = this.getEditor();
+    this.runChecker();
+  }
+
+  private async runChecker() {
+    const text = this.activeEditor.getValue();
     this.hints = await this.word.fetchData(text);
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
       const alerts = formatAlerts(this.hints.alerts);

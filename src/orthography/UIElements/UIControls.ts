@@ -10,7 +10,6 @@ const UIControls = (hasData: boolean): string => {
             : ''
         }
         <div id="mover" class="obsidian-orthography-popup-mover" title="Move bar">${moveIcon}</div>
-        <div id="collapse" class="obsidian-orthography-popup-collapse" title="Collapse opened cards">${collapseIcon}</div>
       </div>
     `;
 };

@@ -7,13 +7,5 @@ export const sortAlerts = (alerts: IData[], markers: any): any => {
 
 export const formatAlerts = (alerts: IData[]): any => {
   const withoutHidden = alerts.filter((alert: any) => alert.hidden !== true);
-  const withoutDuplicate = withoutHidden.reduce((acc, current) => {
-    const x = acc.find((item: any) => item.begin === current.begin);
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, []);
-  return withoutDuplicate;
+  return withoutHidden;
 };

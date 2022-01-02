@@ -23,7 +23,6 @@ export class OrthographyPopup {
   private mover: any;
   private reloader: any;
   private runner: any;
-  private collapse: any;
   private grammarOffset: number[] = [0, 0];
   private moverSelected = false;
   private created = false;
@@ -97,8 +96,6 @@ export class OrthographyPopup {
     }
     self.mover = document.getElementById('mover');
     self.mover.addEventListener('mousedown', self.moverIsDown);
-    self.collapse = document.getElementById('collapse');
-    self.collapse.addEventListener('mousedown', self.closeOpenedCards);
     document.addEventListener('mouseup', self.onMouseUp);
     document.addEventListener('mousemove', self.onMouseMove);
   }
@@ -121,14 +118,14 @@ export class OrthographyPopup {
     if (self.sizer) self.sizer.removeEventListener('click', self.onResize);
     if (self.mover)
       self.mover.removeEventListener('mousedown', self.moverIsDown);
-    if (self.collapse)
-      self.collapse.removeEventListener('mousedown', self.closeOpenedCards);
     document.removeEventListener('mouseup', self.onMouseUp);
     document.removeEventListener('mousemove', self.onMouseMove);
   }
 
   private toggleCard(e: any): void {
-    if (e.currentTarget.className.contains(O_GRAMMAR_ITEM_OPENED)) {
+    const opened = document.querySelectorAll(`.${O_GRAMMAR_ITEM_OPENED}`);
+    opened.forEach((o) => o.classList.remove(O_GRAMMAR_ITEM_OPENED));
+    if (e.currentTarget.classList.contains(O_GRAMMAR_ITEM_OPENED)) {
       e.currentTarget.classList.remove(O_GRAMMAR_ITEM_OPENED);
     } else {
       e.currentTarget.classList.add(O_GRAMMAR_ITEM_OPENED);
@@ -182,11 +179,6 @@ export class OrthographyPopup {
 
   private onRun() {
     self.emitter.trigger('orthography:run');
-  }
-
-  private closeOpenedCards() {
-    const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
-    minicards.forEach((mc) => mc.classList.remove(O_GRAMMAR_ITEM_OPENED));
   }
 
   private onReplaceWord(event: any) {
