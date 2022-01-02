@@ -17,7 +17,6 @@ export default class OrthographyPlugin extends Plugin {
   private toggler: any;
   private word: any;
   private emitter: any;
-  private markers: any;
   private activeEditor: any;
   private hints: any;
   private debounceGetDataFunc = debounce(this.onChangeText.bind(this), 500);
@@ -65,7 +64,6 @@ export default class OrthographyPlugin extends Plugin {
     this.popup.destroy();
     this.word.destroy();
     this.hints = null;
-    this.markers = null;
     this.activeEditor = null;
   }
 
@@ -101,7 +99,6 @@ export default class OrthographyPlugin extends Plugin {
     if (!this.popup.created) return;
     this.word.destroy();
     this.popup.setLoader();
-    this.markers = [];
     this.activeEditor = this.getEditor();
     this.runChecker();
   }
@@ -113,7 +110,7 @@ export default class OrthographyPlugin extends Plugin {
       const alerts = formatAlerts(this.hints.alerts);
       this.word.highlightWords(this.activeEditor, alerts);
       this.popup.update({
-        alerts: sortAlerts(alerts, this.markers)
+        alerts: sortAlerts(alerts)
       });
     } else {
       new Notice('Spelling errors not found!');

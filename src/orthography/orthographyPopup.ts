@@ -1,10 +1,10 @@
 import { App, Events } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import {
-  O_GRAMMAR,
-  O_GRAMMAR_ITEM,
-  O_GRAMMAR_RESIZED,
-  O_GRAMMAR_ITEM_OPENED,
+  O_POPUP,
+  O_POPUP_ITEM,
+  O_POPUP_RESIZED,
+  O_POPUP_ITEM_OPENED,
   O_POPUP_REPLACEMENT,
   O_HIGHLIGHT,
   O_HIGHLIGHT_FOCUSED
@@ -40,8 +40,8 @@ export class OrthographyPopup {
   public create(): void {
     self.created = true;
     self.popup = document.createElement('div');
-    self.popup.classList.add(O_GRAMMAR);
-    self.popup.id = O_GRAMMAR;
+    self.popup.classList.add(O_POPUP);
+    self.popup.id = O_POPUP;
     const bar = UIBar(null, false);
     self.popup.innerHTML = bar;
     document.body.appendChild(self.popup);
@@ -51,7 +51,7 @@ export class OrthographyPopup {
   public destroy(): void {
     self.created = false;
     self.removeListeners();
-    if (self.popup) document.getElementById(O_GRAMMAR).remove();
+    if (self.popup) document.getElementById(O_POPUP).remove();
   }
 
   public update(data: IAlert, loading?: boolean): void {
@@ -74,7 +74,7 @@ export class OrthographyPopup {
     highlightedWords.forEach((h) =>
       h.addEventListener('click', self.onOpenCard)
     );
-    const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
+    const minicards = document.querySelectorAll(`.${O_POPUP_ITEM}`);
     minicards.forEach((mc) => mc.addEventListener('click', self.toggleCard));
     minicards.forEach((mc) =>
       mc.addEventListener('mouseover', self.onFocusWord)
@@ -109,7 +109,7 @@ export class OrthographyPopup {
     highlightedWords.forEach((h) =>
       h.removeEventListener('click', self.onOpenCard)
     );
-    const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
+    const minicards = document.querySelectorAll(`.${O_POPUP_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
     minicards.forEach((mc) =>
       mc.removeEventListener('mouseover', self.onFocusWord)
@@ -131,12 +131,12 @@ export class OrthographyPopup {
   }
 
   private toggleCard(e: any): void {
-    const opened = document.querySelectorAll(`.${O_GRAMMAR_ITEM_OPENED}`);
-    opened.forEach((o) => o.classList.remove(O_GRAMMAR_ITEM_OPENED));
-    if (e.currentTarget.classList.contains(O_GRAMMAR_ITEM_OPENED)) {
-      e.currentTarget.classList.remove(O_GRAMMAR_ITEM_OPENED);
+    const opened = document.querySelectorAll(`.${O_POPUP_ITEM_OPENED}`);
+    opened.forEach((o) => o.classList.remove(O_POPUP_ITEM_OPENED));
+    if (e.currentTarget.classList.contains(O_POPUP_ITEM_OPENED)) {
+      e.currentTarget.classList.remove(O_POPUP_ITEM_OPENED);
     } else {
-      e.currentTarget.classList.add(O_GRAMMAR_ITEM_OPENED);
+      e.currentTarget.classList.add(O_POPUP_ITEM_OPENED);
     }
   }
 
@@ -165,10 +165,10 @@ export class OrthographyPopup {
   }
 
   private onResize() {
-    if (self.popup.className.contains(O_GRAMMAR_RESIZED)) {
-      self.popup.classList.remove(O_GRAMMAR_RESIZED);
+    if (self.popup.className.contains(O_POPUP_RESIZED)) {
+      self.popup.classList.remove(O_POPUP_RESIZED);
     } else {
-      self.popup.classList.add(O_GRAMMAR_RESIZED);
+      self.popup.classList.add(O_POPUP_RESIZED);
     }
   }
 
@@ -192,22 +192,22 @@ export class OrthographyPopup {
   private onReplaceWord(event: any) {
     self.emitter.trigger('orthography:replace', event);
     const { index } = event.currentTarget.dataset;
-    const selectedItem = document.getElementById(`${O_GRAMMAR_ITEM}-${index}`);
+    const selectedItem = document.getElementById(`${O_POPUP_ITEM}-${index}`);
     selectedItem.remove();
-    if (!document.querySelectorAll(`.${O_GRAMMAR_ITEM}`).length) {
+    if (!document.querySelectorAll(`.${O_POPUP_ITEM}`).length) {
       self.removeLoader();
     }
   }
 
   private onOpenCard(event: any) {
     const { value: position } = event.currentTarget.attributes.position;
-    const popup: any = document.querySelector(`.${O_GRAMMAR}`);
-    const opened = document.querySelectorAll(`.${O_GRAMMAR_ITEM_OPENED}`);
-    opened.forEach((o) => o.classList.remove(O_GRAMMAR_ITEM_OPENED));
+    const popup: any = document.querySelector(`.${O_POPUP}`);
+    const opened = document.querySelectorAll(`.${O_POPUP_ITEM_OPENED}`);
+    opened.forEach((o) => o.classList.remove(O_POPUP_ITEM_OPENED));
     const selected: any = document.querySelector(
       `[data-position="${position}"]`
     );
-    selected.classList.add(O_GRAMMAR_ITEM_OPENED);
+    selected.classList.add(O_POPUP_ITEM_OPENED);
     popup.scrollTop = selected.offsetTop;
   }
 }
