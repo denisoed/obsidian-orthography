@@ -104,6 +104,7 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private async runChecker() {
+    this.toggler.setLoading();
     const text = this.activeEditor.getValue();
     this.hints = await this.word.fetchData(text);
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
@@ -116,6 +117,7 @@ export default class OrthographyPlugin extends Plugin {
       new Notice('Spelling errors not found!');
       this.popup.removeLoader();
     }
+    this.toggler.removeLoading();
   }
 
   private onPopupOpen() {

@@ -1,8 +1,8 @@
 import { Events } from 'obsidian';
+import type { App } from 'obsidian';
 import { OrthographySettings } from '../settings';
 import { O_RUNNER_ICON, O_RUNNER_ICON_CLEAR } from '../constants';
-import type { App } from 'obsidian';
-import { O_RUNNER, O_RUNNER_HIDDEN } from '../cssClasses';
+import { O_RUNNER, O_RUNNER_HIDDEN, O_RUNNER_LOADING } from '../cssClasses';
 
 interface IOrthographyToggler {
   init(): void;
@@ -29,6 +29,7 @@ export class OrthographyToggler implements IOrthographyToggler {
   }
 
   public destroy(): void {
+    this.removeLoading();
     this.toggler.removeEventListener('click', this.toggle);
     this.removeButton();
   }
@@ -40,6 +41,7 @@ export class OrthographyToggler implements IOrthographyToggler {
       self.emitter.trigger('orthography:open');
     } else {
       self.updateButtonText(O_RUNNER_ICON);
+      self.removeLoading();
       self.emitter.trigger('orthography:close');
     }
   }
@@ -47,6 +49,14 @@ export class OrthographyToggler implements IOrthographyToggler {
   public hide(): void {
     const runner = document.querySelector('.' + O_RUNNER);
     runner.classList.add(O_RUNNER_HIDDEN);
+  }
+
+  public setLoading(): void {
+    this.toggler.classList.add(O_RUNNER_LOADING);
+  }
+
+  public removeLoading(): void {
+    this.toggler.classList.remove(O_RUNNER_LOADING);
   }
 
   private createButton(text: string) {
@@ -60,7 +70,7 @@ export class OrthographyToggler implements IOrthographyToggler {
   }
 
   private updateButtonText(text: string) {
-    const toggler: HTMLElement = document.querySelector(`.${O_RUNNER}`);
+    const toggler: HTMLElement = document.querySelector(`.${O_RUNNER} span`);
     if (toggler) toggler.innerText = text;
   }
 

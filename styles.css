@@ -76,6 +76,10 @@
   animation: spin 1s linear infinite;
 }
 
+.obsidian-orthography-runner--loading span {
+  animation: spin 1s linear infinite;
+}
+
 @keyframes spin {
   100% {
     transform: rotate(360deg);
