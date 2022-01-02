@@ -18,12 +18,11 @@ export class OrthographyPopup {
   private app: App;
   private settings: OrthographySettings;
   private emitter: any;
-  private grammar: any;
   private sizer: any;
   private mover: any;
   private reloader: any;
   private runner: any;
-  private grammarOffset: number[] = [0, 0];
+  private popupOffset: number[] = [0, 0];
   private moverSelected = false;
   private created = false;
 
@@ -39,25 +38,25 @@ export class OrthographyPopup {
 
   public create(): void {
     self.created = true;
-    self.grammar = document.createElement('div');
-    self.grammar.classList.add(O_GRAMMAR);
-    self.grammar.id = O_GRAMMAR;
+    self.popup = document.createElement('div');
+    self.popup.classList.add(O_GRAMMAR);
+    self.popup.id = O_GRAMMAR;
     const bar = UIBar(null, false);
-    self.grammar.innerHTML = bar;
-    document.body.appendChild(self.grammar);
+    self.popup.innerHTML = bar;
+    document.body.appendChild(self.popup);
     self.setListeners();
   }
 
   public destroy(): void {
     self.created = false;
     self.removeListeners();
-    if (self.grammar) document.getElementById(O_GRAMMAR).remove();
+    if (self.popup) document.getElementById(O_GRAMMAR).remove();
   }
 
   public update(data: IAlert, loading?: boolean): void {
     self.removeListeners();
     const bar = UIBar(data, loading);
-    self.grammar.innerHTML = bar;
+    self.popup.innerHTML = bar;
     self.setListeners();
   }
 
@@ -134,9 +133,9 @@ export class OrthographyPopup {
 
   private moverIsDown(e: any) {
     self.moverSelected = true;
-    self.grammarOffset = [
-      self.grammar.offsetLeft - e.clientX,
-      self.grammar.offsetTop - e.clientY
+    self.popupOffset = [
+      self.popup.offsetLeft - e.clientX,
+      self.popup.offsetTop - e.clientY
     ];
   }
 
@@ -151,16 +150,16 @@ export class OrthographyPopup {
         x: e.clientX,
         y: e.clientY
       };
-      self.grammar.style.left = `${mousePosition.x + self.grammarOffset[0]}px`;
-      self.grammar.style.top = `${mousePosition.y + self.grammarOffset[1]}px`;
+      self.popup.style.left = `${mousePosition.x + self.popupOffset[0]}px`;
+      self.popup.style.top = `${mousePosition.y + self.popupOffset[1]}px`;
     }
   }
 
   private onResize() {
-    if (self.grammar.className.contains(O_GRAMMAR_RESIZED)) {
-      self.grammar.classList.remove(O_GRAMMAR_RESIZED);
+    if (self.popup.className.contains(O_GRAMMAR_RESIZED)) {
+      self.popup.classList.remove(O_GRAMMAR_RESIZED);
     } else {
-      self.grammar.classList.add(O_GRAMMAR_RESIZED);
+      self.popup.classList.add(O_GRAMMAR_RESIZED);
     }
   }
 
