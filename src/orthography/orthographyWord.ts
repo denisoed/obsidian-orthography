@@ -76,7 +76,12 @@ export class OrthographyWord implements IOrthographyWord {
     this.highlightedWords = editor.markText(
       { line: row, ch: col },
       { line: row, ch: col + originalWord.len },
-      { className: O_HIGHLIGHT }
+      {
+        className: O_HIGHLIGHT,
+        attributes: {
+          position: originalWord.begin
+        }
+      }
     );
   }
 
@@ -132,7 +137,7 @@ export class OrthographyWord implements IOrthographyWord {
     return result;
   }
 
-  public clearHighlightWords(): void {
+  private clearHighlightWords(): void {
     if (typeof self.highlightedWords === 'object') {
       self.highlightedWords.clear();
     }

@@ -6,6 +6,7 @@ import {
   O_GRAMMAR_RESIZED,
   O_GRAMMAR_ITEM_OPENED,
   O_POPUP_REPLACEMENT,
+  O_HIGHLIGHT,
   O_HIGHLIGHT_FOCUSED
 } from '../cssClasses';
 import { IAlert } from '../interfaces';
@@ -69,6 +70,10 @@ export class OrthographyPopup {
   }
 
   private setListeners() {
+    const highlightedWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
+    highlightedWords.forEach((h) =>
+      h.addEventListener('click', self.onOpenCard)
+    );
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.addEventListener('click', self.toggleCard));
     minicards.forEach((mc) =>
@@ -100,6 +105,10 @@ export class OrthographyPopup {
   }
 
   private removeListeners() {
+    const highlightedWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
+    highlightedWords.forEach((h) =>
+      h.removeEventListener('click', self.onOpenCard)
+    );
     const minicards = document.querySelectorAll(`.${O_GRAMMAR_ITEM}`);
     minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
     minicards.forEach((mc) =>
@@ -188,5 +197,17 @@ export class OrthographyPopup {
     if (!document.querySelectorAll(`.${O_GRAMMAR_ITEM}`).length) {
       self.removeLoader();
     }
+  }
+
+  private onOpenCard(event: any) {
+    const { value: position } = event.currentTarget.attributes.position;
+    const popup: any = document.querySelector(`.${O_GRAMMAR}`);
+    const opened = document.querySelectorAll(`.${O_GRAMMAR_ITEM_OPENED}`);
+    opened.forEach((o) => o.classList.remove(O_GRAMMAR_ITEM_OPENED));
+    const selected: any = document.querySelector(
+      `[data-position="${position}"]`
+    );
+    selected.classList.add(O_GRAMMAR_ITEM_OPENED);
+    popup.scrollTop = selected.offsetTop;
   }
 }

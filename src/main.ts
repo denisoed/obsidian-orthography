@@ -20,7 +20,7 @@ export default class OrthographyPlugin extends Plugin {
   private markers: any;
   private activeEditor: any;
   private hints: any;
-  private debounceGetDataFunc = debounce(this.onChangeText.bind(this), 1000);
+  private debounceGetDataFunc = debounce(this.onChangeText.bind(this), 500);
   private getDataFunc = debounce(this.onRunFromPopup.bind(this), 0);
 
   async onload(): Promise<void> {

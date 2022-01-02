@@ -8,6 +8,10 @@
   background-color: rgba(255, 0, 0, 0.6);
 }
 
+.obsidian-orthography-highlight:hover {
+  background-color: rgba(255, 0, 0, 0.6);
+}
+
 .obsidian-orthography-tooltip {
   display: flex;
   flex-direction: column;
