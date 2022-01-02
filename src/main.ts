@@ -131,14 +131,15 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private onReplaceWord(event: any) {
-    const [row, col] = event.currentTarget.dataset.position.split('-');
     const origWordLen = event.currentTarget.dataset.text.length;
     const newWord = event.target.textContent;
+    const begin = event.currentTarget.dataset.position;
+    const end = begin + origWordLen;
     self.word.replaceWord(
       self.activeEditor,
       {
-        row: +row,
-        col: +col,
+        begin: +begin,
+        end: +end,
         len: +origWordLen
       },
       newWord

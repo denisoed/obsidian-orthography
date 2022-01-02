@@ -7,7 +7,6 @@ export interface IData {
   explanation: string;
   cardLayout: { group: string };
   text: string;
-  attributes: any;
   begin: number;
 }
 
@@ -15,8 +14,8 @@ export interface IAlert {
   alerts: IData[];
 }
 
-export interface IPosition {
-  row: number;
-  col: number;
+export interface IOriginalWord {
+  begin: number;
+  end: number;
   len: number;
 }
