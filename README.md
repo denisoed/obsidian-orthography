@@ -19,6 +19,20 @@ Obsidian plugin to check & fix orthography errors in text
 * Displaying options for correcting word mistakes
 * Correct a word mistake in one click
 
+## For Developers
+
+### How to get started developing
+
+1. Create new vault(folder) in Obsidian. For example `Orthography`
+
+2. In the terminal, go to the `./Orthography/.obsidian` folder and create there the `plugins` folder
+
+3. Clone the repository into the `plugins` folder: `git clone https://github.com/denisoed/obsidian-orthography.git`
+
+4. Install dependencies: `npm i`
+
+5. And run for develop: `npm run dev`
+
 ## Pricing
 
 This plugin is provided to everyone for free, however if you would like to
