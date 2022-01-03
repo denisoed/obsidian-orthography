@@ -9,7 +9,7 @@ const renderItems = (
   if (!replacements || !replacements.length) return '';
   return replacements
     .map((item: string) => {
-      return `<span data-index="${index}" data-position="${begin}" data-text="${text}" class="obsidian-orthography-popup-replacement" title="Click to correct your spelling">${item}</span>`;
+      return `<span data-toreplace="${item}" data-index="${index}" data-position="${begin}" data-text="${text}" class="obsidian-orthography-word-to-replace obsidian-orthography-popup-replacement" title="Click to correct your spelling">${item}</span>`;
     })
     .join('or');
 };
@@ -46,7 +46,11 @@ const UIHints = (alerts: IData[]): string => {
             <div class="obsidian-orthography-popup-card">
               <div>${cardLayout.group || ''}</div>
               <div>
-                <span class="${
+                <span
+                  data-position="${begin}"
+                  data-text="${text}"
+                  data-toreplace="${replacements[0]}"
+                class="obsidian-orthography-word-to-replace ${
                   group === 'Punctuation' || group === 'Style'
                     ? 'obsidian-orthography-popup-hightligh--red'
                     : ''

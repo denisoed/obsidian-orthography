@@ -5,7 +5,7 @@ import {
   O_POPUP_ITEM,
   O_POPUP_RESIZED,
   O_POPUP_ITEM_OPENED,
-  O_POPUP_REPLACEMENT,
+  O_POPUP_WORD_TO_REPLACE,
   O_HIGHLIGHT,
   O_HIGHLIGHT_FOCUSED
 } from '../cssClasses';
@@ -82,7 +82,9 @@ export class OrthographyPopup {
     minicards.forEach((mc) =>
       mc.addEventListener('mouseout', self.onRemoveFocusWord)
     );
-    const replacements = document.querySelectorAll(`.${O_POPUP_REPLACEMENT}`);
+    const replacements = document.querySelectorAll(
+      `.${O_POPUP_WORD_TO_REPLACE}`
+    );
     replacements.forEach((rp) =>
       rp.addEventListener('click', self.onReplaceWord)
     );
@@ -117,7 +119,9 @@ export class OrthographyPopup {
     minicards.forEach((mc) =>
       mc.removeEventListener('mouseout', self.onRemoveFocusWord)
     );
-    const replacements = document.querySelectorAll(`.${O_POPUP_REPLACEMENT}`);
+    const replacements = document.querySelectorAll(
+      `.${O_POPUP_WORD_TO_REPLACE}`
+    );
     replacements.forEach((rp) =>
       rp.removeEventListener('click', self.onReplaceWord)
     );
@@ -193,7 +197,7 @@ export class OrthographyPopup {
     self.emitter.trigger('orthography:replace', event);
     const { index } = event.currentTarget.dataset;
     const selectedItem = document.getElementById(`${O_POPUP_ITEM}-${index}`);
-    selectedItem.remove();
+    if (selectedItem) selectedItem.remove();
     if (!document.querySelectorAll(`.${O_POPUP_ITEM}`).length) {
       self.removeLoader();
     }
