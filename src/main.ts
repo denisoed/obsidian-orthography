@@ -1,5 +1,5 @@
 import { Plugin, Events, Notice } from 'obsidian';
-import { OrthographySettings, OrthographySettingTab } from './settings';
+import { OrthographySettings } from './settings';
 import {
   OrthographyPopup,
   OrthographyToggler,
@@ -31,7 +31,7 @@ export default class OrthographyPlugin extends Plugin {
     await settings.loadSettings();
     this.settings = settings;
 
-    this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
+    // this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
     this.initOrthographyToggler();
     this.initOrthographyPopup();

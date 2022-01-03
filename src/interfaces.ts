@@ -8,6 +8,7 @@ export interface IData {
   cardLayout: { group: string };
   text: string;
   begin: number;
+  category: string;
 }
 
 export interface IAlert {

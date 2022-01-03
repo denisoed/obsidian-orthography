@@ -101,8 +101,8 @@
 }
 
 .obsidian-orthography-popup {
-  width: 350px;
-  max-width: 350px;
+  width: 400px;
+  max-width: 400px;
   height: 400px;
   position: fixed;
   bottom: 100px;
@@ -262,12 +262,7 @@
   margin-top: 10px;
 }
 
-.obsidian-orthography-popup-card > div:nth-child(2) span {
-  display: flex;
-  align-items: center;
-}
-
-.obsidian-orthography-popup-card > div:nth-child(2) span:first-child {
+.obsidian-orthography-popup-card--line-through {
   text-decoration: line-through;
   text-decoration-color: red;
 }
