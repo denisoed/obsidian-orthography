@@ -1,19 +1,17 @@
 import { OrthographySettings } from '../settings';
 import type { App } from 'obsidian';
 import { O_HIGHLIGHT } from '../cssClasses';
-import { API_URL_GRAMMAR } from '../config';
 import { IOriginalWord, IData } from 'src/interfaces';
 
-interface IOrthographyWord {
+interface IOrthographyEditor {
   init(): void;
 }
 
 let self: any;
 
-export class OrthographyWord implements IOrthographyWord {
+export class OrthographyEditor implements IOrthographyEditor {
   private app: App;
   private settings: OrthographySettings;
-  private aborter: any;
   private highlightedWords: any;
 
   constructor(app: App, settings: OrthographySettings) {
@@ -27,29 +25,6 @@ export class OrthographyWord implements IOrthographyWord {
 
   public destroy(): void {
     self.clearHighlightWords();
-    if (self.aborter) {
-      self.aborter.abort();
-      self.aborter = null;
-    }
-  }
-
-  public async fetchData(text: string): Promise<JSON> {
-    if (self.aborter) self.aborter.abort();
-
-    self.aborter = new AbortController();
-    const { signal } = self.aborter;
-
-    const url: any = new URL(API_URL_GRAMMAR);
-    const params: any = { text };
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key])
-    );
-    const response = await fetch(url, {
-      method: 'GET',
-      signal
-    });
-    self.aborter = null;
-    return await response.json();
   }
 
   public highlightWords(editor: any, alerts: IData[]): void {

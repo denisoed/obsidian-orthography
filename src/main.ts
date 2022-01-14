@@ -1,12 +1,13 @@
 import { Plugin, Events, Notice } from 'obsidian';
 import { OrthographySettings } from './settings';
 import {
+  OrthographyEditor,
   OrthographyPopup,
-  OrthographyToggler,
-  OrthographyWord
+  OrthographyToggler
 } from './orthography';
 import debounce from './orthography/helpers/debounce';
 import { sortAlerts, formatAlerts } from './orthography/helpers/formatters';
+import { API_URL_GRAMMAR } from './config';
 
 // Use self in events callbacks
 let self: any;
@@ -18,6 +19,7 @@ export default class OrthographyPlugin extends Plugin {
   private word: any;
   private emitter: any;
   private activeEditor: any;
+  private aborter: any;
   private hints: any;
   private debounceGetDataFunc = debounce(this.onChangeText.bind(this), 500);
   private getDataFunc = debounce(this.onRunFromPopup.bind(this), 0);
@@ -35,7 +37,7 @@ export default class OrthographyPlugin extends Plugin {
 
     this.initOrthographyToggler();
     this.initOrthographyPopup();
-    this.initOrthographyWord();
+    this.initOrthographyEditor();
 
     // ------- Events -------- //
     this.emitter.on('orthography:open', this.onPopupOpen);
@@ -79,9 +81,9 @@ export default class OrthographyPlugin extends Plugin {
     this.popup.init();
   }
 
-  private initOrthographyWord(): void {
+  private initOrthographyEditor(): void {
     const { app, settings } = this;
-    this.word = new OrthographyWord(app, settings);
+    this.word = new OrthographyEditor(app, settings);
     this.word.init();
   }
 
@@ -106,7 +108,7 @@ export default class OrthographyPlugin extends Plugin {
   private async runChecker() {
     this.toggler.setLoading();
     const text = this.activeEditor.getValue();
-    this.hints = await this.word.fetchData(text);
+    this.hints = await this.fetchData(text);
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
       const alerts = formatAlerts(this.hints.alerts);
       this.word.highlightWords(this.activeEditor, alerts);
@@ -127,6 +129,10 @@ export default class OrthographyPlugin extends Plugin {
   private onPopupClose() {
     self.word.destroy();
     self.popup.destroy();
+    if (self.aborter) {
+      self.aborter.abort();
+      self.aborter = null;
+    }
   }
 
   private onReplaceWord(event: any) {
@@ -143,5 +149,24 @@ export default class OrthographyPlugin extends Plugin {
       },
       newWord
     );
+  }
+
+  private async fetchData(text: string): Promise<JSON> {
+    if (self.aborter) self.aborter.abort();
+
+    self.aborter = new AbortController();
+    const { signal } = self.aborter;
+
+    const url: any = new URL(API_URL_GRAMMAR);
+    const params: any = { text };
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key])
+    );
+    const response = await fetch(url, {
+      method: 'GET',
+      signal
+    });
+    self.aborter = null;
+    return await response.json();
   }
 }
