@@ -129,6 +129,7 @@ export default class OrthographyPlugin extends Plugin {
   private onPopupClose() {
     self.word.destroy();
     self.popup.destroy();
+    self.toggler.toggle();
     if (self.aborter) {
       self.aborter.abort();
       self.aborter = null;

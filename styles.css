@@ -333,6 +333,14 @@
   opacity: 0.5;
 }
 
+.obsidian-orthography-popup-controls:hover {
+  cursor: move;
+}
+
+.obsidian-orthography-popup-controls:active {
+  cursor: grabbing;
+}
+
 .obsidian-orthography-popup-horizontalSize {
   margin-right: auto;
   margin-left: 0 !important;
@@ -340,6 +348,10 @@
 
 .obsidian-orthography-popup-reload:active {
   transform: scale(0.96);
+}
+
+.obsidian-orthography-popup-close {
+  opacity: 0.5;
 }
 
 /* UIHint fallback */

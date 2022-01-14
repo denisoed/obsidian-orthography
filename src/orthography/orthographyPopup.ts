@@ -2,6 +2,7 @@ import { App, Events } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import {
   O_POPUP,
+  O_POPUP_CONTROLS,
   O_POPUP_ITEM,
   O_POPUP_RESIZED,
   O_POPUP_ITEM_OPENED,
@@ -20,6 +21,7 @@ export class OrthographyPopup {
   private emitter: any;
   private sizer: any;
   private mover: any;
+  private closer: any;
   private reloader: any;
   private runner: any;
   private popupOffset: number[] = [0, 0];
@@ -95,7 +97,11 @@ export class OrthographyPopup {
     if (self.sizer) {
       self.sizer.addEventListener('click', self.onResize);
     }
-    self.mover = document.getElementById('mover');
+    self.closer = document.getElementById('closer');
+    if (self.closer) {
+      self.closer.addEventListener('click', self.onClose);
+    }
+    self.mover = document.querySelector(`.${O_POPUP_CONTROLS}`);
     self.mover.addEventListener('mousedown', self.moverIsDown);
     document.addEventListener('mouseup', self.onMouseUp);
     document.addEventListener('mousemove', self.onMouseMove);
@@ -121,6 +127,7 @@ export class OrthographyPopup {
     if (self.reloader) self.reloader.removeEventListener('click', self.onRun);
     if (self.runner) self.runner.removeEventListener('click', self.onRun);
     if (self.sizer) self.sizer.removeEventListener('click', self.onResize);
+    if (self.closer) self.closer.removeEventListener('click', self.onClose);
     if (self.mover)
       self.mover.removeEventListener('mousedown', self.moverIsDown);
     document.removeEventListener('mouseup', self.onMouseUp);
@@ -172,6 +179,10 @@ export class OrthographyPopup {
     } else {
       self.popup.classList.add(O_POPUP_RESIZED);
     }
+  }
+
+  private onClose() {
+    self.emitter.trigger('orthography:close');
   }
 
   private onFocusWord(e: any) {
