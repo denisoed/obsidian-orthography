@@ -5,7 +5,7 @@
 }
 
 .obsidian-orthography-highlight--focused {
-  background-color: rgba(255, 0, 0, 0.6);
+  background-color: rgba(255, 0, 0, 0.6) !important;
 }
 
 .obsidian-orthography-highlight:hover {

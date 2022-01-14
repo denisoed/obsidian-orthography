@@ -6,7 +6,6 @@ import {
   O_POPUP_RESIZED,
   O_POPUP_ITEM_OPENED,
   O_POPUP_WORD_TO_REPLACE,
-  O_HIGHLIGHT,
   O_HIGHLIGHT_FOCUSED
 } from '../cssClasses';
 import { IAlert } from '../interfaces';
@@ -70,12 +69,8 @@ export class OrthographyPopup {
   }
 
   private setListeners() {
-    const highlightedWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
-    highlightedWords.forEach((h) =>
-      h.addEventListener('click', self.onOpenCard)
-    );
     const minicards = document.querySelectorAll(`.${O_POPUP_ITEM}`);
-    minicards.forEach((mc) => mc.addEventListener('click', self.toggleCard));
+    minicards.forEach((mc) => mc.addEventListener('click', self.onClickByHint));
     minicards.forEach((mc) =>
       mc.addEventListener('mouseover', self.onFocusWord)
     );
@@ -107,12 +102,10 @@ export class OrthographyPopup {
   }
 
   private removeListeners() {
-    const highlightedWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
-    highlightedWords.forEach((h) =>
-      h.removeEventListener('click', self.onOpenCard)
-    );
     const minicards = document.querySelectorAll(`.${O_POPUP_ITEM}`);
-    minicards.forEach((mc) => mc.removeEventListener('click', self.toggleCard));
+    minicards.forEach((mc) =>
+      mc.removeEventListener('click', self.onClickByHint)
+    );
     minicards.forEach((mc) =>
       mc.removeEventListener('mouseover', self.onFocusWord)
     );
@@ -134,13 +127,18 @@ export class OrthographyPopup {
     document.removeEventListener('mousemove', self.onMouseMove);
   }
 
-  private toggleCard(e: any): void {
+  private onClickByHint(e: any): void {
     const opened = document.querySelectorAll(`.${O_POPUP_ITEM_OPENED}`);
     opened.forEach((o) => o.classList.remove(O_POPUP_ITEM_OPENED));
     if (e.currentTarget.classList.contains(O_POPUP_ITEM_OPENED)) {
       e.currentTarget.classList.remove(O_POPUP_ITEM_OPENED);
     } else {
       e.currentTarget.classList.add(O_POPUP_ITEM_OPENED);
+    }
+
+    const position = e.currentTarget.dataset.position;
+    if (position) {
+      self.scrollToWord(position);
     }
   }
 
@@ -213,5 +211,16 @@ export class OrthographyPopup {
     );
     selected.classList.add(O_POPUP_ITEM_OPENED);
     popup.scrollTop = selected.offsetTop;
+  }
+
+  private scrollToWord(position: number) {
+    const activeEditor = self.getEditor();
+    const scroller = activeEditor.getScrollerElement();
+    scroller.scrollTop = +position - 300;
+  }
+
+  private getEditor() {
+    const activeLeaf: any = this.app.workspace.activeLeaf;
+    return activeLeaf.view.sourceMode.cmEditor;
   }
 }
