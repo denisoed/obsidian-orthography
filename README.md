@@ -9,7 +9,7 @@
 
 Obsidian plugin to check & fix orthography errors in text
 
-![Gif](./obsidian-orthography.gif)
+![Gif](./preview.gif)
 
 **IMPORTANT**:
 1. ALPHA version.
