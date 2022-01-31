@@ -31,10 +31,11 @@ export class OrthographyEditor implements IOrthographyEditor {
     this.clearHighlightWords();
 
     alerts.forEach((alert: any) => {
+      const textLength = alert.text.length || alert.highlightText.length;
       const originalWord = {
         begin: alert.begin,
         end: alert.end,
-        len: alert.text.length
+        len: textLength
       };
       this.highlightWord(editor, originalWord);
     });

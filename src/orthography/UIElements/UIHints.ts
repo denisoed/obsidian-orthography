@@ -18,7 +18,11 @@ const renderHints = (card: IData, index: number): string => {
       })
       .join('or');
   }
-  if (card.category === 'Formatting' || card.category === 'BasicPunct') {
+  if (
+    card.category === 'Formatting' ||
+    card.category === 'BasicPunct' ||
+    card.category === 'Conjunctions'
+  ) {
     return `
       <span
         data-position="${begin}"
@@ -38,7 +42,7 @@ const renderHints = (card: IData, index: number): string => {
           data-toreplace="${item}"
           data-index="${index}"
           data-position="${begin}"
-          data-text="${text}"
+          data-text="${highlightText}"
           class="obsidian-orthography-word-to-replace obsidian-orthography-popup-replacement"
           title="Click to correct your spelling"
         >
