@@ -16,7 +16,7 @@ export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
   private popup: any;
   private toggler: any;
-  private word: any;
+  private editor: any;
   private emitter: any;
   private activeEditor: any;
   private aborter: any;
@@ -64,7 +64,7 @@ export default class OrthographyPlugin extends Plugin {
       this.activeEditor.off('change', this.debounceGetDataFunc);
     this.toggler.destroy();
     this.popup.destroy();
-    this.word.destroy();
+    this.editor.destroy();
     this.hints = null;
     this.activeEditor = null;
   }
@@ -83,8 +83,8 @@ export default class OrthographyPlugin extends Plugin {
 
   private initOrthographyEditor(): void {
     const { app, settings } = this;
-    this.word = new OrthographyEditor(app, settings);
-    this.word.init();
+    this.editor = new OrthographyEditor(app, settings);
+    this.editor.init();
   }
 
   private getEditor() {
@@ -99,7 +99,7 @@ export default class OrthographyPlugin extends Plugin {
 
   private async onRunFromPopup() {
     if (!this.popup.created) return;
-    this.word.destroy();
+    this.editor.destroy();
     this.popup.setLoader();
     this.activeEditor = this.getEditor();
     this.runChecker();
@@ -116,7 +116,7 @@ export default class OrthographyPlugin extends Plugin {
     }
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
       const alerts = formatAlerts(this.hints.alerts);
-      this.word.highlightWords(this.activeEditor, alerts);
+      this.editor.highlightWords(this.activeEditor, alerts);
       this.popup.update({
         alerts: sortAlerts(alerts)
       });
@@ -132,7 +132,9 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private onPopupClose() {
-    self.word.destroy();
+    self.editor.destroy();
+    if (self.activeEditor)
+      self.activeEditor.doc.getAllMarks().forEach((m: any) => m.clear());
     self.popup.destroy();
     self.toggler.reset();
     if (self.aborter) {
@@ -146,7 +148,7 @@ export default class OrthographyPlugin extends Plugin {
     const newWord = event.currentTarget.dataset.toreplace;
     const begin = event.currentTarget.dataset.position;
     const end = begin + origWordLen;
-    self.word.replaceWord(
+    self.editor.replaceWord(
       self.activeEditor,
       {
         begin: +begin,
