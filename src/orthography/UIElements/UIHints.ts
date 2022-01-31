@@ -30,6 +30,23 @@ const renderHints = (card: IData, index: number): string => {
       </span>
     `;
   }
+  if (card.category === 'Prepositions') {
+    return replacements
+      .map((item: string) => {
+        return `
+        <span
+          data-toreplace="${item}"
+          data-index="${index}"
+          data-position="${begin}"
+          data-text="${text}"
+          class="obsidian-orthography-word-to-replace obsidian-orthography-popup-replacement"
+          title="Click to correct your spelling"
+        >
+          <b>${item}</b>&nbsp${highlightText}
+        </span>`;
+      })
+      .join('or');
+  }
   return replacements
     .map((item: string) => {
       return `
