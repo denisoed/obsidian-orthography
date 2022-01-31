@@ -109,7 +109,7 @@ export default class OrthographyPlugin extends Plugin {
     this.toggler.setLoading();
     const text = this.activeEditor.getValue();
     this.hints = await this.fetchData(text);
-    if (this.hints === null) {
+    if (this.hints instanceof TypeError) {
       this.popup.removeLoader();
       new Notice('Server not responding');
       return;
@@ -176,7 +176,7 @@ export default class OrthographyPlugin extends Plugin {
       self.aborter = null;
       return await response.json();
     } catch (error) {
-      return null;
+      return error;
     }
   }
 }
