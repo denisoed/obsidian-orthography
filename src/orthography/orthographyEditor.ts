@@ -55,7 +55,9 @@ export class OrthographyEditor implements IOrthographyEditor {
       {
         className: O_HIGHLIGHT,
         attributes: {
-          position: originalWord.begin
+          begin: originalWord.begin,
+          end: originalWord.end,
+          len: originalWord.len
         }
       }
     );

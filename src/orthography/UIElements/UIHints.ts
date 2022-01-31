@@ -9,7 +9,7 @@ const renderHints = (card: IData, index: number): string => {
           <span
             data-toreplace="${item}"
             data-index="${index}"
-            data-position="${begin}"
+            data-begin="${begin}"
             data-text="${text}"
             class="obsidian-orthography-word-to-replace obsidian-orthography-popup-replacement"
             title="Click to correct your spelling">
@@ -25,7 +25,7 @@ const renderHints = (card: IData, index: number): string => {
   ) {
     return `
       <span
-        data-position="${begin}"
+        data-begin="${begin}"
         data-text="${text}"
         data-toreplace="${replacements[0]}"
         class="obsidian-orthography-word-to-replace obsidian-orthography-popup-hightligh--red">${
@@ -41,7 +41,7 @@ const renderHints = (card: IData, index: number): string => {
         <span
           data-toreplace="${item}"
           data-index="${index}"
-          data-position="${begin}"
+          data-begin="${begin}"
           data-text="${highlightText}"
           class="obsidian-orthography-word-to-replace obsidian-orthography-popup-replacement"
           title="Click to correct your spelling"
@@ -58,7 +58,7 @@ const renderHints = (card: IData, index: number): string => {
         <span
           data-toreplace="${item}"
           data-index="${index}"
-          data-position="${begin}"
+          data-begin="${begin}"
           data-text="${text}"
           class="obsidian-orthography-word-to-replace obsidian-orthography-popup-replacement"
           title="Click to correct your spelling"
@@ -82,7 +82,7 @@ const UIHints = (alerts: IData[]): string => {
         begin
       } = card;
       return `
-          <div data-position="${begin}" id="obsidian-orthography-popup-item-${index}" class="obsidian-orthography-popup-item ${impact}">
+          <div data-begin="${begin}" id="obsidian-orthography-popup-item-${index}" class="obsidian-orthography-popup-item ${impact}">
             <div class="obsidian-orthography-popup-minicard">
               <div>${highlightText || ''}</div>
               ${

@@ -111,7 +111,10 @@ export default class OrthographyPlugin extends Plugin {
     this.hints = await this.fetchData(text);
     if (this.hints instanceof TypeError) {
       this.popup.removeLoader();
-      new Notice('Server not responding');
+      this.toggler.removeLoading();
+      new Notice(
+        'The server is not responding. Please check your Internet connection.'
+      );
       return;
     }
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
@@ -146,7 +149,7 @@ export default class OrthographyPlugin extends Plugin {
   private onReplaceWord(event: any) {
     const origWordLen = event.currentTarget.dataset.text.length;
     const newWord = event.currentTarget.dataset.toreplace;
-    const begin = event.currentTarget.dataset.position;
+    const begin = event.currentTarget.dataset.begin;
     const end = begin + origWordLen;
     self.editor.replaceWord(
       self.activeEditor,

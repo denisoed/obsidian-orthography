@@ -144,9 +144,9 @@ export class OrthographyPopup {
       e.currentTarget.classList.add(O_POPUP_ITEM_OPENED);
     }
 
-    const position = e.currentTarget.dataset.position;
-    if (position) {
-      self.scrollToWord(position);
+    const begin = e.currentTarget.dataset.begin;
+    if (begin) {
+      self.scrollToWord(begin);
     }
   }
 
@@ -187,8 +187,8 @@ export class OrthographyPopup {
   }
 
   private onFocusWord(e: any) {
-    const p = e.currentTarget.dataset.position;
-    const word = document.querySelector(`[position="${p}"]`);
+    const begin = e.currentTarget.dataset.begin;
+    const word = document.querySelector(`[begin="${begin}"]`);
     if (word) {
       word.classList.add(O_HIGHLIGHT_FOCUSED);
     }
@@ -214,21 +214,19 @@ export class OrthographyPopup {
   }
 
   private onOpenCard(event: any) {
-    const { value: position } = event.currentTarget.attributes.position;
+    const { value: begin } = event.currentTarget.attributes.begin;
     const popup: any = document.querySelector(`.${O_POPUP}`);
     const opened = document.querySelectorAll(`.${O_POPUP_ITEM_OPENED}`);
     opened.forEach((o) => o.classList.remove(O_POPUP_ITEM_OPENED));
-    const selected: any = document.querySelector(
-      `[data-position="${position}"]`
-    );
+    const selected: any = document.querySelector(`[data-begin="${begin}"]`);
     selected.classList.add(O_POPUP_ITEM_OPENED);
     popup.scrollTop = selected.offsetTop;
   }
 
-  private scrollToWord(position: number) {
+  private scrollToWord(begin: number) {
     const activeEditor = self.getEditor();
     const scroller = activeEditor.getScrollerElement();
-    scroller.scrollTop = +position - 300;
+    scroller.scrollTop = +begin - 300;
   }
 
   private getEditor() {
