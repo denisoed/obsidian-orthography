@@ -59,6 +59,12 @@ export class OrthographyToggler implements IOrthographyToggler {
     this.toggler.classList.remove(O_RUNNER_LOADING);
   }
 
+  public reset(): void {
+    this.showed = false;
+    this.removeLoading();
+    this.updateButtonText(O_RUNNER_ICON);
+  }
+
   private createButton(text: string) {
     this.toggler = document.createElement('button');
     const icon = document.createElement('span');

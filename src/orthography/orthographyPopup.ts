@@ -52,7 +52,8 @@ export class OrthographyPopup {
   public destroy(): void {
     self.created = false;
     self.removeListeners();
-    if (self.popup) document.getElementById(O_POPUP).remove();
+    const popup = document.getElementById(O_POPUP);
+    if (popup) popup.remove();
   }
 
   public update(data: IAlert, loading?: boolean): void {

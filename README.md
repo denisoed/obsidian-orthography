@@ -12,8 +12,9 @@ Obsidian plugin to check & fix orthography errors in text
 ![Gif](./obsidian-orthography.gif)
 
 **IMPORTANT**:
-1. This is experimental and may have instability. It is possible that there are bugs which may delete data in the current note. Please make backups!
-2. The plugin handles only English text.
+1. ALPHA version.
+2. This is experimental and may have instability. It is possible that there are bugs which may delete data in the current note. Please make backups!
+3. The plugin handles only English text.
 
 ## Features
 

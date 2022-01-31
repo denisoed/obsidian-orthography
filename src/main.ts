@@ -109,6 +109,11 @@ export default class OrthographyPlugin extends Plugin {
     this.toggler.setLoading();
     const text = this.activeEditor.getValue();
     this.hints = await this.fetchData(text);
+    if (this.hints === null) {
+      this.popup.removeLoader();
+      new Notice('Server not responding');
+      return;
+    }
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
       const alerts = formatAlerts(this.hints.alerts);
       this.word.highlightWords(this.activeEditor, alerts);
@@ -129,7 +134,7 @@ export default class OrthographyPlugin extends Plugin {
   private onPopupClose() {
     self.word.destroy();
     self.popup.destroy();
-    self.toggler.toggle();
+    self.toggler.reset();
     if (self.aborter) {
       self.aborter.abort();
       self.aborter = null;
@@ -163,11 +168,15 @@ export default class OrthographyPlugin extends Plugin {
     Object.keys(params).forEach((key) =>
       url.searchParams.append(key, params[key])
     );
-    const response = await fetch(url, {
-      method: 'GET',
-      signal
-    });
-    self.aborter = null;
-    return await response.json();
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        signal
+      });
+      self.aborter = null;
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
   }
 }
