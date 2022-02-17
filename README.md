@@ -13,8 +13,8 @@ Obsidian plugin to check & fix orthography errors in text
 
 ## Hotkeys
 
-| Keys | Description |
-|---|---|
+|       Keys       |         Description         |
+|------------------|-----------------------------|
 | Ctrl + Shift + L | Run the orthography checker |
 
 ## Features
