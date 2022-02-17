@@ -15,7 +15,7 @@ Obsidian plugin to check & fix orthography errors in text
 
 | Keys | Description |
 |---|---|
-| Ctrl + Shift + l | Run the orthography checker |
+| Ctrl + Shift + L | Run the orthography checker |
 
 ## Features
 
