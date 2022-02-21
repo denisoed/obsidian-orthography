@@ -164,6 +164,7 @@ export default class OrthographyPlugin extends Plugin {
 
   private async fetchData(text: string): Promise<JSON> {
     if (self.aborter) self.aborter.abort();
+    self.popup.disable();
 
     self.aborter = new AbortController();
     const { signal } = self.aborter;
@@ -182,6 +183,8 @@ export default class OrthographyPlugin extends Plugin {
       return await response.json();
     } catch (error) {
       return error;
+    } finally {
+      self.popup.enable();
     }
   }
 }

@@ -18,9 +18,11 @@ const renderHints = (card: IData, index: number): string => {
       })
       .join('or');
   }
+  // ----------- FOR REMOVE HINTS ----------- //
   if (
     card.category === 'Formatting' ||
     card.category === 'BasicPunct' ||
+    card.category === 'Wordiness' ||
     card.category === 'Conjunctions'
   ) {
     return `

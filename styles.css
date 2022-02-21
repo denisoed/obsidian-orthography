@@ -115,6 +115,11 @@
   z-index: 15;
 }
 
+.obsidian-orthography-popup--disabled {
+  pointer-events: none;
+  user-select: none;
+}
+
 .obsidian-orthography-popup-item {
   width: 100%;
   display: flex;

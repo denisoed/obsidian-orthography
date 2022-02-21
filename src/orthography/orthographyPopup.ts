@@ -2,6 +2,7 @@ import { App, Events } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import {
   O_POPUP,
+  O_POPUP_DISABLED,
   O_POPUP_CONTROLS,
   O_POPUP_ITEM,
   O_POPUP_RESIZED,
@@ -69,6 +70,20 @@ export class OrthographyPopup {
 
   public removeLoader(): void {
     this.update(null, false);
+  }
+
+  public disable(): void {
+    const hints = document.querySelector(`#${O_POPUP}`);
+    if (hints) {
+      hints.classList.add(O_POPUP_DISABLED);
+    }
+  }
+
+  public enable(): void {
+    const hints = document.querySelector(`#${O_POPUP}`);
+    if (hints) {
+      hints.classList.remove(O_POPUP_DISABLED);
+    }
   }
 
   private setListeners() {
