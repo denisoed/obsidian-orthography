@@ -1,70 +1,190 @@
-import { Plugin, Events } from 'obsidian';
-import { OrthographySettings, OrthographySettingTab } from './settings';
-import { OrthographyRunner, OrthographyTooltip } from './orthography';
+import { Plugin, Events, Notice } from 'obsidian';
+import { OrthographySettings } from './settings';
+import {
+  OrthographyEditor,
+  OrthographyPopup,
+  OrthographyToggler
+} from './orthography';
+import debounce from './orthography/helpers/debounce';
+import { sortAlerts, formatAlerts } from './orthography/helpers/formatters';
+import { API_URL_GRAMMAR } from './config';
+
+// Use self in events callbacks
+let self: any;
 
 export default class OrthographyPlugin extends Plugin {
   private settings: OrthographySettings;
-  private runner: any;
-  private tooltip: any;
+  private popup: any;
+  private toggler: any;
+  private editor: any;
   private emitter: any;
+  private activeEditor: any;
+  private aborter: any;
+  private hints: any;
+  private debounceGetDataFunc = debounce(this.onChangeText.bind(this), 500);
+  private getDataFunc = debounce(this.onRunFromPopup.bind(this), 0);
 
   async onload(): Promise<void> {
     // ------ Init -------- //
+    self = this;
     this.emitter = new Events();
 
     const settings = new OrthographySettings(this, this.emitter);
     await settings.loadSettings();
     this.settings = settings;
 
-    this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
+    // this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
-    this.initOrthographyTooltip();
-
-    if (settings.displayRunner) this.initOrthographyRunner();
+    this.initOrthographyToggler();
+    this.initOrthographyPopup();
+    this.initOrthographyEditor();
 
     // ------- Events -------- //
-    this.emitter.on('onUpdateSettings', this.onUpdateSettings.bind(this));
+    this.emitter.on('orthography:open', this.onPopupOpen);
+    this.emitter.on('orthography:close', this.onPopupClose);
+    this.emitter.on('orthography:run', this.getDataFunc);
+    this.emitter.on('orthography:replace', this.onReplaceWord);
 
-    this.addCommand({
-      id: 'check-orthography',
-      name: 'Check Orthography',
-      callback: () => this.runner.run(),
-      hotkeys: [
-        {
-          modifiers: ['Mod', 'Shift'],
-          key: 'l'
-        }
-      ]
+    // NOTE: find a better way to do this
+    // Listen to changes in the editor
+    this.registerDomEvent(document, 'click', () => {
+      if (this.activeEditor)
+        this.activeEditor.off('change', this.debounceGetDataFunc);
+      this.activeEditor = this.getEditor();
+      this.activeEditor.on('change', this.debounceGetDataFunc);
     });
   }
 
   onunload(): void {
-    this.emitter.off('onUpdateSettings', this.onUpdateSettings.bind(this));
-    this.runner.destroy();
-    this.tooltip.destroy();
+    this.emitter.off('orthography:open', this.onPopupOpen);
+    this.emitter.off('orthography:close', this.onPopupClose);
+    this.emitter.off('orthography:run', this.onRunFromPopup);
+    this.emitter.off('orthography:replace', this.onReplaceWord);
+    if (this.activeEditor)
+      this.activeEditor.off('change', this.debounceGetDataFunc);
+    this.toggler.destroy();
+    this.popup.destroy();
+    this.editor.destroy();
+    this.hints = null;
+    this.activeEditor = null;
   }
 
-  private onUpdateSettings(data: any) {
-    if (data.displayRunner) {
-      if (!this.runner) {
-        this.initOrthographyRunner();
-      } else {
-        this.runner.show();
-      }
+  private initOrthographyToggler(): void {
+    const { app, settings, emitter } = this;
+    this.toggler = new OrthographyToggler(app, settings, emitter);
+    this.toggler.init();
+  }
+
+  private initOrthographyPopup(): void {
+    const { app, settings, emitter } = this;
+    this.popup = new OrthographyPopup(app, settings, emitter);
+    this.popup.init();
+  }
+
+  private initOrthographyEditor(): void {
+    const { app, settings } = this;
+    this.editor = new OrthographyEditor(app, settings);
+    this.editor.init();
+  }
+
+  private getEditor() {
+    const activeLeaf: any = this.app.workspace.activeLeaf;
+    return activeLeaf.view.sourceMode.cmEditor;
+  }
+
+  private async onChangeText() {
+    if (!this.popup.created) return;
+    this.runChecker();
+  }
+
+  private async onRunFromPopup() {
+    if (!this.popup.created) return;
+    this.editor.destroy();
+    this.popup.setLoader();
+    this.activeEditor = this.getEditor();
+    this.runChecker();
+  }
+
+  private async runChecker() {
+    this.toggler.setLoading();
+    const text = this.activeEditor.getValue();
+    this.hints = await this.fetchData(text);
+    if (this.hints instanceof TypeError) {
+      this.popup.removeLoader();
+      this.toggler.removeLoading();
+      new Notice(
+        'The server is not responding. Please check your Internet connection.'
+      );
+      return;
+    }
+    if (this.hints && this.hints.alerts && this.hints.alerts.length) {
+      const alerts = formatAlerts(this.hints.alerts);
+      this.editor.highlightWords(this.activeEditor, alerts);
+      this.popup.update({
+        alerts: sortAlerts(alerts)
+      });
     } else {
-      this.runner.hide();
+      new Notice('Spelling errors not found!');
+      this.popup.removeLoader();
+    }
+    this.toggler.removeLoading();
+  }
+
+  private onPopupOpen() {
+    self.popup.create();
+  }
+
+  private onPopupClose() {
+    self.editor.destroy();
+    if (self.activeEditor)
+      self.activeEditor.doc.getAllMarks().forEach((m: any) => m.clear());
+    self.popup.destroy();
+    self.toggler.reset();
+    if (self.aborter) {
+      self.aborter.abort();
+      self.aborter = null;
     }
   }
 
-  private initOrthographyTooltip(): void {
-    const { app, settings, emitter } = this;
-    this.tooltip = new OrthographyTooltip(app, settings, emitter);
-    this.tooltip.init();
+  private onReplaceWord(event: any) {
+    const origWordLen = event.currentTarget.dataset.text.length;
+    const newWord = event.currentTarget.dataset.toreplace;
+    const begin = event.currentTarget.dataset.begin;
+    const end = begin + origWordLen;
+    self.editor.replaceWord(
+      self.activeEditor,
+      {
+        begin: +begin,
+        end: +end,
+        len: +origWordLen
+      },
+      newWord
+    );
   }
 
-  private initOrthographyRunner(): void {
-    const { app, settings, emitter } = this;
-    this.runner = new OrthographyRunner(app, settings, emitter);
-    this.runner.init();
+  private async fetchData(text: string): Promise<JSON> {
+    if (self.aborter) self.aborter.abort();
+    self.popup.disable();
+
+    self.aborter = new AbortController();
+    const { signal } = self.aborter;
+
+    const url: any = new URL(API_URL_GRAMMAR);
+    const params: any = { text };
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key])
+    );
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        signal
+      });
+      self.aborter = null;
+      return await response.json();
+    } catch (error) {
+      return error;
+    } finally {
+      self.popup.enable();
+    }
   }
 }
