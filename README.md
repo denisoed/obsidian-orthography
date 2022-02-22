@@ -26,6 +26,7 @@ Obsidian plugin for checking and correcting spelling errors in text.
  
 - [x] Integration [Grammarly](https://www.grammarly.com)
 - [ ] Fix the styles in the mobile version
+- [ ] Add the ability to save words in your personal dictionary
 - [ ] Add settings for selecting a dialect(`american` or `british`)
 - [ ] Add Plagiarism Checker
 
