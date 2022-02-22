@@ -22,6 +22,13 @@ Obsidian plugin to check & fix orthography errors in text
 * Displaying options for correcting word mistakes
 * Correct a word mistake in one click
 
+## Todo
+ 
+- [x] Integration [Grammarly](https://www.grammarly.com)
+- [ ] Fix the styles in the mobile version
+- [ ] Add settings for selecting a dialect(`american` or `british`)
+- [ ] Add Plagiarism Checker
+
 ## For Developers
 
 ### How to get started developing
