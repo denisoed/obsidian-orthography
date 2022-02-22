@@ -7,7 +7,7 @@
 ![Version](https://img.shields.io/github/manifest-json/v/denisoed/obsidian-orthography)
 &nbsp;
 
-Obsidian plugin to check & fix orthography errors in text
+Obsidian plugin for checking and correcting spelling errors in text.
 
 ![Gif](./preview.gif)
 
