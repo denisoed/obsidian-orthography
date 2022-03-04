@@ -1,5 +1,5 @@
 .obsidian-orthography-highlight {
-  color: #fff;
+  color: inherit;
   border-bottom: 1px solid rgba(255, 0, 0, 1);
   position: relative;
 }
@@ -20,7 +20,7 @@
   border-radius: 3px;
   box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
   background-color: #202020;
-  color: #fff;
+  color: inherit;
   opacity: 0;
   height: 0;
 }
@@ -51,7 +51,7 @@
   box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.4);
   z-index: 2;
   transition: all 0.1s ease;
-  color: rgb(209, 209, 209);
+  color: inherit;
 }
 
 .obsidian-orthography-runner--clear {
@@ -109,7 +109,7 @@
   right: 60px;
   padding: 0 10px 3px;
   overflow: auto;
-  background-color: #202020;
+  background-color: inherit;
   box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.4);
   border-radius: 5px;
   z-index: 15;
@@ -128,8 +128,8 @@
   align-items: center;
   border-radius: 5px;
   box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.4);
-  background-color: #202020;
-  color: #fff;
+  background-color: inherit;
+  color: inherit;
   padding: 10px 15px;
   padding-right: 20px;
   box-sizing: border-box;
@@ -219,7 +219,7 @@
 }
 
 .obsidian-orthography-popup-arrows svg {
-  fill: #fff;
+  fill: inherit;
   opacity: 0.5;
   width: 8px;
 }
@@ -283,7 +283,7 @@
 
 .obsidian-orthography-popup-replacement::before {
   content: '→';
-  color: #fff;
+  color: inherit;
   display: inline-block;
   vertical-align: middle;
   margin-right: 5px;
@@ -316,7 +316,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background-color: #202020;
+  background-color: inherit;
   padding: 5px 10px;
   margin: 0 -10px 5px;
   z-index: 2;
@@ -334,7 +334,7 @@
 .obsidian-orthography-popup-controls div svg {
   width: 16px;
   height: auto;
-  fill: #fff;
+  fill: inherit;
   opacity: 0.5;
 }
 

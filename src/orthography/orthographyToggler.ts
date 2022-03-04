@@ -1,4 +1,4 @@
-import { Events } from 'obsidian';
+import { Events, Notice } from 'obsidian';
 import type { App } from 'obsidian';
 import { OrthographySettings } from '../settings';
 import { O_RUNNER_ICON, O_RUNNER_ICON_CLEAR } from '../constants';
@@ -35,14 +35,18 @@ export class OrthographyToggler implements IOrthographyToggler {
   }
 
   public toggle(): void {
-    self.showed = !self.showed;
-    if (self.showed) {
-      self.updateButtonText(O_RUNNER_ICON_CLEAR);
-      self.emitter.trigger('orthography:open');
+    if (self.getEditor()) {
+      self.showed = !self.showed;
+      if (self.showed) {
+        self.updateButtonText(O_RUNNER_ICON_CLEAR);
+        self.emitter.trigger('orthography:open');
+      } else {
+        self.updateButtonText(O_RUNNER_ICON);
+        self.removeLoading();
+        self.emitter.trigger('orthography:close');
+      }
     } else {
-      self.updateButtonText(O_RUNNER_ICON);
-      self.removeLoading();
-      self.emitter.trigger('orthography:close');
+      new Notice('Please open a file first.');
     }
   }
 
@@ -83,5 +87,10 @@ export class OrthographyToggler implements IOrthographyToggler {
   private removeButton() {
     const toggler: HTMLElement = document.querySelector(`.${O_RUNNER}`);
     if (toggler) toggler.remove();
+  }
+
+  private getEditor() {
+    const activeLeaf: any = this.app.workspace.activeLeaf;
+    return !!activeLeaf.view.sourceMode;
   }
 }

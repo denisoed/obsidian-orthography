@@ -17,7 +17,7 @@ export class OrthographySettingTab extends PluginSettingTab {
     containerEl.empty();
     OrthographySettingTab.setDisplayRunner(containerEl, settings);
     OrthographySettingTab.setGrammar(containerEl, settings);
-    // OrthographySettingTab.setLanguage(containerEl, settings);
+    OrthographySettingTab.setLanguage(containerEl, settings);
   }
 
   static setDisplayRunner(
