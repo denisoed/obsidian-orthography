@@ -7,12 +7,12 @@
 ![Version](https://img.shields.io/github/manifest-json/v/denisoed/obsidian-orthography)
 &nbsp;
 
-Obsidian plugin to check & fix orthography errors in text
+Obsidian plugin for checking and correcting spelling errors in text.
 
 ![Gif](./preview.gif)
 
 **IMPORTANT**:
-1. ALPHA version.
+1. **ALPHA version**.
 2. This is experimental and may have instability. It is possible that there are bugs which may delete data in the current note. Please make backups!
 3. The plugin handles only English text.
 
@@ -21,6 +21,14 @@ Obsidian plugin to check & fix orthography errors in text
 * Search for spelling errors in the text
 * Displaying options for correcting word mistakes
 * Correct a word mistake in one click
+
+## Todo
+ 
+- [x] Integration [Grammarly](https://www.grammarly.com)
+- [ ] Fix the styles in the mobile version
+- [ ] Add the ability to save words in your personal dictionary
+- [ ] Add settings for selecting a dialect(`american` or `british`)
+- [ ] Add Plagiarism Checker
 
 ## For Developers
 
