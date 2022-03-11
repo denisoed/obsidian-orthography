@@ -118,7 +118,9 @@ export class OrthographyPopup {
       self.closer.addEventListener('click', self.onClose);
     }
     self.mover = document.querySelector(`.${O_POPUP_CONTROLS}`);
-    self.mover.addEventListener('mousedown', self.moverIsDown);
+    if (self.mover) {
+      self.mover.addEventListener('mousedown', self.moverIsDown);
+    }
     document.addEventListener('mouseup', self.onMouseUp);
     document.addEventListener('mousemove', self.onMouseMove);
   }

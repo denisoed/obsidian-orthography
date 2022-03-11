@@ -1,7 +1,11 @@
 import { Events, Notice } from 'obsidian';
 import type { App } from 'obsidian';
 import { OrthographySettings } from '../settings';
-import { O_RUNNER_ICON, O_RUNNER_ICON_CLEAR } from '../constants';
+import {
+  O_RUNNER_ICON,
+  O_RUNNER_ICON_CLEAR,
+  O_NOT_OPEN_FILE
+} from '../constants';
 import { O_RUNNER, O_RUNNER_HIDDEN, O_RUNNER_LOADING } from '../cssClasses';
 
 interface IOrthographyToggler {
@@ -35,18 +39,21 @@ export class OrthographyToggler implements IOrthographyToggler {
   }
 
   public toggle(): void {
-    if (self.getEditor()) {
-      self.showed = !self.showed;
+    const activeEditor = self.getEditor();
+    if (!activeEditor) {
       if (self.showed) {
-        self.updateButtonText(O_RUNNER_ICON_CLEAR);
-        self.emitter.trigger('orthography:open');
+        self.setButtonWithRunner();
+        self.showed = false;
       } else {
-        self.updateButtonText(O_RUNNER_ICON);
-        self.removeLoading();
-        self.emitter.trigger('orthography:close');
+        new Notice(O_NOT_OPEN_FILE);
       }
+      return;
+    }
+    self.showed = !self.showed;
+    if (self.showed) {
+      self.setButtonWithClear();
     } else {
-      new Notice('Please open a file first.');
+      self.setButtonWithRunner();
     }
   }
 
@@ -89,8 +96,21 @@ export class OrthographyToggler implements IOrthographyToggler {
     if (toggler) toggler.remove();
   }
 
+  private setButtonWithClear() {
+    self.updateButtonText(O_RUNNER_ICON_CLEAR);
+    self.emitter.trigger('orthography:open');
+  }
+
+  private setButtonWithRunner() {
+    self.updateButtonText(O_RUNNER_ICON);
+    self.removeLoading();
+    self.emitter.trigger('orthography:close');
+  }
+
   private getEditor() {
     const activeLeaf: any = this.app.workspace.activeLeaf;
-    return !!activeLeaf.view.sourceMode;
+    const sourceMode = activeLeaf.view.sourceMode;
+    if (!sourceMode) return null;
+    return activeLeaf.view.sourceMode.cmEditor;
   }
 }
