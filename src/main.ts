@@ -89,7 +89,8 @@ export default class OrthographyPlugin extends Plugin {
 
   private getEditor() {
     const activeLeaf: any = this.app.workspace.activeLeaf;
-    return activeLeaf.view.sourceMode.cmEditor;
+    const sourceMode = activeLeaf.view.sourceMode;
+    return sourceMode ? sourceMode.cmEditor : null;
   }
 
   private async onChangeText() {
