@@ -8,6 +8,7 @@ import {
 import debounce from './orthography/helpers/debounce';
 import { sortAlerts, formatAlerts } from './orthography/helpers/formatters';
 import { API_URL_GRAMMAR } from './config';
+import { O_NOT_OPEN_FILE, O_SERVER_ERROR, O_NO_ERROR } from './constants';
 
 // Use self in events callbacks
 let self: any;
@@ -48,8 +49,8 @@ export default class OrthographyPlugin extends Plugin {
     // NOTE: find a better way to do this
     // Listen to changes in the editor
     this.registerDomEvent(document, 'click', () => {
-      if (this.activeEditor)
-        this.activeEditor.off('change', this.debounceGetDataFunc);
+      if (!this.activeEditor) return;
+      this.activeEditor.off('change', this.debounceGetDataFunc);
       this.activeEditor = this.getEditor();
       this.activeEditor.on('change', this.debounceGetDataFunc);
     });
@@ -89,7 +90,8 @@ export default class OrthographyPlugin extends Plugin {
 
   private getEditor() {
     const activeLeaf: any = this.app.workspace.activeLeaf;
-    return activeLeaf.view.sourceMode.cmEditor;
+    const sourceMode = activeLeaf.view.sourceMode;
+    return sourceMode ? sourceMode.cmEditor : null;
   }
 
   private async onChangeText() {
@@ -102,19 +104,23 @@ export default class OrthographyPlugin extends Plugin {
     this.editor.destroy();
     this.popup.setLoader();
     this.activeEditor = this.getEditor();
-    this.runChecker();
+    if (this.activeEditor) {
+      this.runChecker();
+    } else {
+      new Notice(O_NOT_OPEN_FILE);
+      this.onPopupClose();
+    }
   }
 
   private async runChecker() {
     this.toggler.setLoading();
+    if (!this.activeEditor) return;
     const text = this.activeEditor.getValue();
     this.hints = await this.fetchData(text);
     if (this.hints instanceof TypeError) {
       this.popup.removeLoader();
       this.toggler.removeLoading();
-      new Notice(
-        'The server is not responding. Please check your Internet connection.'
-      );
+      new Notice(O_SERVER_ERROR);
       return;
     }
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
@@ -124,7 +130,7 @@ export default class OrthographyPlugin extends Plugin {
         alerts: sortAlerts(alerts)
       });
     } else {
-      new Notice('Spelling errors not found!');
+      new Notice(O_NO_ERROR);
       this.popup.removeLoader();
     }
     this.toggler.removeLoading();
