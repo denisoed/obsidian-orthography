@@ -1,9 +1,9 @@
 {
 	"id": "obsidian-orthography",
 	"name": "Obsidian Orthography",
-	"version": "2.0.1",
-	"minAppVersion": "0.11.3",
-	"description": "Obsidian plugin to check & fix orthography errors in text",
+	"version": "2.0.3",
+	"minAppVersion": "0.13.23",
+	"description": "Obsidian plugin for checking and correcting spelling errors in text.",
 	"author": "Denisoed",
 	"authorUrl": "https://github.com/denisoed",
 	"isDesktopOnly": false
