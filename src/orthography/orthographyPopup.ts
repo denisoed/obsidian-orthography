@@ -1,4 +1,4 @@
-import { App, Events } from 'obsidian';
+import { App, Events, Notice } from 'obsidian';
 import { OrthographySettings } from 'src/settings';
 import {
   O_POPUP,
@@ -10,6 +10,7 @@ import {
   O_POPUP_WORD_TO_REPLACE,
   O_HIGHLIGHT_FOCUSED
 } from '../cssClasses';
+import { O_NOT_OPEN_FILE } from '../constants';
 import { IAlert } from '../interfaces';
 
 import UIBar from './UIElements/UIBar';
@@ -242,12 +243,19 @@ export class OrthographyPopup {
 
   private scrollToWord(begin: number) {
     const activeEditor = self.getEditor();
-    const scroller = activeEditor.getScrollerElement();
-    scroller.scrollTop = +begin - 300;
+    if (activeEditor) {
+      const scroller = activeEditor.getScrollerElement();
+      scroller.scrollTop = +begin - 300;
+    } else {
+      self.onClose();
+      new Notice(O_NOT_OPEN_FILE);
+    }
   }
 
   private getEditor() {
     const activeLeaf: any = this.app.workspace.activeLeaf;
+    const sourceMode = activeLeaf.view.sourceMode;
+    if (!sourceMode) return null;
     return activeLeaf.view.sourceMode.cmEditor;
   }
 }
