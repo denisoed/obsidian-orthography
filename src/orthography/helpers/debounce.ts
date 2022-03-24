@@ -1,9 +1,13 @@
-const debounce = (func: any, timeout: number): any => {
+interface DebounceCallback {
+  apply: (ctx: any, args: any) => void;
+}
+
+const debounce = (callback: DebounceCallback, timeout: number): any => {
   let timer: any;
   return (...args: any[]) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      func.apply(this, args);
+      callback.apply(this, args);
     }, timeout);
   };
 };

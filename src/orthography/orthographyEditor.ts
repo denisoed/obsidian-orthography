@@ -1,10 +1,15 @@
 import { OrthographySettings } from '../settings';
 import type { App } from 'obsidian';
 import { O_HIGHLIGHT } from '../cssClasses';
-import { IOriginalWord, IData } from 'src/interfaces';
+import { IOriginalWord, IData, IEditor } from 'src/interfaces';
 
 interface IOrthographyEditor {
   init(): void;
+}
+
+interface IGetColRowResult {
+  col: number;
+  row: number;
 }
 
 let self: any;
@@ -27,8 +32,10 @@ export class OrthographyEditor implements IOrthographyEditor {
     self.clearHighlightWords();
   }
 
-  public highlightWords(editor: any, alerts: IData[]): void {
+  public highlightWords(editor: IEditor, alerts: IData[]): void {
     this.clearHighlightWords();
+
+    if (!editor || !alerts || alerts.length === 0) return;
 
     alerts.forEach((alert: any) => {
       const textLength = alert.text.length || alert.highlightText.length;
@@ -42,9 +49,10 @@ export class OrthographyEditor implements IOrthographyEditor {
   }
 
   private highlightWord(
-    editor: any,
+    editor: IEditor,
     originalWord: { begin: number; end: number; len: number }
   ): void {
+    if (!editor || !originalWord) return;
     const colRow = this.getColRow(editor, originalWord);
     if (!colRow) return;
     const { col, row } = colRow;
@@ -64,11 +72,11 @@ export class OrthographyEditor implements IOrthographyEditor {
   }
 
   public replaceWord(
-    editor: any,
+    editor: IEditor,
     originalWord: IOriginalWord,
     newWord: string
   ): void {
-    if (!originalWord) return;
+    if (!editor || !originalWord || !newWord) return;
     const colRow = this.getColRow(editor, originalWord);
     if (!colRow) return;
     const { col, row } = colRow;
@@ -87,18 +95,19 @@ export class OrthographyEditor implements IOrthographyEditor {
     doc.replaceRange(newWord, from, to);
   }
 
-  private getColRow(
-    editor: any,
-    originalWord: IOriginalWord
-  ): { col: number; row: number } {
+  getColRow(editor: IEditor, originalWord: IOriginalWord): IGetColRowResult {
+    if (!editor || !originalWord) return;
+
     let ttl = 0;
     let row = 0;
-    let result = null;
+    let result;
     const { begin } = originalWord;
 
-    editor.eachLine((l: any) => {
+    if (!editor.eachLine) return undefined;
+
+    editor.eachLine((line: { text: string }) => {
       const s = ttl === 0 ? ttl : ttl + 1;
-      const lineTextLength = l.text.length;
+      const lineTextLength = line.text.length;
       ttl += lineTextLength;
 
       if (row > 0) {

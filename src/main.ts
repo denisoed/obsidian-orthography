@@ -52,6 +52,7 @@ export default class OrthographyPlugin extends Plugin {
       if (!this.activeEditor) return;
       this.activeEditor.off('change', this.debounceGetDataFunc);
       this.activeEditor = this.getEditor();
+      if (!this.activeEditor) return;
       this.activeEditor.on('change', this.debounceGetDataFunc);
     });
   }
