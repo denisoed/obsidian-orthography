@@ -35,6 +35,8 @@ export class OrthographyEditor implements IOrthographyEditor {
   public highlightWords(editor: IEditor, alerts: IData[]): void {
     this.clearHighlightWords();
 
+    if (!editor || !alerts || alerts.length === 0) return;
+
     alerts.forEach((alert: any) => {
       const textLength = alert.text.length || alert.highlightText.length;
       const originalWord = {
@@ -50,6 +52,7 @@ export class OrthographyEditor implements IOrthographyEditor {
     editor: IEditor,
     originalWord: { begin: number; end: number; len: number }
   ): void {
+    if (!editor || !originalWord) return;
     const colRow = this.getColRow(editor, originalWord);
     if (!colRow) return;
     const { col, row } = colRow;
@@ -73,7 +76,7 @@ export class OrthographyEditor implements IOrthographyEditor {
     originalWord: IOriginalWord,
     newWord: string
   ): void {
-    if (!originalWord) return;
+    if (!editor || !originalWord || !newWord) return;
     const colRow = this.getColRow(editor, originalWord);
     if (!colRow) return;
     const { col, row } = colRow;
