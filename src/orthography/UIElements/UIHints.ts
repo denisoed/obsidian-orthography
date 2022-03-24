@@ -1,5 +1,7 @@
 import { IData } from '../../interfaces';
 
+const JOIN_BY = '<span style="opacity: 0.5;">or</span>&nbsp;';
+
 const renderHints = (card: IData, index: number): string => {
   const { replacements, text, begin, highlightText } = card;
   if (card.category === 'Determiners') {
@@ -16,7 +18,7 @@ const renderHints = (card: IData, index: number): string => {
               <b>${item}</b>&nbsp${highlightText}
           </span>`;
       })
-      .join('or');
+      .join(JOIN_BY);
   }
   // ----------- FOR REMOVE HINTS ----------- //
   if (
@@ -51,7 +53,7 @@ const renderHints = (card: IData, index: number): string => {
           <b>${item}</b>&nbsp${highlightText}
         </span>`;
       })
-      .join('or');
+      .join(JOIN_BY);
   }
   return replacements
     .map((item: string) => {
@@ -68,7 +70,7 @@ const renderHints = (card: IData, index: number): string => {
           ${item}
         </span>`;
     })
-    .join('or');
+    .join(JOIN_BY);
 };
 
 const UIHints = (alerts: IData[]): string => {
@@ -99,7 +101,7 @@ const UIHints = (alerts: IData[]): string => {
             </div>
             <div class="obsidian-orthography-popup-card">
               <div>${cardLayout.group || ''}</div>
-              <div>
+              <div class="obsidian-orthography-popup-card-content">
                 ${renderHints(card, index)}
               </div>
               <div>${explanation || ''}</div>

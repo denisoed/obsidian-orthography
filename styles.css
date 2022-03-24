@@ -260,25 +260,30 @@
   background-color: #fbd599;
 }
 
-.obsidian-orthography-popup-card > div:nth-child(2) {
-  display: flex;
-  align-items: center;
-  margin-left: 15px;
-  margin-top: 10px;
-}
-
 .obsidian-orthography-popup-card--line-through {
   text-decoration: line-through;
   text-decoration-color: red;
 }
 
+.obsidian-orthography-popup-card-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: 15px;
+}
+
+.obsidian-orthography-popup-card-content span {
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
 .obsidian-orthography-popup-replacement {
-  margin: 0 5px;
   background-color: #57A884;
   border-radius: 3px;
   padding: 2px 6px;
   padding-right: 10px;
   line-height: normal;
+  white-space: nowrap;
 }
 
 .obsidian-orthography-popup-replacement::before {
