@@ -1,7 +1,7 @@
 import { OrthographySettings } from '../settings';
 import type { App } from 'obsidian';
 import { O_HIGHLIGHT } from '../cssClasses';
-import { IOriginalWord, IData } from 'src/interfaces';
+import { IOriginalWord, IData, IEditor } from 'src/interfaces';
 
 interface IOrthographyEditor {
   init(): void;
@@ -27,7 +27,7 @@ export class OrthographyEditor implements IOrthographyEditor {
     self.clearHighlightWords();
   }
 
-  public highlightWords(editor: any, alerts: IData[]): void {
+  public highlightWords(editor: IEditor, alerts: IData[]): void {
     this.clearHighlightWords();
 
     alerts.forEach((alert: any) => {
@@ -42,7 +42,7 @@ export class OrthographyEditor implements IOrthographyEditor {
   }
 
   private highlightWord(
-    editor: any,
+    editor: IEditor,
     originalWord: { begin: number; end: number; len: number }
   ): void {
     const colRow = this.getColRow(editor, originalWord);
@@ -64,7 +64,7 @@ export class OrthographyEditor implements IOrthographyEditor {
   }
 
   public replaceWord(
-    editor: any,
+    editor: IEditor,
     originalWord: IOriginalWord,
     newWord: string
   ): void {
@@ -87,14 +87,18 @@ export class OrthographyEditor implements IOrthographyEditor {
     doc.replaceRange(newWord, from, to);
   }
 
-  private getColRow(
-    editor: any,
+  getColRow(
+    editor: IEditor,
     originalWord: IOriginalWord
   ): { col: number; row: number } {
+    if (!editor || !originalWord) return;
+
     let ttl = 0;
     let row = 0;
-    let result = null;
+    let result;
     const { begin } = originalWord;
+
+    if (!editor.eachLine) return undefined;
 
     editor.eachLine((l: any) => {
       const s = ttl === 0 ? ttl : ttl + 1;

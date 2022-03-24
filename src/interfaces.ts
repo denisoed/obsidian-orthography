@@ -20,3 +20,19 @@ export interface IOriginalWord {
   end: number;
   len: number;
 }
+
+export interface IEditor {
+  eachLine(callback: any): void;
+  markText(
+    from: { line: number; ch: number },
+    to: { line: number; ch: number },
+    oprions: any
+  ): void;
+  getDoc(): {
+    replaceRange(
+      newText: string,
+      from: { line: number; ch: number },
+      to: { line: number; ch: number }
+    ): void;
+  };
+}
