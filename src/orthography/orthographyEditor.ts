@@ -7,6 +7,11 @@ interface IOrthographyEditor {
   init(): void;
 }
 
+interface IGetColRowResult {
+  col: number;
+  row: number;
+}
+
 let self: any;
 
 export class OrthographyEditor implements IOrthographyEditor {
@@ -87,10 +92,7 @@ export class OrthographyEditor implements IOrthographyEditor {
     doc.replaceRange(newWord, from, to);
   }
 
-  getColRow(
-    editor: IEditor,
-    originalWord: IOriginalWord
-  ): { col: number; row: number } {
+  getColRow(editor: IEditor, originalWord: IOriginalWord): IGetColRowResult {
     if (!editor || !originalWord) return;
 
     let ttl = 0;
@@ -100,9 +102,9 @@ export class OrthographyEditor implements IOrthographyEditor {
 
     if (!editor.eachLine) return undefined;
 
-    editor.eachLine((l: any) => {
+    editor.eachLine((line: { text: string }) => {
       const s = ttl === 0 ? ttl : ttl + 1;
-      const lineTextLength = l.text.length;
+      const lineTextLength = line.text.length;
       ttl += lineTextLength;
 
       if (row > 0) {
