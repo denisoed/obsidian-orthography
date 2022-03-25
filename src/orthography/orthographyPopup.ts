@@ -244,8 +244,7 @@ export class OrthographyPopup {
   private scrollToWord(begin: number) {
     const activeEditor = self.getEditor();
     if (activeEditor) {
-      const scroller = activeEditor.getScrollerElement();
-      scroller.scrollTop = +begin - 300;
+      activeEditor.scrollTo(0, +begin - 300);
     } else {
       self.onClose();
       new Notice(O_NOT_OPEN_FILE);
