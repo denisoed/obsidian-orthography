@@ -13,8 +13,9 @@ The Obsidian plugin for checking grammar and correcting spelling errors in text.
 
 **IMPORTANT**:
 1. **ALPHA version**.
-2. This is experimental and may have instability. It is possible that there are bugs which may delete data in the current note. Please make backups!
-3. The plugin handles only English text.
+2. The plugin does not work correctly in the "Live Preview" mode. I'll figure it out and fix it
+3. This is experimental and may have instability. It is possible that there are bugs which may delete data in the current note. Please make backups!
+4. The plugin handles only English text.
 
 ## Features
 
@@ -25,6 +26,7 @@ The Obsidian plugin for checking grammar and correcting spelling errors in text.
 ## Todo
  
 - [x] Integration [Grammarly](https://www.grammarly.com)
+- [ ] Support "Live Preview" mode
 - [ ] Fix the styles in the mobile version
 - [ ] Add the ability to save words in your personal dictionary
 - [ ] Add settings for selecting a dialect(`american` or `british`)
