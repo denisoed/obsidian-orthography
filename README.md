@@ -1,5 +1,9 @@
 # Obsidian Orthography
 
+**THE PLUGIN DOES NOT WORK CORRECTLY IN THE "LIVE PREVIEW" MODE :(**
+
+**I'LL FIGURE IT OUT AND FIX IT**
+
 [![Developed by Mad Devs](https://maddevs.io/badge-dark.svg)](https://maddevs.io/)
 &nbsp;
 ![License MIT](https://img.shields.io/github/license/denisoed/obsidian-orthography)
