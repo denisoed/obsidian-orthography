@@ -1,4 +1,4 @@
-import { Plugin, Events, Notice } from 'obsidian';
+import { Plugin, Events, Notice, MarkdownView, type Editor } from 'obsidian';
 import { OrthographySettings } from './settings';
 import {
   OrthographyEditor,
@@ -19,7 +19,7 @@ export default class OrthographyPlugin extends Plugin {
   private toggler: any;
   private editor: any;
   private emitter: any;
-  private activeEditor: any;
+  private activeEditor: Editor;
   private aborter: any;
   private hints: any;
   private debounceGetDataFunc = debounce(this.onChangeText.bind(this), 500);
@@ -36,25 +36,20 @@ export default class OrthographyPlugin extends Plugin {
 
     // this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
-    this.initOrthographyToggler();
-    this.initOrthographyPopup();
-    this.initOrthographyEditor();
-
     // ------- Events -------- //
     this.emitter.on('orthography:open', this.onPopupOpen);
     this.emitter.on('orthography:close', this.onPopupClose);
     this.emitter.on('orthography:run', this.getDataFunc);
     this.emitter.on('orthography:replace', this.onReplaceWord);
-
-    // NOTE: find a better way to do this
     // Listen to changes in the editor
-    this.registerDomEvent(document, 'click', () => {
-      if (!this.activeEditor) return;
-      this.activeEditor.off('change', this.debounceGetDataFunc);
+    this.app.workspace.on('editor-change', this.debounceGetDataFunc);
+
+    setTimeout(() => {
       this.activeEditor = this.getEditor();
-      if (!this.activeEditor) return;
-      this.activeEditor.on('change', this.debounceGetDataFunc);
-    });
+      this.initOrthographyToggler();
+      this.initOrthographyPopup();
+      this.initOrthographyEditor();
+    }, 1000);
   }
 
   onunload(): void {
@@ -62,8 +57,7 @@ export default class OrthographyPlugin extends Plugin {
     this.emitter.off('orthography:close', this.onPopupClose);
     this.emitter.off('orthography:run', this.onRunFromPopup);
     this.emitter.off('orthography:replace', this.onReplaceWord);
-    if (this.activeEditor)
-      this.activeEditor.off('change', this.debounceGetDataFunc);
+    this.app.workspace.off('editor-change', this.debounceGetDataFunc);
     this.toggler.destroy();
     this.popup.destroy();
     this.editor.destroy();
@@ -85,14 +79,13 @@ export default class OrthographyPlugin extends Plugin {
 
   private initOrthographyEditor(): void {
     const { app, settings } = this;
-    this.editor = new OrthographyEditor(app, settings);
+    this.editor = new OrthographyEditor(app, settings, this.activeEditor);
     this.editor.init();
   }
 
   private getEditor() {
-    const activeLeaf: any = this.app.workspace.activeLeaf;
-    const sourceMode = activeLeaf.view.sourceMode;
-    return sourceMode ? sourceMode.cmEditor : null;
+    const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
+    return activeLeaf?.sourceMode?.cmEditor;
   }
 
   private async onChangeText() {
@@ -126,7 +119,7 @@ export default class OrthographyPlugin extends Plugin {
     }
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
       const alerts = formatAlerts(this.hints.alerts);
-      this.editor.highlightWords(this.activeEditor, alerts);
+      this.editor.highlightWords(alerts);
       this.popup.update({
         alerts: sortAlerts(alerts)
       });
@@ -143,8 +136,6 @@ export default class OrthographyPlugin extends Plugin {
 
   private onPopupClose() {
     self.editor.destroy();
-    if (self.activeEditor)
-      self.activeEditor.doc.getAllMarks().forEach((m: any) => m.clear());
     self.popup.destroy();
     self.toggler.reset();
     if (self.aborter) {
@@ -159,7 +150,6 @@ export default class OrthographyPlugin extends Plugin {
     const begin = event.currentTarget.dataset.begin;
     const end = begin + origWordLen;
     self.editor.replaceWord(
-      self.activeEditor,
       {
         begin: +begin,
         end: +end,

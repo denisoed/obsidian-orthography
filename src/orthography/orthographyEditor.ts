@@ -1,7 +1,7 @@
 import { OrthographySettings } from '../settings';
-import type { App } from 'obsidian';
+import type { App, Editor } from 'obsidian';
 import { O_HIGHLIGHT } from '../cssClasses';
-import { IOriginalWord, IData, IEditor } from 'src/interfaces';
+import { IOriginalWord, IData } from 'src/interfaces';
 
 interface IOrthographyEditor {
   init(): void;
@@ -12,30 +12,29 @@ interface IGetColRowResult {
   row: number;
 }
 
-let self: any;
-
 export class OrthographyEditor implements IOrthographyEditor {
   private app: App;
   private settings: OrthographySettings;
-  private highlightedWords: any;
+  private editor: Editor;
 
-  constructor(app: App, settings: OrthographySettings) {
+  constructor(app: App, settings: OrthographySettings, editor: Editor) {
     this.app = app;
     this.settings = settings;
+    this.editor = editor;
   }
 
   public init(): void {
-    self = this;
+    // init
   }
 
   public destroy(): void {
-    self.clearHighlightWords();
+    this.clearHighlightWords();
   }
 
-  public highlightWords(editor: IEditor, alerts: IData[]): void {
+  public highlightWords(alerts: IData[]): void {
     this.clearHighlightWords();
 
-    if (!editor || !alerts || alerts.length === 0) return;
+    if (!this.editor || !alerts || alerts.length === 0) return;
 
     alerts.forEach((alert: any) => {
       const textLength = alert.text.length || alert.highlightText.length;
@@ -44,44 +43,45 @@ export class OrthographyEditor implements IOrthographyEditor {
         end: alert.end,
         len: textLength
       };
-      this.highlightWord(editor, originalWord);
+      this.highlightWord(originalWord);
     });
   }
 
-  private highlightWord(
-    editor: IEditor,
-    originalWord: { begin: number; end: number; len: number }
-  ): void {
-    if (!editor || !originalWord) return;
-    const colRow = this.getColRow(editor, originalWord);
+  private highlightWord(originalWord: {
+    begin: number;
+    end: number;
+    len: number;
+  }): void {
+    if (!this.editor || !originalWord) return;
+    const colRow = this.getColRow(originalWord);
+
     if (!colRow) return;
     const { col, row } = colRow;
 
-    this.highlightedWords = editor.markText(
-      { line: row, ch: col },
-      { line: row, ch: col + originalWord.len },
-      {
-        className: O_HIGHLIGHT,
-        attributes: {
-          begin: originalWord.begin,
-          end: originalWord.end,
-          len: originalWord.len
+    this.editor.addHighlights(
+      [
+        {
+          from: {
+            line: row,
+            ch: col
+          },
+          to: {
+            line: row,
+            ch: col + originalWord.len
+          }
         }
-      }
+      ],
+      `${O_HIGHLIGHT} begin-${originalWord.begin}`
     );
   }
 
-  public replaceWord(
-    editor: IEditor,
-    originalWord: IOriginalWord,
-    newWord: string
-  ): void {
-    if (!editor || !originalWord || !newWord) return;
-    const colRow = this.getColRow(editor, originalWord);
+  public replaceWord(originalWord: IOriginalWord, newWord: string): void {
+    if (!this.editor || !originalWord || !newWord) return;
+    const colRow = this.getColRow(originalWord);
     if (!colRow) return;
     const { col, row } = colRow;
 
-    const doc = editor.getDoc();
+    const doc = this.editor.getDoc();
 
     const from = {
       line: row,
@@ -95,19 +95,20 @@ export class OrthographyEditor implements IOrthographyEditor {
     doc.replaceRange(newWord, from, to);
   }
 
-  getColRow(editor: IEditor, originalWord: IOriginalWord): IGetColRowResult {
-    if (!editor || !originalWord) return;
+  getColRow(originalWord: IOriginalWord): IGetColRowResult {
+    if (!this.editor || !originalWord) return;
 
     let ttl = 0;
     let row = 0;
     let result;
     const { begin } = originalWord;
 
-    if (!editor.eachLine) return undefined;
+    const lines = this.editor.lineCount();
 
-    editor.eachLine((line: { text: string }) => {
+    for (let i = 0; i < lines; i++) {
+      const lineText = this.editor.getLine(i);
       const s = ttl === 0 ? ttl : ttl + 1;
-      const lineTextLength = line.text.length;
+      const lineTextLength = lineText.length;
       ttl += lineTextLength;
 
       if (row > 0) {
@@ -117,20 +118,16 @@ export class OrthographyEditor implements IOrthographyEditor {
         const diff = ttl - lineTextLength;
         const col = begin - diff;
         result = { col, row };
-        return;
       }
       row++;
-    });
+    }
     return result;
   }
 
   private clearHighlightWords(): void {
-    if (typeof self.highlightedWords === 'object') {
-      self.highlightedWords.clear();
-    }
     const highlightWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
     highlightWords.forEach((span) => {
-      span.removeAttribute('class');
+      this.editor.removeHighlights(span.className);
     });
   }
 }
