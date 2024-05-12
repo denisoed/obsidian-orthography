@@ -17,11 +17,12 @@ let self: any;
 export class OrthographyEditor implements IOrthographyEditor {
   private app: App;
   private settings: OrthographySettings;
-  private highlightedWords: any;
+  private editor: Editor;
 
-  constructor(app: App, settings: OrthographySettings) {
+  constructor(app: App, settings: OrthographySettings, editor: Editor) {
     this.app = app;
     this.settings = settings;
+    this.editor = editor;
   }
 
   public init(): void {
@@ -29,13 +30,13 @@ export class OrthographyEditor implements IOrthographyEditor {
   }
 
   public destroy(): void {
-    self.clearHighlightWords();
+    this.clearHighlightWords();
   }
 
-  public highlightWords(editor: Editor, alerts: IData[]): void {
+  public highlightWords(alerts: IData[]): void {
     this.clearHighlightWords();
 
-    if (!editor || !alerts || alerts.length === 0) return;
+    if (!this.editor || !alerts || alerts.length === 0) return;
 
     alerts.forEach((alert: any) => {
       const textLength = alert.text.length || alert.highlightText.length;
@@ -44,23 +45,22 @@ export class OrthographyEditor implements IOrthographyEditor {
         end: alert.end,
         len: textLength
       };
-      this.highlightWord(editor, originalWord);
+      this.highlightWord(originalWord);
     });
   }
 
-  private highlightWord(
-    editor: Editor,
-    originalWord: { begin: number; end: number; len: number }
-  ): void {
-    if (!editor || !originalWord) return;
-    const colRow = this.getColRow(editor, originalWord);
+  private highlightWord(originalWord: {
+    begin: number;
+    end: number;
+    len: number;
+  }): void {
+    if (!this.editor || !originalWord) return;
+    const colRow = this.getColRow(originalWord);
 
     if (!colRow) return;
     const { col, row } = colRow;
 
-    console.log(col, row);
-
-    editor.addHighlights(
+    this.editor.addHighlights(
       [
         {
           from: {
@@ -77,17 +77,13 @@ export class OrthographyEditor implements IOrthographyEditor {
     );
   }
 
-  public replaceWord(
-    editor: Editor,
-    originalWord: IOriginalWord,
-    newWord: string
-  ): void {
-    if (!editor || !originalWord || !newWord) return;
-    const colRow = this.getColRow(editor, originalWord);
+  public replaceWord(originalWord: IOriginalWord, newWord: string): void {
+    if (!this.editor || !originalWord || !newWord) return;
+    const colRow = this.getColRow(originalWord);
     if (!colRow) return;
     const { col, row } = colRow;
 
-    const doc = editor.getDoc();
+    const doc = this.editor.getDoc();
 
     const from = {
       line: row,
@@ -101,18 +97,18 @@ export class OrthographyEditor implements IOrthographyEditor {
     doc.replaceRange(newWord, from, to);
   }
 
-  getColRow(editor: Editor, originalWord: IOriginalWord): IGetColRowResult {
-    if (!editor || !originalWord) return;
+  getColRow(originalWord: IOriginalWord): IGetColRowResult {
+    if (!this.editor || !originalWord) return;
 
     let ttl = 0;
     let row = 0;
     let result;
     const { begin } = originalWord;
 
-    const lines = editor.lineCount();
+    const lines = this.editor.lineCount();
 
     for (let i = 0; i < lines; i++) {
-      const lineText = editor.getLine(i);
+      const lineText = this.editor.getLine(i);
       const s = ttl === 0 ? ttl : ttl + 1;
       const lineTextLength = lineText.length;
       ttl += lineTextLength;
@@ -131,12 +127,9 @@ export class OrthographyEditor implements IOrthographyEditor {
   }
 
   private clearHighlightWords(): void {
-    if (typeof self.highlightedWords === 'object') {
-      self.highlightedWords.clear();
-    }
     const highlightWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
     highlightWords.forEach((span) => {
-      span.removeAttribute('class');
+      this.editor.removeHighlights(span.className);
     });
   }
 }
