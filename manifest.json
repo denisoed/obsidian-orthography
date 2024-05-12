@@ -1,9 +1,9 @@
 {
   "id": "orthography",
   "name": "Orthography",
-  "version": "2.0.4",
-  "minAppVersion": "0.13.31",
-  "description": "Check & fix orthography errors in text.",
+  "version": "3.0.1",
+  "minAppVersion": "1.5.12",
+  "description": "Checking and correcting orthography errors in the text.",
   "author": "Denisoed",
   "authorUrl": "https://github.com/denisoed",
   "isDesktopOnly": false
