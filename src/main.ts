@@ -1,4 +1,4 @@
-import { Plugin, Events, Notice } from 'obsidian';
+import { Plugin, Events, Notice, MarkdownView } from 'obsidian';
 import { OrthographySettings } from './settings';
 import {
   OrthographyEditor,
@@ -50,10 +50,10 @@ export default class OrthographyPlugin extends Plugin {
     // Listen to changes in the editor
     this.registerDomEvent(document, 'click', () => {
       if (!this.activeEditor) return;
-      this.activeEditor.off('change', this.debounceGetDataFunc);
+      this.registerEvent(
+        this.app.workspace.on('editor-change', this.debounceGetDataFunc, true)
+      );
       this.activeEditor = this.getEditor();
-      if (!this.activeEditor) return;
-      this.activeEditor.on('change', this.debounceGetDataFunc);
     });
   }
 
@@ -90,9 +90,8 @@ export default class OrthographyPlugin extends Plugin {
   }
 
   private getEditor() {
-    const activeLeaf: any = this.app.workspace.activeLeaf;
-    const sourceMode = activeLeaf.view.sourceMode;
-    return sourceMode ? sourceMode.cmEditor : null;
+    const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView);
+    return activeLeaf?.sourceMode?.cmEditor;
   }
 
   private async onChangeText() {
@@ -143,8 +142,6 @@ export default class OrthographyPlugin extends Plugin {
 
   private onPopupClose() {
     self.editor.destroy();
-    if (self.activeEditor)
-      self.activeEditor.doc.getAllMarks().forEach((m: any) => m.clear());
     self.popup.destroy();
     self.toggler.reset();
     if (self.aborter) {

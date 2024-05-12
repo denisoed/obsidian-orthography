@@ -1,7 +1,7 @@
 import { OrthographySettings } from '../settings';
-import type { App } from 'obsidian';
+import type { App, Editor } from 'obsidian';
 import { O_HIGHLIGHT } from '../cssClasses';
-import { IOriginalWord, IData, IEditor } from 'src/interfaces';
+import { IOriginalWord, IData } from 'src/interfaces';
 
 interface IOrthographyEditor {
   init(): void;
@@ -32,7 +32,7 @@ export class OrthographyEditor implements IOrthographyEditor {
     self.clearHighlightWords();
   }
 
-  public highlightWords(editor: IEditor, alerts: IData[]): void {
+  public highlightWords(editor: Editor, alerts: IData[]): void {
     this.clearHighlightWords();
 
     if (!editor || !alerts || alerts.length === 0) return;
@@ -49,30 +49,36 @@ export class OrthographyEditor implements IOrthographyEditor {
   }
 
   private highlightWord(
-    editor: IEditor,
+    editor: Editor,
     originalWord: { begin: number; end: number; len: number }
   ): void {
     if (!editor || !originalWord) return;
     const colRow = this.getColRow(editor, originalWord);
+
     if (!colRow) return;
     const { col, row } = colRow;
 
-    this.highlightedWords = editor.markText(
-      { line: row, ch: col },
-      { line: row, ch: col + originalWord.len },
-      {
-        className: O_HIGHLIGHT,
-        attributes: {
-          begin: originalWord.begin,
-          end: originalWord.end,
-          len: originalWord.len
+    console.log(col, row);
+
+    editor.addHighlights(
+      [
+        {
+          from: {
+            line: row,
+            ch: col
+          },
+          to: {
+            line: row,
+            ch: col + originalWord.len
+          }
         }
-      }
+      ],
+      `${O_HIGHLIGHT} begin-${originalWord.begin}`
     );
   }
 
   public replaceWord(
-    editor: IEditor,
+    editor: Editor,
     originalWord: IOriginalWord,
     newWord: string
   ): void {
@@ -95,7 +101,7 @@ export class OrthographyEditor implements IOrthographyEditor {
     doc.replaceRange(newWord, from, to);
   }
 
-  getColRow(editor: IEditor, originalWord: IOriginalWord): IGetColRowResult {
+  getColRow(editor: Editor, originalWord: IOriginalWord): IGetColRowResult {
     if (!editor || !originalWord) return;
 
     let ttl = 0;
@@ -103,11 +109,12 @@ export class OrthographyEditor implements IOrthographyEditor {
     let result;
     const { begin } = originalWord;
 
-    if (!editor.eachLine) return undefined;
+    const lines = editor.lineCount();
 
-    editor.eachLine((line: { text: string }) => {
+    for (let i = 0; i < lines; i++) {
+      const lineText = editor.getLine(i);
       const s = ttl === 0 ? ttl : ttl + 1;
-      const lineTextLength = line.text.length;
+      const lineTextLength = lineText.length;
       ttl += lineTextLength;
 
       if (row > 0) {
@@ -117,10 +124,9 @@ export class OrthographyEditor implements IOrthographyEditor {
         const diff = ttl - lineTextLength;
         const col = begin - diff;
         result = { col, row };
-        return;
       }
       row++;
-    });
+    }
     return result;
   }
 
