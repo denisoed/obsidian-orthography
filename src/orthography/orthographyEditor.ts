@@ -12,8 +12,6 @@ interface IGetColRowResult {
   row: number;
 }
 
-let self: any;
-
 export class OrthographyEditor implements IOrthographyEditor {
   private app: App;
   private settings: OrthographySettings;
@@ -26,7 +24,7 @@ export class OrthographyEditor implements IOrthographyEditor {
   }
 
   public init(): void {
-    self = this;
+    // init
   }
 
   public destroy(): void {
