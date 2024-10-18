@@ -397,6 +397,11 @@
   opacity: 0.3;
 }
 
+.obsidian-orthography-popup-ignore {
+  margin-right: 0;
+  margin-left: auto;
+}
+
 /* Loader */
 
 .obsidian-orthography-loader {

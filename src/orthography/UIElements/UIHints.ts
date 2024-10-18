@@ -73,6 +73,21 @@ const renderHints = (card: IData, index: number): string => {
     .join(JOIN_BY);
 };
 
+const ignoreButton = (card: IData, index: number): string => {
+  const { category, text, begin } = card;
+  const isMisspelled = category === 'Misspelled';
+  return isMisspelled
+    ? `<button class="obsidian-orthography-ignore-button" 
+            id="ignore-button-${index}" 
+            title="add '${text}' to your personal dictionary"
+            data-index="${index}"
+            data-begin="${begin}"
+            data-text="${text}">
+             Ignore
+           </button>`
+    : '';
+};
+
 const UIHints = (alerts: IData[]): string => {
   if (!alerts || !alerts.length) return '';
   return alerts
@@ -100,7 +115,11 @@ const UIHints = (alerts: IData[]): string => {
               </div>
             </div>
             <div class="obsidian-orthography-popup-card">
-              <div>${cardLayout.group || ''}</div>
+              <div>${cardLayout.group || ''}
+                <div class="obsidian-orthography-popup-ignore">
+                  ${ignoreButton(card, index)}
+                </div>
+              </div>              
               <div class="obsidian-orthography-popup-card-content">
                 ${renderHints(card, index)}
               </div>

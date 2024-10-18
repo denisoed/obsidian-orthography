@@ -8,8 +8,9 @@ import {
   O_POPUP_RESIZED,
   O_POPUP_ITEM_OPENED,
   O_POPUP_WORD_TO_REPLACE,
-  O_HIGHLIGHT_FOCUSED
-} from '../cssClasses';
+  O_HIGHLIGHT_FOCUSED,
+  O_POPUP_IGNORE_BUTTON
+} from "../cssClasses";
 import { O_NOT_OPEN_FILE } from '../constants';
 import { IAlert } from '../interfaces';
 
@@ -102,6 +103,12 @@ export class OrthographyPopup {
     replacements.forEach((rp) =>
       rp.addEventListener('click', self.onReplaceWord)
     );
+    const wordButtons = document.querySelectorAll(
+      `.${O_POPUP_IGNORE_BUTTON}`
+    );
+    wordButtons.forEach((button) =>
+      button.addEventListener('click', self.onIgnore)
+    );
     self.reloader = document.getElementById('reloader');
     if (self.reloader) {
       self.reloader.addEventListener('click', self.onRun);
@@ -142,6 +149,12 @@ export class OrthographyPopup {
     );
     replacements.forEach((rp) =>
       rp.removeEventListener('click', self.onReplaceWord)
+    );
+    const wordButtons = document.querySelectorAll(
+      `.${O_POPUP_IGNORE_BUTTON}`
+    );
+    wordButtons.forEach((button) =>
+      button.removeEventListener('click', self.onIgnore)
     );
     if (self.reloader) self.reloader.removeEventListener('click', self.onRun);
     if (self.runner) self.runner.removeEventListener('click', self.onRun);
@@ -223,6 +236,16 @@ export class OrthographyPopup {
 
   private onReplaceWord(event: any) {
     self.emitter.trigger('orthography:replace', event);
+    const { index } = event.currentTarget.dataset;
+    const selectedItem = document.getElementById(`${O_POPUP_ITEM}-${index}`);
+    if (selectedItem) selectedItem.remove();
+    if (!document.querySelectorAll(`.${O_POPUP_ITEM}`).length) {
+      self.removeLoader();
+    }
+  }
+
+  private onIgnore(event: any) {
+    self.emitter.trigger('orthography:ignore', event);
     const { index } = event.currentTarget.dataset;
     const selectedItem = document.getElementById(`${O_POPUP_ITEM}-${index}`);
     if (selectedItem) selectedItem.remove();

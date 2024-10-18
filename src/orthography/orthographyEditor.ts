@@ -1,6 +1,6 @@
 import { OrthographySettings } from '../settings';
 import type { App, Editor } from 'obsidian';
-import { O_HIGHLIGHT } from '../cssClasses';
+import { O_HIGHLIGHT, O_HIGHLIGHT_FOCUSED } from "../cssClasses";
 import { IOriginalWord, IData } from 'src/interfaces';
 
 interface IOrthographyEditor {
@@ -128,6 +128,17 @@ export class OrthographyEditor implements IOrthographyEditor {
     const highlightWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
     highlightWords.forEach((span) => {
       this.editor.removeHighlights(span.className);
+    });
+  }
+
+  private clearHighlightWord(word: string): void {
+    const highlightWords = document.querySelectorAll(`.${O_HIGHLIGHT}`);
+
+    highlightWords.forEach((span) => {
+      if (span.innerText === word) {
+        span.classList.remove(O_HIGHLIGHT);
+        span.classList.remove(O_HIGHLIGHT_FOCUSED);
+      }
     });
   }
 }

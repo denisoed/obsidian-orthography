@@ -9,6 +9,7 @@ import debounce from './orthography/helpers/debounce';
 import { sortAlerts, formatAlerts } from './orthography/helpers/formatters';
 import { API_URL_GRAMMAR } from './config';
 import { O_NOT_OPEN_FILE, O_SERVER_ERROR, O_NO_ERROR } from './constants';
+import { PersonalDictionary } from './orthography/personalDictionary'
 
 // Use self in events callbacks
 let self: any;
@@ -24,6 +25,7 @@ export default class OrthographyPlugin extends Plugin {
   private hints: any;
   private debounceGetDataFunc = debounce(this.onChangeText.bind(this), 500);
   private getDataFunc = debounce(this.onRunFromPopup.bind(this), 0);
+  private personalDictionary: PersonalDictionary;
 
   async onload(): Promise<void> {
     // ------ Init -------- //
@@ -36,11 +38,16 @@ export default class OrthographyPlugin extends Plugin {
 
     // this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
+    const personalDictionary = new PersonalDictionary(this);
+    await personalDictionary.loadDictionary();
+    this.personalDictionary = personalDictionary;
+
     // ------- Events -------- //
     this.emitter.on('orthography:open', this.onPopupOpen);
     this.emitter.on('orthography:close', this.onPopupClose);
     this.emitter.on('orthography:run', this.getDataFunc);
     this.emitter.on('orthography:replace', this.onReplaceWord);
+    this.emitter.on('orthography:ignore', this.onIgnore);
     // Listen to changes in the editor
     this.app.workspace.on('editor-change', this.debounceGetDataFunc);
 
@@ -57,6 +64,7 @@ export default class OrthographyPlugin extends Plugin {
     this.emitter.off('orthography:close', this.onPopupClose);
     this.emitter.off('orthography:run', this.onRunFromPopup);
     this.emitter.off('orthography:replace', this.onReplaceWord);
+    this.emitter.off('orthography:ignore', this.onIgnore);
     this.app.workspace.off('editor-change', this.debounceGetDataFunc);
     this.toggler.destroy();
     this.popup.destroy();
@@ -118,7 +126,7 @@ export default class OrthographyPlugin extends Plugin {
       return;
     }
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
-      const alerts = formatAlerts(this.hints.alerts);
+      const alerts = formatAlerts(this.personalDictionary.filterAlerts(this.hints.alerts));
       this.editor.highlightWords(alerts);
       this.popup.update({
         alerts: sortAlerts(alerts)
@@ -157,6 +165,12 @@ export default class OrthographyPlugin extends Plugin {
       },
       newWord
     );
+  }
+
+  private onIgnore(event: any) {
+    const word = event.currentTarget.dataset.text;
+    self.personalDictionary.addWord(word);
+    self.editor.clearHighlightWord(word)
   }
 
   private async fetchData(text: string): Promise<JSON> {
