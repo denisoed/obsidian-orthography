@@ -1,18 +1,25 @@
-import type OrthographyPlugin from '../../main';
-import { Notice } from 'obsidian';
+import { App, Notice } from "obsidian";
 
 export class PersonalDictionary {
+  private static instance: PersonalDictionary | null = null;
   private data: { dictionary: string[] } = { dictionary: [] };
   private category: string = 'Misspelled';
-  constructor(private plugin: OrthographyPlugin) {
-    this.plugin = plugin;
+  private app: App;
+
+  constructor(app: App) {
+    this.app = app;
   }
+
+  get dictionary(): string[] {
+    return this.data.dictionary || [];
+  }
+
   async loadDictionary(): Promise<void> {
     const filePath = this.getDictionaryFilePath();
 
     try {
-      if (await this.plugin.app.vault.adapter.exists(filePath)) {
-        const storedData = await this.plugin.app.vault.adapter.read(filePath);
+      if (await this.app.vault.adapter.exists(filePath)) {
+        const storedData = await this.app.vault.adapter.read(filePath);
         const parsedData = JSON.parse(storedData);
 
         if (parsedData && Array.isArray(parsedData.dictionary)) {
@@ -38,6 +45,16 @@ export class PersonalDictionary {
     }
   }
 
+  async remove(wordsToRemove: string[]): Promise<void> {
+    this.data.dictionary = this.data.dictionary.filter((word) =>
+      {
+        word = word.toLowerCase();
+        return !wordsToRemove.includes(word);
+      }
+    )
+    await this.saveDictionary();
+  }
+
   filterAlerts(alerts: any[]): any[] {
     return alerts.filter((alert: any) => {
       if (alert && alert.text && alert.category) {
@@ -54,7 +71,7 @@ export class PersonalDictionary {
   }
 
   private getDictionaryFilePath(): string {
-    return `${this.plugin.app.vault.configDir}/plugins/obsidian-orthography/dictionary.json`;
+    return `${this.app.vault.configDir}/plugins/obsidian-orthography/dictionary.json`;
   }
 
   private async saveDictionary(): Promise<void> {
@@ -66,7 +83,7 @@ export class PersonalDictionary {
         null,
         1
       );
-      await this.plugin.app.vault.adapter.write(filePath, dataToSave);
+      await this.app.vault.adapter.write(filePath, dataToSave);
     } catch (error) {
       new Notice('Error saving personal dictionary');
     }

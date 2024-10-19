@@ -24,3 +24,6 @@ export const O_TOOLTIP_HINT = 'obsidian-orthography-tooltip-hint';
 // Highlight
 export const O_HIGHLIGHT = 'obsidian-orthography-highlight';
 export const O_HIGHLIGHT_FOCUSED = 'obsidian-orthography-highlight--focused';
+
+// Personal Dictionary
+export const O_DICT_WORD_CHECKBOX = 'obsidian-orthography-dictionary-word-checkbox';

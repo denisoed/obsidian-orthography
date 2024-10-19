@@ -15,6 +15,7 @@ import { O_NOT_OPEN_FILE } from '../constants';
 import { IAlert } from '../interfaces';
 
 import UIBar from './UIElements/UIBar';
+import { PersonalDictionary, PersonalDictionaryTab } from "./personalDictionary";
 
 let self: any;
 
@@ -27,14 +28,20 @@ export class OrthographyPopup {
   private closer: any;
   private reloader: any;
   private runner: any;
+  private checker: any;
+  private dictionaryOpener: any;
   private popupOffset: number[] = [0, 0];
   private moverSelected = false;
   private created = false;
+  private personalDictionary: PersonalDictionary;
+  private personalDictionaryTab: PersonalDictionaryTab;
 
-  constructor(app: App, settings: OrthographySettings, emitter: Events) {
+  constructor(app: App, settings: OrthographySettings, emitter: Events, personalDictionary: PersonalDictionary) {
     this.app = app;
     this.settings = settings;
     this.emitter = emitter;
+    this.personalDictionary = personalDictionary;
+    this.personalDictionaryTab = new PersonalDictionaryTab(this, personalDictionary);
   }
 
   public init(): void {
@@ -55,15 +62,18 @@ export class OrthographyPopup {
   public destroy(): void {
     self.created = false;
     self.removeListeners();
+    self.personalDictionaryTab.destroy();
     const popup = document.getElementById(O_POPUP);
     if (popup) popup.remove();
   }
 
-  public update(data: IAlert, loading?: boolean): void {
+  public update(data: IAlert, loading?: boolean, showDictionary: boolean = false): void {
     self.removeListeners();
-    const bar = UIBar(data, loading);
+    const dictionary = this.personalDictionary ? this.personalDictionary.dictionary : []
+    const bar = UIBar(data, loading, showDictionary, dictionary);
     self.popup.innerHTML = bar;
     self.setListeners();
+    showDictionary ? self.personalDictionaryTab.update() : self.personalDictionaryTab.destroy();
   }
 
   public setLoader(): void {
@@ -103,19 +113,27 @@ export class OrthographyPopup {
     replacements.forEach((rp) =>
       rp.addEventListener('click', self.onReplaceWord)
     );
-    const wordButtons = document.querySelectorAll(
+    const ignoreButtons = document.querySelectorAll(
       `.${O_POPUP_IGNORE_BUTTON}`
     );
-    wordButtons.forEach((button) =>
+    ignoreButtons.forEach((button) =>
       button.addEventListener('click', self.onIgnore)
     );
     self.reloader = document.getElementById('reloader');
     if (self.reloader) {
       self.reloader.addEventListener('click', self.onRun);
     }
+    self.dictionaryOpener = document.getElementById("dictionary-opener")
+    if (self.dictionaryOpener) {
+      self.dictionaryOpener.addEventListener('click', self.onOpenDictionary);
+    }
     self.runner = document.getElementById('runner');
     if (self.runner) {
       self.runner.addEventListener('click', self.onRun);
+    }
+    self.checker = document.getElementById('checker');
+    if (self.checker) {
+      self.checker.addEventListener('click', self.onRun);
     }
     self.sizer = document.getElementById('sizer');
     if (self.sizer) {
@@ -150,13 +168,15 @@ export class OrthographyPopup {
     replacements.forEach((rp) =>
       rp.removeEventListener('click', self.onReplaceWord)
     );
-    const wordButtons = document.querySelectorAll(
+    const ignoreButtons = document.querySelectorAll(
       `.${O_POPUP_IGNORE_BUTTON}`
     );
-    wordButtons.forEach((button) =>
+    ignoreButtons.forEach((button) =>
       button.removeEventListener('click', self.onIgnore)
     );
     if (self.reloader) self.reloader.removeEventListener('click', self.onRun);
+    if (self.dictionaryOpener) self.dictionaryOpener.removeEventListener('click', self.onOpenDictionary);
+    if (self.checker) self.checker.removeEventListener('click', self.onRun);
     if (self.runner) self.runner.removeEventListener('click', self.onRun);
     if (self.sizer) self.sizer.removeEventListener('click', self.onResize);
     if (self.closer) self.closer.removeEventListener('click', self.onClose);
@@ -252,6 +272,10 @@ export class OrthographyPopup {
     if (!document.querySelectorAll(`.${O_POPUP_ITEM}`).length) {
       self.removeLoader();
     }
+  }
+
+  private onOpenDictionary(){
+    self.update(null, false, true);
   }
 
   private onOpenCard(event: any) {

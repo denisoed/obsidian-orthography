@@ -78,7 +78,6 @@ const ignoreButton = (card: IData, index: number): string => {
   const isMisspelled = category === 'Misspelled';
   return isMisspelled
     ? `<button class="obsidian-orthography-ignore-button" 
-            id="ignore-button-${index}" 
             title="add '${text}' to your personal dictionary"
             data-index="${index}"
             data-begin="${begin}"

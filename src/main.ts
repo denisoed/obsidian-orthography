@@ -9,7 +9,7 @@ import debounce from './orthography/helpers/debounce';
 import { sortAlerts, formatAlerts } from './orthography/helpers/formatters';
 import { API_URL_GRAMMAR } from './config';
 import { O_NOT_OPEN_FILE, O_SERVER_ERROR, O_NO_ERROR } from './constants';
-import { PersonalDictionary } from './orthography/personalDictionary'
+import { PersonalDictionary } from './orthography/personalDictionary';
 
 // Use self in events callbacks
 let self: any;
@@ -38,7 +38,7 @@ export default class OrthographyPlugin extends Plugin {
 
     // this.addSettingTab(new OrthographySettingTab(this.app, settings, this));
 
-    const personalDictionary = new PersonalDictionary(this);
+    const personalDictionary = new PersonalDictionary(this.app);
     await personalDictionary.loadDictionary();
     this.personalDictionary = personalDictionary;
 
@@ -71,6 +71,7 @@ export default class OrthographyPlugin extends Plugin {
     this.editor.destroy();
     this.hints = null;
     this.activeEditor = null;
+    this.personalDictionary = null;
   }
 
   private initOrthographyToggler(): void {
@@ -81,7 +82,7 @@ export default class OrthographyPlugin extends Plugin {
 
   private initOrthographyPopup(): void {
     const { app, settings, emitter } = this;
-    this.popup = new OrthographyPopup(app, settings, emitter);
+    this.popup = new OrthographyPopup(app, settings, emitter, this.personalDictionary);
     this.popup.init();
   }
 
@@ -170,7 +171,7 @@ export default class OrthographyPlugin extends Plugin {
   private onIgnore(event: any) {
     const word = event.currentTarget.dataset.text;
     self.personalDictionary.addWord(word);
-    self.editor.clearHighlightWord(word)
+    self.editor.clearHighlightWord(word);
   }
 
   private async fetchData(text: string): Promise<JSON> {

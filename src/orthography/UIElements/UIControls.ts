@@ -1,10 +1,11 @@
 const UIControls = (hasData: boolean): string => {
   return `
       <div class="obsidian-orthography-popup-controls">
+        <div id="dictionary-opener" class="obsidian-orthography-popup-controls-item" title="See your personal dictionary">📓</div>
         ${
           hasData
-            ? '<button id="reloader" class="obsidian-orthography-popup-reload" title="Restart the orthography checker">Reload</button>'
-            : ''
+            ? '<div id="reloader" class="obsidian-orthography-popup-controls-item" title="Restart the orthography checker">↻</div>'
+            : '<div id="checker" class="obsidian-orthography-popup-controls-item" title="Run the orthography checker">▶</div>'
         }
         <div id="closer" class="obsidian-orthography-popup-close" title="Close popup">✕</div>
       </div>

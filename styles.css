@@ -325,6 +325,7 @@
   padding: 5px 10px;
   margin: 0 -10px 5px;
   z-index: 2;
+  gap: 5px;
 }
 
 .obsidian-orthography-popup-controls div {
@@ -354,10 +355,6 @@
 .obsidian-orthography-popup-horizontalSize {
   margin-right: auto;
   margin-left: 0 !important;
-}
-
-.obsidian-orthography-popup-reload:active {
-  transform: scale(0.96);
 }
 
 .obsidian-orthography-popup-close {
@@ -402,6 +399,10 @@
   margin-left: auto;
 }
 
+.obsidian-orthography-ignore-button {
+  cursor: pointer;
+}
+
 /* Loader */
 
 .obsidian-orthography-loader {
@@ -415,4 +416,54 @@
   align-items: center;
   z-index: 1;
   opacity: 0.5;
+}
+
+/* Dictionary Tab */
+
+.obsidian-orthography-dictionary-container {
+  width: 80%;
+  margin: auto;
+  background-color: inherit;
+}
+
+.obsidian-orthography-dictionary-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.obsidian-orthography-dictionary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px;
+  flex-wrap: wrap;
+}
+
+.obsidian-orthography-dictionary-text {
+  font-size: 16px;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.obsidian-orthography-dictionary-button {
+  cursor: pointer;
+}
+
+.obsidian-orthography-dictionary-button-container {
+  position: sticky;
+  display: flex;
+  justify-content: center;
+  background-color: inherit;
+  top: 25px;
+  align-items: center;
+  z-index: 2;
+  gap: 20%;
+  padding: 10px 10px;
+  margin: 0 0 5px;
+}
+
+.obsidian-orthography-dictionary-word-checkbox {
+  margin-right: 10px;
 }
