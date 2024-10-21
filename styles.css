@@ -52,6 +52,7 @@
   z-index: 2;
   transition: all 0.1s ease;
   color: inherit;
+  cursor: pointer;
 }
 
 .obsidian-orthography-runner--clear {
@@ -60,11 +61,6 @@
 
 .obsidian-orthography-runner--hidden {
   display: none !important;
-}
-
-.obsidian-orthography-runner:active {
-  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.4);
-  transform: translateY(1px);
 }
 
 .obsidian-orthography-runner--active {
@@ -398,7 +394,7 @@
 }
 
 .obsidian-orthography-hints-fallback p {
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
 .obsidian-orthography-popup-ignore {
