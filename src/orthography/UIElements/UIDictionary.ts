@@ -2,7 +2,7 @@ import { PersonalDictionary } from '../personalDictionary';
 
 const UIDictionary = (dictionary: string[]): string => {
   if (!dictionary.length) {
-    return `<p>Your personal dictionary is empty.</p>`;
+    return `<p class="obsidian-orthography-dictionary-empty">Your personal dictionary is empty.</p>`;
   }
 
   return `
