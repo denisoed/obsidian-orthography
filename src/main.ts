@@ -51,12 +51,13 @@ export default class OrthographyPlugin extends Plugin {
     // Listen to changes in the editor
     this.app.workspace.on('editor-change', this.debounceGetDataFunc);
 
-    setTimeout(() => {
+    // Init orthography
+    this.app.workspace.onLayoutReady(() => {
       this.activeEditor = this.getEditor();
       this.initOrthographyToggler();
       this.initOrthographyPopup();
       this.initOrthographyEditor();
-    }, 1000);
+    });
   }
 
   onunload(): void {
