@@ -1,4 +1,4 @@
-import { PersonalDictionary } from "../personalDictionary";
+import { PersonalDictionary } from '../personalDictionary';
 
 const UIDictionary = (dictionary: string[]): string => {
   if (!dictionary.length) {
@@ -13,14 +13,18 @@ const UIDictionary = (dictionary: string[]): string => {
         <button id="remove-selected-button" class="obsidian-orthography-dictionary-button">Remove</button>
       </div>
       <div class="obsidian-orthography-dictionary-list">
-        ${dictionary.map((word, index) => `
+        ${dictionary
+          .map(
+            (word, index) => `
           <div class="obsidian-orthography-dictionary-item">
             <div class="obsidian-orthography-dictionary-word-text">
               <input type="checkbox" class="obsidian-orthography-dictionary-word-checkbox" id="word-${index}" value="${word}">
               <label for="word-${index}">${word}</label>
             </div>
           </div>
-        `).join('')}
+        `
+          )
+          .join('')}
       </div>
     </div>
   `;

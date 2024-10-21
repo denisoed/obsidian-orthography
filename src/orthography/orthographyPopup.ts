@@ -10,12 +10,15 @@ import {
   O_POPUP_WORD_TO_REPLACE,
   O_HIGHLIGHT_FOCUSED,
   O_POPUP_IGNORE_BUTTON
-} from "../cssClasses";
+} from '../cssClasses';
 import { O_NOT_OPEN_FILE } from '../constants';
 import { IAlert } from '../interfaces';
 
 import UIBar from './UIElements/UIBar';
-import { PersonalDictionary, PersonalDictionaryTab } from "./personalDictionary";
+import {
+  PersonalDictionary,
+  PersonalDictionaryTab
+} from './personalDictionary';
 
 let self: any;
 
@@ -36,12 +39,20 @@ export class OrthographyPopup {
   private personalDictionary: PersonalDictionary;
   private personalDictionaryTab: PersonalDictionaryTab;
 
-  constructor(app: App, settings: OrthographySettings, emitter: Events, personalDictionary: PersonalDictionary) {
+  constructor(
+    app: App,
+    settings: OrthographySettings,
+    emitter: Events,
+    personalDictionary: PersonalDictionary
+  ) {
     this.app = app;
     this.settings = settings;
     this.emitter = emitter;
     this.personalDictionary = personalDictionary;
-    this.personalDictionaryTab = new PersonalDictionaryTab(this, personalDictionary);
+    this.personalDictionaryTab = new PersonalDictionaryTab(
+      this,
+      personalDictionary
+    );
   }
 
   public init(): void {
@@ -67,13 +78,21 @@ export class OrthographyPopup {
     if (popup) popup.remove();
   }
 
-  public update(data: IAlert, loading?: boolean, showDictionary: boolean = false): void {
+  public update(
+    data: IAlert,
+    loading?: boolean,
+    showDictionary: boolean = false
+  ): void {
     self.removeListeners();
-    const dictionary = this.personalDictionary ? this.personalDictionary.dictionary : []
+    const dictionary = this.personalDictionary
+      ? this.personalDictionary.dictionary
+      : [];
     const bar = UIBar(data, loading, showDictionary, dictionary);
     self.popup.innerHTML = bar;
     self.setListeners();
-    showDictionary ? self.personalDictionaryTab.update() : self.personalDictionaryTab.destroy();
+    showDictionary
+      ? self.personalDictionaryTab.update()
+      : self.personalDictionaryTab.destroy();
   }
 
   public setLoader(): void {
@@ -123,7 +142,7 @@ export class OrthographyPopup {
     if (self.reloader) {
       self.reloader.addEventListener('click', self.onRun);
     }
-    self.dictionaryOpener = document.getElementById("dictionary-opener")
+    self.dictionaryOpener = document.getElementById('dictionary-opener');
     if (self.dictionaryOpener) {
       self.dictionaryOpener.addEventListener('click', self.onOpenDictionary);
     }
@@ -175,7 +194,8 @@ export class OrthographyPopup {
       button.removeEventListener('click', self.onIgnore)
     );
     if (self.reloader) self.reloader.removeEventListener('click', self.onRun);
-    if (self.dictionaryOpener) self.dictionaryOpener.removeEventListener('click', self.onOpenDictionary);
+    if (self.dictionaryOpener)
+      self.dictionaryOpener.removeEventListener('click', self.onOpenDictionary);
     if (self.checker) self.checker.removeEventListener('click', self.onRun);
     if (self.runner) self.runner.removeEventListener('click', self.onRun);
     if (self.sizer) self.sizer.removeEventListener('click', self.onResize);
@@ -274,7 +294,7 @@ export class OrthographyPopup {
     }
   }
 
-  private onOpenDictionary(){
+  private onOpenDictionary() {
     self.update(null, false, true);
   }
 

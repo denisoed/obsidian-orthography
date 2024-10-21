@@ -1,6 +1,6 @@
-import { PersonalDictionary } from "./personalDictionary";
-import { OrthographyPopup } from "../orthographyPopup";
-import { O_DICT_WORD_CHECKBOX } from "../../cssClasses";
+import { PersonalDictionary } from './personalDictionary';
+import { OrthographyPopup } from '../orthographyPopup';
+import { O_DICT_WORD_CHECKBOX } from '../../cssClasses';
 
 interface IPersonalDictionaryTab {
   init(): void;
@@ -8,13 +8,16 @@ interface IPersonalDictionaryTab {
 
 let self: any;
 
-export class PersonalDictionaryTab implements IPersonalDictionaryTab{
+export class PersonalDictionaryTab implements IPersonalDictionaryTab {
   private dictionary: PersonalDictionary;
   private removeSelectedBtn: any;
   private selectAllBtn: any;
   private orthographyPopup: OrthographyPopup;
 
-  constructor(orthographyPopup: OrthographyPopup, dictionary: PersonalDictionary) {
+  constructor(
+    orthographyPopup: OrthographyPopup,
+    dictionary: PersonalDictionary
+  ) {
     this.orthographyPopup = orthographyPopup;
     this.dictionary = dictionary;
 
@@ -41,30 +44,46 @@ export class PersonalDictionaryTab implements IPersonalDictionaryTab{
   setListeners(): void {
     self.selectAllBtn = document.getElementById('select-all-button');
     if (self.selectAllBtn) {
-      self.selectAllBtn.addEventListener('click', self.onSelectAllCheckboxes.bind(self));
+      self.selectAllBtn.addEventListener(
+        'click',
+        self.onSelectAllCheckboxes.bind(self)
+      );
     }
 
     self.removeSelectedBtn = document.getElementById('remove-selected-button');
     if (self.removeSelectedBtn) {
-      self.removeSelectedBtn.addEventListener('click', self.onRemoveSelected.bind(self));
+      self.removeSelectedBtn.addEventListener(
+        'click',
+        self.onRemoveSelected.bind(self)
+      );
     }
   }
 
   removeListeners(): void {
     self.selectAllBtn = document.getElementById('select-all-button');
     if (self.selectAllBtn) {
-      self.selectAllBtn.removeEventListener('click', self.onSelectAllCheckboxes.bind(self));
+      self.selectAllBtn.removeEventListener(
+        'click',
+        self.onSelectAllCheckboxes.bind(self)
+      );
     }
 
-    self.removeSelectedBtn = document.getElementById('obsidian-orthography-remove-selected-button');
+    self.removeSelectedBtn = document.getElementById(
+      'obsidian-orthography-remove-selected-button'
+    );
     if (self.removeSelectedBtn) {
-      self.removeSelectedBtn.removeEventListener('click', self.onRemoveSelected.bind(self));
+      self.removeSelectedBtn.removeEventListener(
+        'click',
+        self.onRemoveSelected.bind(self)
+      );
     }
   }
 
   private onSelectAllCheckboxes() {
     const checkboxes = document.querySelectorAll(`.${O_DICT_WORD_CHECKBOX}`);
-    const allChecked = Array.from(checkboxes).every((checkbox: HTMLInputElement) => checkbox.checked);
+    const allChecked = Array.from(checkboxes).every(
+      (checkbox: HTMLInputElement) => checkbox.checked
+    );
 
     checkboxes.forEach((checkbox: HTMLInputElement) => {
       checkbox.checked = !allChecked;
@@ -72,8 +91,12 @@ export class PersonalDictionaryTab implements IPersonalDictionaryTab{
   }
 
   private onRemoveSelected() {
-    const checkboxes = document.querySelectorAll(`.${O_DICT_WORD_CHECKBOX}:checked`);
-    const wordsToRemove = Array.from(checkboxes).map((checkbox: HTMLInputElement) => checkbox.value);
+    const checkboxes = document.querySelectorAll(
+      `.${O_DICT_WORD_CHECKBOX}:checked`
+    );
+    const wordsToRemove = Array.from(checkboxes).map(
+      (checkbox: HTMLInputElement) => checkbox.value
+    );
     self.dictionary.remove(wordsToRemove);
     self.orthographyPopup.update(null, false, true);
   }

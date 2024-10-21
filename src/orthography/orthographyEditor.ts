@@ -1,6 +1,6 @@
 import { OrthographySettings } from '../settings';
 import type { App, Editor } from 'obsidian';
-import { O_HIGHLIGHT, O_HIGHLIGHT_FOCUSED } from "../cssClasses";
+import { O_HIGHLIGHT, O_HIGHLIGHT_FOCUSED } from '../cssClasses';
 import { IOriginalWord, IData } from 'src/interfaces';
 
 interface IOrthographyEditor {

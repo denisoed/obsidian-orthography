@@ -1,4 +1,4 @@
-import { App, Notice } from "obsidian";
+import { App, Notice } from 'obsidian';
 
 export class PersonalDictionary {
   private static instance: PersonalDictionary | null = null;
@@ -46,12 +46,10 @@ export class PersonalDictionary {
   }
 
   async remove(wordsToRemove: string[]): Promise<void> {
-    this.data.dictionary = this.data.dictionary.filter((word) =>
-      {
-        word = word.toLowerCase();
-        return !wordsToRemove.includes(word);
-      }
-    )
+    this.data.dictionary = this.data.dictionary.filter((word) => {
+      word = word.toLowerCase();
+      return !wordsToRemove.includes(word);
+    });
     await this.saveDictionary();
   }
 

@@ -8,7 +8,6 @@ export const O_POPUP_ITEM_OPENED = 'obsidian-orthography-popup-item--opened';
 export const O_POPUP_WORD_TO_REPLACE = 'obsidian-orthography-word-to-replace';
 export const O_POPUP_IGNORE_BUTTON = 'obsidian-orthography-ignore-button';
 
-
 // Runner
 export const O_RUNNER = 'obsidian-orthography-runner';
 export const O_RUNNER_ACTIVE = 'obsidian-orthography-runner--active';
@@ -26,4 +25,5 @@ export const O_HIGHLIGHT = 'obsidian-orthography-highlight';
 export const O_HIGHLIGHT_FOCUSED = 'obsidian-orthography-highlight--focused';
 
 // Personal Dictionary
-export const O_DICT_WORD_CHECKBOX = 'obsidian-orthography-dictionary-word-checkbox';
+export const O_DICT_WORD_CHECKBOX =
+  'obsidian-orthography-dictionary-word-checkbox';

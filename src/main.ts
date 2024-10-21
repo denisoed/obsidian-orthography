@@ -82,7 +82,12 @@ export default class OrthographyPlugin extends Plugin {
 
   private initOrthographyPopup(): void {
     const { app, settings, emitter } = this;
-    this.popup = new OrthographyPopup(app, settings, emitter, this.personalDictionary);
+    this.popup = new OrthographyPopup(
+      app,
+      settings,
+      emitter,
+      this.personalDictionary
+    );
     this.popup.init();
   }
 
@@ -127,7 +132,9 @@ export default class OrthographyPlugin extends Plugin {
       return;
     }
     if (this.hints && this.hints.alerts && this.hints.alerts.length) {
-      const alerts = formatAlerts(this.personalDictionary.filterAlerts(this.hints.alerts));
+      const alerts = formatAlerts(
+        this.personalDictionary.filterAlerts(this.hints.alerts)
+      );
       this.editor.highlightWords(alerts);
       this.popup.update({
         alerts: sortAlerts(alerts)
