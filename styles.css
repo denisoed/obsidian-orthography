@@ -425,6 +425,7 @@
 
 .obsidian-orthography-dictionary-container {
   background-color: inherit;
+  margin-left: 20px;
 }
 
 .obsidian-orthography-dictionary-title {
@@ -457,7 +458,7 @@
   display: flex;
   justify-content: flex-start;
   background-color: inherit;
-  top: 25px;
+  top: 35px;
   align-items: center;
   z-index: 2;
   gap: 10px;
