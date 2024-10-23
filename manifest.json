@@ -1,8 +1,8 @@
 {
   "id": "obsidian-orthography",
   "name": "Orthography",
-  "version": "3.0.1",
-  "minAppVersion": "1.5.12",
+  "version": "3.1.0",
+  "minAppVersion": "1.7.4",
   "description": "Check & fix orthography errors in text.",
   "author": "Denisoed",
   "authorUrl": "https://github.com/denisoed",
