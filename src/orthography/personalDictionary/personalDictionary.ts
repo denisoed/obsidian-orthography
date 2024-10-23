@@ -3,7 +3,7 @@ import { App, Notice } from 'obsidian';
 export class PersonalDictionary {
   private static instance: PersonalDictionary | null = null;
   private data: { dictionary: string[] } = { dictionary: [] };
-  private category: string = 'Misspelled';
+  private category = 'Misspelled';
   private app: App;
 
   constructor(app: App) {

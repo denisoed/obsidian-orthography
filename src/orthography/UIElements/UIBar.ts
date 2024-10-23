@@ -8,7 +8,7 @@ import UIDictionary from './UIDictionary';
 const UIBar = (
   data: IAlert,
   loading: boolean,
-  showDictionary: boolean = false,
+  showDictionary = false,
   dictionary: string[] = []
 ): string => {
   const hasData = data && data.alerts && data.alerts.length;

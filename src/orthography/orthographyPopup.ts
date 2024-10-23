@@ -78,11 +78,7 @@ export class OrthographyPopup {
     if (popup) popup.remove();
   }
 
-  public update(
-    data: IAlert,
-    loading?: boolean,
-    showDictionary: boolean = false
-  ): void {
+  public update(data: IAlert, loading?: boolean, showDictionary = false): void {
     self.removeListeners();
     const dictionary = this.personalDictionary
       ? this.personalDictionary.dictionary
