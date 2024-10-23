@@ -1,4 +1,4 @@
-export const O_RUNNER_ICON = '⌘';
+export const O_RUNNER_ICON = '✦';
 export const O_RUNNER_ICON_CLEAR = '✕';
 export const O_NOT_OPEN_FILE = 'Please open a file first.';
 export const O_SERVER_ERROR =
